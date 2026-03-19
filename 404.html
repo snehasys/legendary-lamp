@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting...</title>
+    <script>
+      // GitHub Pages SPA redirect for subfolder apps
+      // Converts 404s on deep links back to the SPA's index.html
+      // using sessionStorage to preserve the original path
+      var pathSegmentsToKeep = 1; // keep '/repo1' prefix from github.io/repo1/
+      var repo = '/repo1';
+      var l = window.location;
+
+      // Only redirect if the path is under noukadubi-shipwreck
+      if (l.pathname.indexOf(repo + '/noukadubi-shipwreck') === 0) {
+        // Store the route after the base path so the SPA can restore it
+        var route = l.pathname.replace(repo + '/noukadubi-shipwreck', '') || '/';
+        sessionStorage.setItem('spa-redirect', route + l.search + l.hash);
+        // Redirect to the SPA's index.html
+        l.replace(repo + '/noukadubi-shipwreck/' + l.search + l.hash);
+      }
+    </script>
+  </head>
+  <body>
+    <!-- GitHub Pages SPA redirect -->
+  </body>
+</html>
