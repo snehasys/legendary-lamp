@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { ArrowUpRight, ArrowDownRight, Loader2, AlertCircle, Play, Plus, Trash2, Filter, RotateCcw } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { trpc } from "@/lib/trpc";
+import { getMultipleQuotes, MAJOR_US_STOCKS, type StockQuote } from "@/lib/yahooFinance";
 
 interface FilterCondition {
   id: string;
@@ -45,29 +45,14 @@ export default function QueryBuilder() {
   const [runQuery, setRunQuery] = useState(false);
   const [sortBy, setSortBy] = useState<"price" | "change" | "changePercent" | "volume">("changePercent");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-
-  // Get list of major stocks
-  const { data: stocksList } = trpc.stocks.majorStocksList.useQuery(undefined, {
-    staleTime: 300_000,
-  });
-
-  const symbols = useMemo(() => stocksList?.symbols || [], [stocksList]);
-
-  const screenInput = useMemo(() => ({
-    symbols,
-    sortBy,
-    sortOrder,
-  }), [symbols, sortBy, sortOrder]);
-
-  const { data: allQuotes, isLoading, error } = trpc.stocks.screen.useQuery(
-    screenInput,
-    { enabled: runQuery && symbols.length > 0, staleTime: 60_000, retry: 1 }
-  );
+  const [allQuotes, setAllQuotes] = useState<StockQuote[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   // Apply client-side filters to the real data
   const filteredResults = useMemo(() => {
-    if (!allQuotes) return [];
-    return allQuotes.filter(q => {
+    if (!allQuotes.length) return [];
+    const filtered = allQuotes.filter(q => {
       return filters.every(f => {
         const val = parseFloat(f.value);
         if (isNaN(val)) return true;
@@ -94,7 +79,22 @@ export default function QueryBuilder() {
         }
       });
     });
-  }, [allQuotes, filters]);
+
+    // Sort
+    filtered.sort((a, b) => {
+      let aVal: number, bVal: number;
+      switch (sortBy) {
+        case "price": aVal = a.regularMarketPrice; bVal = b.regularMarketPrice; break;
+        case "change": aVal = a.change; bVal = b.change; break;
+        case "changePercent": aVal = a.changePercent; bVal = b.changePercent; break;
+        case "volume": aVal = a.regularMarketVolume; bVal = b.regularMarketVolume; break;
+        default: aVal = a.changePercent; bVal = b.changePercent;
+      }
+      return sortOrder === "desc" ? bVal - aVal : aVal - bVal;
+    });
+
+    return filtered;
+  }, [allQuotes, filters, sortBy, sortOrder]);
 
   function addFilter() {
     setFilters([...filters, {
@@ -113,13 +113,24 @@ export default function QueryBuilder() {
     setFilters(filters.map(f => f.id === id ? { ...f, [key]: value } : f));
   }
 
-  function handleRun() {
+  async function handleRun() {
     setRunQuery(true);
+    setIsLoading(true);
+    setError(false);
+    try {
+      const quotes = await getMultipleQuotes(MAJOR_US_STOCKS);
+      setAllQuotes(quotes);
+    } catch {
+      setError(true);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function handleReset() {
     setFilters([{ id: "1", field: "changePercent", operator: "gt", value: "2" }]);
     setRunQuery(false);
+    setAllQuotes([]);
   }
 
   // Generate query string for display
@@ -145,7 +156,7 @@ export default function QueryBuilder() {
               Custom Stock Screen
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Build custom filters to screen {symbols.length} major NYSE & NASDAQ stocks using real-time Yahoo Finance data.
+              Build custom filters to screen {MAJOR_US_STOCKS.length} major NYSE & NASDAQ stocks using real-time Yahoo Finance data.
             </p>
           </div>
           <Link href="/screens" className="text-sm text-primary hover:underline">
@@ -278,7 +289,7 @@ export default function QueryBuilder() {
         ) : isLoading ? (
           <div className="flex flex-col items-center justify-center py-16">
             <Loader2 className="w-8 h-8 animate-spin text-primary mb-3" />
-            <p className="text-sm text-muted-foreground">Fetching real-time data for {symbols.length} stocks...</p>
+            <p className="text-sm text-muted-foreground">Fetching real-time data for {MAJOR_US_STOCKS.length} stocks...</p>
             <p className="text-xs text-muted-foreground mt-1">This may take a moment as we query Yahoo Finance for each stock.</p>
           </div>
         ) : error ? (
@@ -293,7 +304,7 @@ export default function QueryBuilder() {
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm text-muted-foreground">
                 <span className="font-medium text-foreground">{filteredResults.length}</span> stocks match your filters
-                (out of {allQuotes?.length || 0} fetched)
+                (out of {allQuotes.length} fetched)
               </p>
             </div>
 
@@ -364,7 +375,7 @@ export default function QueryBuilder() {
         {/* Attribution */}
         <div className="text-center mt-8">
           <p className="text-xs text-muted-foreground">
-            All data sourced from Yahoo Finance in real-time. No fabricated or estimated data is displayed.
+            All data sourced from Yahoo Finance in real-time. Prices may be delayed up to 15 minutes.
           </p>
         </div>
       </main>

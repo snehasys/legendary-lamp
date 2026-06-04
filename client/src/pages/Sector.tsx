@@ -1,9 +1,9 @@
-import { useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useParams } from "wouter";
 import { ArrowUpRight, ArrowDownRight, Loader2, AlertCircle, Building2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { trpc } from "@/lib/trpc";
+import { getMultipleQuotes, type StockQuote } from "@/lib/yahooFinance";
 
 // Sector-to-symbols mapping (real tickers grouped by sector)
 const SECTOR_STOCKS: Record<string, string[]> = {
@@ -33,17 +33,21 @@ export default function Sector() {
   const sectorName = decodeURIComponent(params.name || "");
 
   const symbols = useMemo(() => SECTOR_STOCKS[sectorName] || [], [sectorName]);
+  const [quotes, setQuotes] = useState<StockQuote[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  const screenInput = useMemo(() => ({
-    symbols,
-    sortBy: "changePercent" as const,
-    sortOrder: "desc" as const,
-  }), [symbols]);
-
-  const { data: quotes, isLoading, error } = trpc.stocks.screen.useQuery(
-    screenInput,
-    { enabled: symbols.length > 0, staleTime: 60_000, retry: 1 }
-  );
+  useEffect(() => {
+    if (symbols.length === 0) { setIsLoading(false); return; }
+    setIsLoading(true);
+    setError(false);
+    getMultipleQuotes(symbols)
+      .then((data) => {
+        setQuotes(data.sort((a, b) => b.changePercent - a.changePercent));
+        setIsLoading(false);
+      })
+      .catch(() => { setError(true); setIsLoading(false); });
+  }, [symbols]);
 
   const allSectors = Object.keys(SECTOR_STOCKS);
 
@@ -67,7 +71,7 @@ export default function Sector() {
               {sectorName || "Sector"}
             </h1>
             <p className="text-sm text-muted-foreground mb-6">
-              {symbols.length} stocks in this sector • Real-time data from Yahoo Finance
+              {symbols.length} stocks in this sector - Real-time data from Yahoo Finance
             </p>
 
             {/* Content */}
@@ -175,7 +179,7 @@ export default function Sector() {
         {/* Attribution */}
         <div className="text-center mt-8">
           <p className="text-xs text-muted-foreground">
-            All data sourced from Yahoo Finance in real-time. No fabricated or estimated data is displayed.
+            All data sourced from Yahoo Finance in real-time. Prices may be delayed up to 15 minutes.
           </p>
         </div>
       </main>

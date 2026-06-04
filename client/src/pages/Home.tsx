@@ -1,24 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, TrendingUp, TrendingDown, BarChart3, ArrowUpRight, ArrowDownRight, Loader2, AlertCircle } from "lucide-react";
+import { Search, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, Loader2, AlertCircle } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { trpc } from "@/lib/trpc";
+import { getMarketIndices, getTopMovers, type MarketIndex, type StockQuote } from "@/lib/yahooFinance";
 
 export default function Home() {
   const [, navigate] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Live market data from Yahoo Finance
-  const { data: indices, isLoading: indicesLoading, error: indicesError } = trpc.stocks.marketIndices.useQuery(undefined, {
-    staleTime: 60_000,
-    refetchInterval: 120_000,
-  });
+  const [indices, setIndices] = useState<MarketIndex[]>([]);
+  const [indicesLoading, setIndicesLoading] = useState(true);
+  const [indicesError, setIndicesError] = useState(false);
 
-  const { data: movers, isLoading: moversLoading, error: moversError } = trpc.stocks.topMovers.useQuery(
-    { count: 5 },
-    { staleTime: 60_000, refetchInterval: 120_000 }
-  );
+  const [movers, setMovers] = useState<{ gainers: StockQuote[]; losers: StockQuote[] } | null>(null);
+  const [moversLoading, setMoversLoading] = useState(true);
+  const [moversError, setMoversError] = useState(false);
+
+  useEffect(() => {
+    getMarketIndices()
+      .then((data) => { setIndices(data); setIndicesLoading(false); })
+      .catch(() => { setIndicesError(true); setIndicesLoading(false); });
+  }, []);
+
+  useEffect(() => {
+    getTopMovers(5)
+      .then((data) => { setMovers(data); setMoversLoading(false); })
+      .catch(() => { setMoversError(true); setMoversLoading(false); });
+  }, []);
 
   function handleSearchSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -28,13 +37,6 @@ export default function Home() {
       setSearchQuery("");
     }
   }
-
-  const indexNames: Record<string, string> = {
-    "^GSPC": "S&P 500",
-    "^IXIC": "NASDAQ",
-    "^DJI": "DOW 30",
-    "^RUT": "Russell 2000",
-  };
 
   const popularSymbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "JPM", "V", "JNJ", "NFLX"];
 
@@ -100,13 +102,13 @@ export default function Home() {
               </div>
             ) : (
               <div className="flex items-center gap-6 overflow-x-auto">
-                {indices?.map((idx) => (
+                {indices.map((idx) => (
                   <div key={idx.symbol} className="flex items-center gap-2 shrink-0">
                     <span className="text-xs font-medium text-muted-foreground">
-                      {indexNames[idx.symbol] || idx.shortName}
+                      {idx.name}
                     </span>
                     <span className="text-sm font-mono font-medium">
-                      {idx.regularMarketPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {idx.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                     <span className={`text-xs font-mono ${idx.changePercent >= 0 ? "text-gain" : "text-loss"}`}>
                       {idx.changePercent >= 0 ? "+" : ""}{idx.changePercent.toFixed(2)}%

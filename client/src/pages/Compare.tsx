@@ -1,9 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { ArrowUpRight, ArrowDownRight, Loader2, AlertCircle, Plus, X, GitCompare, Search } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { trpc } from "@/lib/trpc";
+import { getMultipleQuotes, type StockQuote } from "@/lib/yahooFinance";
 
 function formatVol(num: number | undefined | null): string {
   if (num == null || isNaN(num)) return "N/A";
@@ -16,17 +16,21 @@ function formatVol(num: number | undefined | null): string {
 export default function Compare() {
   const [symbols, setSymbols] = useState<string[]>(["AAPL", "MSFT", "GOOGL"]);
   const [newSymbol, setNewSymbol] = useState("");
+  const [quotes, setQuotes] = useState<StockQuote[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  const queryInput = useMemo(() => ({
-    symbols,
-    sortBy: "price" as const,
-    sortOrder: "desc" as const,
-  }), [symbols]);
-
-  const { data: quotes, isLoading, error } = trpc.stocks.screen.useQuery(
-    queryInput,
-    { enabled: symbols.length > 0, staleTime: 60_000, retry: 1 }
-  );
+  useEffect(() => {
+    if (symbols.length === 0) { setQuotes([]); setIsLoading(false); return; }
+    setIsLoading(true);
+    setError(false);
+    getMultipleQuotes(symbols)
+      .then((data) => {
+        setQuotes(data.sort((a, b) => b.regularMarketPrice - a.regularMarketPrice));
+        setIsLoading(false);
+      })
+      .catch(() => { setError(true); setIsLoading(false); });
+  }, [symbols]);
 
   function handleAdd(e: React.FormEvent) {
     e.preventDefault();
@@ -207,19 +211,11 @@ export default function Compare() {
                         </td>
                       ))}
                     </tr>
-                    <tr className="border-b border-border bg-muted/10">
-                      <td className="py-3 px-4 text-xs font-medium text-muted-foreground sticky left-0 bg-muted/10 z-10">Prev Close</td>
+                    <tr>
+                      <td className="py-3 px-4 text-xs font-medium text-muted-foreground sticky left-0 bg-background z-10">Prev Close</td>
                       {quotes.map(q => (
                         <td key={q.symbol} className="py-3 px-4 text-right font-mono text-xs">
                           {q.previousClose != null ? `$${q.previousClose.toFixed(2)}` : "N/A"}
-                        </td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 text-xs font-medium text-muted-foreground sticky left-0 bg-background z-10">Open</td>
-                      {quotes.map(q => (
-                        <td key={q.symbol} className="py-3 px-4 text-right font-mono text-xs">
-                          {q.regularMarketOpen != null ? `$${q.regularMarketOpen.toFixed(2)}` : "N/A"}
                         </td>
                       ))}
                     </tr>
@@ -266,7 +262,7 @@ export default function Compare() {
         {/* Attribution */}
         <div className="text-center mt-8">
           <p className="text-xs text-muted-foreground">
-            All data sourced from Yahoo Finance in real-time. No fabricated or estimated data is displayed. Prices may be delayed up to 15 minutes.
+            All data sourced from Yahoo Finance in real-time. Prices may be delayed up to 15 minutes.
           </p>
         </div>
       </main>

@@ -1,19 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Moon, Sun, ChevronDown, Menu, X, User, LogOut } from "lucide-react";
+import { Search, Moon, Sun, ChevronDown, Menu, X } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
 
 export default function Header() {
   const [, navigate] = useLocation();
   const [location] = useLocation();
   const { theme, toggleTheme } = useTheme();
-  const { user, isAuthenticated, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [showTools, setShowTools] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
   const toolsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -95,7 +91,7 @@ export default function Header() {
         </nav>
 
         {/* Search */}
-        <div className="flex-1 max-w-md mx-auto relative" ref={searchRef}>
+        <div className="flex-1 max-w-md mx-auto relative">
           <form onSubmit={handleSearchSubmit} className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
@@ -117,28 +113,6 @@ export default function Header() {
           >
             {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
-          {isAuthenticated ? (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">
-                {user?.name || "User"}
-              </span>
-              <button
-                onClick={() => logout()}
-                className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                aria-label="Logout"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
-          ) : (
-            <a
-              href={getLoginUrl()}
-              className="flex items-center gap-1.5 text-sm font-medium bg-primary text-primary-foreground px-4 py-1.5 rounded-md hover:opacity-90 transition-opacity"
-            >
-              <User className="w-3.5 h-3.5" />
-              Login
-            </a>
-          )}
         </div>
 
         {/* Mobile menu toggle */}
@@ -159,11 +133,6 @@ export default function Header() {
             <button onClick={toggleTheme} className="p-2 rounded-md hover:bg-accent">
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
-            {isAuthenticated ? (
-              <button onClick={() => logout()} className="text-sm font-medium px-3 py-1.5">Logout</button>
-            ) : (
-              <a href={getLoginUrl()} className="text-sm font-medium bg-primary text-primary-foreground px-3 py-1.5 rounded-md">Login</a>
-            )}
           </div>
         </div>
       )}

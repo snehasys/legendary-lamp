@@ -1,13 +1,13 @@
-import { useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "wouter";
 import { ArrowUpRight, ArrowDownRight, Loader2, AlertCircle, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { trpc } from "@/lib/trpc";
+import { getMultipleQuotes, type StockQuote } from "@/lib/yahooFinance";
 
-// Screen definitions with their stock symbols - these are curated lists of real tickers
+// Screen definitions with their stock symbols
 const screenDefinitions: Record<string, { name: string; description: string; symbols: string[]; sortBy: "changePercent" | "volume" | "price"; sortOrder: "desc" | "asc" }> = {
-  "top-market-cap": {
+  "large-cap": {
     name: "Top 10 by Market Cap",
     description: "The largest companies by market capitalization on NYSE & NASDAQ.",
     symbols: ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "BRK-B", "JPM", "V"],
@@ -35,14 +35,14 @@ const screenDefinitions: Record<string, { name: string; description: string; sym
     sortBy: "volume",
     sortOrder: "desc",
   },
-  "near-52w-high": {
+  "52w-high": {
     name: "Near 52-Week High",
     description: "Stocks trading close to their 52-week high price.",
     symbols: ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "AVGO", "COST", "CRM", "NOW", "PANW", "CRWD", "NFLX", "LIN", "ISRG", "VRTX", "SNPS", "KLAC", "CDNS", "BKNG"],
     sortBy: "price",
     sortOrder: "desc",
   },
-  "near-52w-low": {
+  "52w-low": {
     name: "Near 52-Week Low",
     description: "Stocks trading close to their 52-week low price.",
     symbols: ["INTC", "VZ", "T", "PFE", "BMY", "MMM", "NIO", "LCID", "RIVN", "SNAP", "LYFT", "HOOD", "RBLX", "U", "ROKU", "SNOW", "PINS", "COIN", "SOFI", "DASH"],
@@ -127,22 +127,32 @@ export default function ScreenDetail() {
   const screenId = params.id || "";
   const screen = screenDefinitions[screenId];
 
-  const queryInput = useMemo(() => ({
-    symbols: screen?.symbols || [],
-    sortBy: (screen?.sortBy || "changePercent") as "price" | "change" | "changePercent" | "volume",
-    sortOrder: (screen?.sortOrder || "desc") as "asc" | "desc",
-  }), [screenId]);
+  const [rawQuotes, setRawQuotes] = useState<StockQuote[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  const { data: rawQuotes, isLoading, error } = trpc.stocks.screen.useQuery(
-    queryInput,
-    { enabled: !!screen, staleTime: 60_000, retry: 1 }
-  );
+  useEffect(() => {
+    if (!screen) return;
+    setIsLoading(true);
+    setError(false);
+    getMultipleQuotes(screen.symbols)
+      .then((data) => {
+        // Sort the data
+        const sorted = [...data].sort((a, b) => {
+          let aVal = 0, bVal = 0;
+          if (screen.sortBy === "changePercent") { aVal = a.changePercent; bVal = b.changePercent; }
+          else if (screen.sortBy === "volume") { aVal = a.regularMarketVolume; bVal = b.regularMarketVolume; }
+          else { aVal = a.regularMarketPrice; bVal = b.regularMarketPrice; }
+          return screen.sortOrder === "desc" ? bVal - aVal : aVal - bVal;
+        });
+        setRawQuotes(sorted);
+        setIsLoading(false);
+      })
+      .catch(() => { setError(true); setIsLoading(false); });
+  }, [screenId]);
 
-  // Filter results based on screen type:
-  // - "top-gainers" should only show stocks with positive change
-  // - "top-losers" should only show stocks with negative change
+  // Filter results based on screen type
   const quotes = useMemo(() => {
-    if (!rawQuotes) return rawQuotes;
     if (screenId === "top-gainers") {
       return rawQuotes.filter(q => q.changePercent > 0);
     }

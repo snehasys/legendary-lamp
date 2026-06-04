@@ -1,24 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { ArrowUpRight, ArrowDownRight, Loader2, AlertCircle, Plus, X, Star, Search } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { trpc } from "@/lib/trpc";
-
-const WATCHLIST_KEY = "screener_us_watchlist";
-
-function getStoredWatchlist(): string[] {
-  try {
-    const stored = localStorage.getItem(WATCHLIST_KEY);
-    return stored ? JSON.parse(stored) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveWatchlist(symbols: string[]) {
-  localStorage.setItem(WATCHLIST_KEY, JSON.stringify(symbols));
-}
+import { getMultipleQuotes, type StockQuote } from "@/lib/yahooFinance";
+import { getWatchlist, addToWatchlist, removeFromWatchlist } from "@/lib/watchlist";
 
 function formatVol(num: number | undefined | null): string {
   if (num == null || isNaN(num)) return "N/A";
@@ -29,34 +15,36 @@ function formatVol(num: number | undefined | null): string {
 }
 
 export default function Watchlist() {
-  const [watchlist, setWatchlist] = useState<string[]>(getStoredWatchlist);
+  const [watchlist, setWatchlist] = useState<string[]>(getWatchlist);
   const [newSymbol, setNewSymbol] = useState("");
+  const [quotes, setQuotes] = useState<StockQuote[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    saveWatchlist(watchlist);
+    if (watchlist.length === 0) { setQuotes([]); return; }
+    setIsLoading(true);
+    setError(false);
+    getMultipleQuotes(watchlist)
+      .then((data) => {
+        setQuotes(data.sort((a, b) => b.changePercent - a.changePercent));
+        setIsLoading(false);
+      })
+      .catch(() => { setError(true); setIsLoading(false); });
   }, [watchlist]);
-
-  const queryInput = useMemo(() => ({
-    symbols: watchlist,
-    sortBy: "changePercent" as const,
-    sortOrder: "desc" as const,
-  }), [watchlist]);
-
-  const { data: quotes, isLoading, error } = trpc.stocks.screen.useQuery(
-    queryInput,
-    { enabled: watchlist.length > 0, staleTime: 60_000, retry: 1 }
-  );
 
   function handleAdd(e: React.FormEvent) {
     e.preventDefault();
     const sym = newSymbol.trim().toUpperCase();
     if (sym && !watchlist.includes(sym)) {
+      addToWatchlist(sym);
       setWatchlist([...watchlist, sym]);
     }
     setNewSymbol("");
   }
 
   function removeSymbol(sym: string) {
+    removeFromWatchlist(sym);
     setWatchlist(watchlist.filter(s => s !== sym));
   }
 
@@ -131,7 +119,7 @@ export default function Watchlist() {
               {["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA"].map(sym => (
                 <button
                   key={sym}
-                  onClick={() => setWatchlist(prev => [...prev, sym])}
+                  onClick={() => { addToWatchlist(sym); setWatchlist(prev => [...prev, sym]); }}
                   className="text-xs bg-muted hover:bg-accent px-3 py-1.5 rounded-lg transition-colors font-mono"
                 >
                   + {sym}

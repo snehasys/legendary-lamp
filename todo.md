@@ -31,3 +31,15 @@
 - [x] Verify live data is flowing correctly
 - [x] Save checkpoint and export to GitHub
 - [x] Fix Top Gainers/Losers screen filtering (only show positive/negative stocks)
+
+## Phase 5: Static Site Rebuild for GitHub Pages
+- [ ] Research CORS-friendly Yahoo Finance API endpoints for browser use
+- [ ] Create client-side Yahoo Finance data service (replacing server-side tRPC)
+- [ ] Remove tRPC/server dependencies from frontend pages
+- [ ] Rewire all pages to use React Query + client-side fetch
+- [ ] Convert watchlist to localStorage-only (no DB)
+- [ ] Remove authentication dependency
+- [ ] Configure Vite for static build with GitHub Pages base path
+- [ ] Add GitHub Actions workflow for automatic deployment
+- [ ] Test static build locally
+- [ ] Push to GitHub and verify GitHub Pages deployment
