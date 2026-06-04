@@ -13,8 +13,8 @@ import Watchlist from "./pages/Watchlist";
 import Compare from "./pages/Compare";
 import QueryBuilder from "./pages/QueryBuilder";
 
-
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />

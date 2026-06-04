@@ -1,690 +1,620 @@
 import { useState, useMemo } from "react";
-import { Link, useParams } from "wouter";
-import { ExternalLink, Download, Plus, ArrowUpRight, ArrowDownRight, ChevronRight, FileText, Calendar } from "lucide-react";
+import { useParams, Link } from "wouter";
+import { ArrowUpRight, ArrowDownRight, Loader2, AlertCircle, Plus, Check, Building2, Users, FileText, ExternalLink, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import {
-  stocks, getPeers, getFinancialData, getBalanceSheetData, getCashFlowData,
-  getQuarterlyData, getRatioData, getShareholdingData, getPriceHistory,
-  formatMarketCap, formatLargeNumber
-} from "@/lib/stockData";
-import {
-  LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis,
-  CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell
-} from "recharts";
+import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, CartesianGrid } from "recharts";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
 
-function MetricCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between items-center py-1.5">
-      <span className="text-sm text-muted-foreground">{label}</span>
-      <span className="text-sm font-mono font-medium">{value}</span>
-    </div>
-  );
+function formatNumber(num: number | undefined | null): string {
+  if (num == null || isNaN(num)) return "N/A";
+  if (Math.abs(num) >= 1e12) return "$" + (num / 1e12).toFixed(2) + "T";
+  if (Math.abs(num) >= 1e9) return "$" + (num / 1e9).toFixed(2) + "B";
+  if (Math.abs(num) >= 1e6) return "$" + (num / 1e6).toFixed(2) + "M";
+  if (Math.abs(num) >= 1e3) return "$" + (num / 1e3).toFixed(1) + "K";
+  return "$" + num.toFixed(2);
+}
+
+function formatVol(num: number | undefined | null): string {
+  if (num == null || isNaN(num)) return "N/A";
+  if (Math.abs(num) >= 1e9) return (num / 1e9).toFixed(2) + "B";
+  if (Math.abs(num) >= 1e6) return (num / 1e6).toFixed(2) + "M";
+  if (Math.abs(num) >= 1e3) return (num / 1e3).toFixed(1) + "K";
+  return num.toString();
 }
 
 export default function Company() {
   const params = useParams<{ symbol: string }>();
-  const symbol = params.symbol?.toUpperCase() || "";
-  const stock = stocks.find(s => s.symbol === symbol);
-  const [activeTab, setActiveTab] = useState("chart");
-  const [chartPeriod, setChartPeriod] = useState("1Y");
-  const [chartType, setChartType] = useState<"price" | "pe">("price");
+  const upperSymbol = (params.symbol || "").toUpperCase();
+  const { isAuthenticated } = useAuth();
+  const [chartRange, setChartRange] = useState("1y");
+  const [chartInterval, setChartInterval] = useState("1d");
+  const utils = trpc.useUtils();
 
-  const peers = useMemo(() => stock ? getPeers(symbol) : [], [symbol]);
-  const financials = useMemo(() => getFinancialData(symbol), [symbol]);
-  const balanceSheet = useMemo(() => getBalanceSheetData(symbol), [symbol]);
-  const cashFlow = useMemo(() => getCashFlowData(symbol), [symbol]);
-  const quarterly = useMemo(() => getQuarterlyData(symbol), [symbol]);
-  const ratios = useMemo(() => getRatioData(symbol), [symbol]);
-  const shareholding = useMemo(() => getShareholdingData(symbol), [symbol]);
-  const priceHistory = useMemo(() => getPriceHistory(symbol, chartPeriod), [symbol, chartPeriod]);
+  // Stable query inputs
+  const chartInput = useMemo(() => ({ symbol: upperSymbol, interval: chartInterval, range: chartRange }), [upperSymbol, chartInterval, chartRange]);
+  const symbolInput = useMemo(() => ({ symbol: upperSymbol }), [upperSymbol]);
 
-  if (!stock) {
+  // Fetch real data from Yahoo Finance via tRPC
+  const { data: chartData, isLoading: chartLoading, error: chartError } = trpc.stocks.chart.useQuery(
+    chartInput,
+    { staleTime: 60_000, enabled: !!upperSymbol, retry: 1 }
+  );
+
+  const { data: profile, isLoading: profileLoading, error: profileError } = trpc.stocks.profile.useQuery(
+    symbolInput,
+    { staleTime: 300_000, enabled: !!upperSymbol, retry: 1 }
+  );
+
+  const { data: insights, isLoading: insightsLoading, error: insightsError } = trpc.stocks.insights.useQuery(
+    symbolInput,
+    { staleTime: 300_000, enabled: !!upperSymbol, retry: 1 }
+  );
+
+  const { data: holders, isLoading: holdersLoading, error: holdersError } = trpc.stocks.holders.useQuery(
+    symbolInput,
+    { staleTime: 300_000, enabled: !!upperSymbol, retry: 1 }
+  );
+
+  // Watchlist
+  const { data: watchlistItems } = trpc.watchlist.list.useQuery(undefined, { enabled: isAuthenticated });
+  const addToWatchlist = trpc.watchlist.add.useMutation({
+    onSuccess: () => { toast.success(`${upperSymbol} added to watchlist`); utils.watchlist.list.invalidate(); },
+    onError: (e) => toast.error(e.message || "Failed to add to watchlist"),
+  });
+  const removeFromWatchlist = trpc.watchlist.remove.useMutation({
+    onSuccess: () => { toast.success(`${upperSymbol} removed from watchlist`); utils.watchlist.list.invalidate(); },
+    onError: (e) => toast.error(e.message || "Failed to remove from watchlist"),
+  });
+  const isInWatchlist = watchlistItems?.some((w) => w.symbol === upperSymbol);
+
+  // Process chart data for Recharts
+  const priceChartData = useMemo(() => {
+    if (!chartData?.dataPoints) return [];
+    return chartData.dataPoints
+      .filter(d => d.close != null)
+      .map((d) => ({
+        date: new Date(d.timestamp * 1000).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "2-digit" }),
+        timestamp: d.timestamp,
+        price: d.close,
+        volume: d.volume || 0,
+        open: d.open,
+        high: d.high,
+        low: d.low,
+      }));
+  }, [chartData]);
+
+  const rangeOptions = [
+    { label: "1D", range: "1d", interval: "5m" },
+    { label: "5D", range: "5d", interval: "15m" },
+    { label: "1M", range: "1mo", interval: "1d" },
+    { label: "3M", range: "3mo", interval: "1d" },
+    { label: "6M", range: "6mo", interval: "1d" },
+    { label: "1Y", range: "1y", interval: "1d" },
+    { label: "5Y", range: "5y", interval: "1wk" },
+    { label: "Max", range: "max", interval: "1mo" },
+  ];
+
+  const meta = chartData?.meta;
+  const currentPrice = meta?.regularMarketPrice;
+  const prevClose = meta?.chartPreviousClose;
+  const priceChange = currentPrice != null && prevClose != null ? currentPrice - prevClose : null;
+  const priceChangePercent = priceChange != null && prevClose ? (priceChange / prevClose) * 100 : null;
+  const isPositive = (priceChange ?? 0) >= 0;
+
+  if (!upperSymbol) {
     return (
-      <div className="min-h-screen flex flex-col bg-background">
+      <div className="min-h-screen flex flex-col bg-background text-foreground">
         <Header />
-        <main className="flex-1 container py-16 text-center">
-          <h1 className="font-display font-bold text-2xl mb-4">Company Not Found</h1>
-          <p className="text-muted-foreground">The symbol "{symbol}" was not found in our database.</p>
-          <Link href="/" className="text-primary hover:underline mt-4 inline-block">← Back to Home</Link>
+        <main className="flex-1 container py-20 text-center">
+          <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h2 className="text-xl font-semibold mb-2">No symbol provided</h2>
+          <p className="text-muted-foreground">Please search for a stock symbol to view its details.</p>
         </main>
         <Footer />
       </div>
     );
   }
 
-  const tabs = [
-    { id: "chart", label: "Chart" },
-    { id: "analysis", label: "Analysis" },
-    { id: "peers", label: "Peers" },
-    { id: "quarters", label: "Quarters" },
-    { id: "pnl", label: "Profit & Loss" },
-    { id: "balance", label: "Balance Sheet" },
-    { id: "cashflow", label: "Cash Flow" },
-    { id: "ratios", label: "Ratios" },
-    { id: "investors", label: "Investors" },
-    { id: "documents", label: "Documents" },
-  ];
-
-  const periods = ["1M", "6M", "1Y", "3Y", "5Y", "Max"];
-  const COLORS = ["#16a34a", "#2563eb", "#d97706", "#7c3aed"];
-
-  // Generate mock documents
-  const documents = [
-    { type: "10-K", title: "Annual Report 2024", date: "Feb 2025", url: "#" },
-    { type: "10-Q", title: "Quarterly Report Q1 2025", date: "May 2025", url: "#" },
-    { type: "10-Q", title: "Quarterly Report Q4 2024", date: "Jan 2025", url: "#" },
-    { type: "10-Q", title: "Quarterly Report Q3 2024", date: "Oct 2024", url: "#" },
-    { type: "8-K", title: "Current Report - Earnings", date: "Apr 2025", url: "#" },
-    { type: "DEF 14A", title: "Proxy Statement 2025", date: "Mar 2025", url: "#" },
-    { type: "10-K", title: "Annual Report 2023", date: "Feb 2024", url: "#" },
-    { type: "10-Q", title: "Quarterly Report Q2 2024", date: "Jul 2024", url: "#" },
-  ];
-
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
 
-      {/* Sub-navigation */}
-      <div className="border-b border-border bg-background sticky top-14 z-40">
-        <div className="container">
-          <div className="flex items-center gap-1 overflow-x-auto py-2 scrollbar-hide">
-            <span className="text-sm font-medium text-foreground px-2 py-1 shrink-0">
-              {stock.name}
-            </span>
-            <span className="text-border mx-1">|</span>
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`text-sm px-2.5 py-1 rounded shrink-0 transition-colors ${
-                  activeTab === tab.id
-                    ? "text-primary font-medium bg-primary/5"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
       <main className="flex-1 container py-6">
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+          <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+          <span>/</span>
+          {profile?.sector && (
+            <>
+              <span className="hover:text-foreground transition-colors">{profile.sector}</span>
+              <span>/</span>
+            </>
+          )}
+          <span className="text-foreground font-medium">{upperSymbol}</span>
+        </nav>
+
         {/* Company Header */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
           <div>
-            <h1 className="font-display font-bold text-2xl">{stock.name}</h1>
-            <div className="flex items-center gap-3 mt-2">
-              <span className="text-2xl font-mono font-semibold">${stock.price.toFixed(2)}</span>
-              <span className={`flex items-center gap-0.5 text-sm font-medium ${stock.change >= 0 ? "gain" : "loss"}`}>
-                {stock.change >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                {stock.change >= 0 ? "+" : ""}{stock.change.toFixed(2)} ({stock.changePercent.toFixed(2)}%)
-              </span>
-              <span className="text-xs text-muted-foreground">04 Jun - close price</span>
-            </div>
-            <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-              <a href="#" className="flex items-center gap-1 hover:text-primary transition-colors">
-                <ExternalLink className="w-3 h-3" /> Website
-              </a>
-              <span>{stock.exchange}: {stock.symbol}</span>
-              <Link href={`/sector/${encodeURIComponent(stock.sector)}`} className="hover:text-primary transition-colors">
-                {stock.sector}
-              </Link>
-            </div>
+            {profileLoading ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                <span className="text-muted-foreground text-sm">Loading company info...</span>
+              </div>
+            ) : (
+              <div>
+                <h1 className="text-2xl font-bold">{profile?.longBusinessSummary ? (meta?.longName || meta?.shortName || upperSymbol) : (meta?.longName || meta?.shortName || upperSymbol)}</h1>
+                <div className="flex items-center gap-3 mt-1.5 text-sm text-muted-foreground flex-wrap">
+                  {meta?.exchangeName && <span>{meta.exchangeName}: {upperSymbol}</span>}
+                  {profile?.sector && (
+                    <span className="flex items-center gap-1">
+                      <Building2 className="w-3.5 h-3.5" />
+                      {profile.sector}
+                    </span>
+                  )}
+                  {profile?.industry && <span>• {profile.industry}</span>}
+                  {profile?.website && (
+                    <a href={profile.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary hover:underline">
+                      <ExternalLink className="w-3 h-3" />
+                      Website
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
-          <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1.5 border border-border px-3 py-2 rounded-lg text-sm hover:bg-accent transition-colors">
-              <Download className="w-4 h-4" /> EXPORT TO EXCEL
-            </button>
-            <button className="flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
-              <Plus className="w-4 h-4" /> FOLLOW
-            </button>
+
+          <div className="flex items-center gap-4">
+            {/* Price */}
+            {chartLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+            ) : chartError ? (
+              <div className="text-sm text-destructive flex items-center gap-1">
+                <AlertCircle className="w-4 h-4" />
+                Price unavailable
+              </div>
+            ) : currentPrice != null ? (
+              <div className="text-right">
+                <div className="text-3xl font-bold font-mono">${currentPrice.toFixed(2)}</div>
+                {priceChange != null && priceChangePercent != null && (
+                  <div className={`flex items-center justify-end gap-1 text-sm font-mono ${isPositive ? "text-[oklch(0.55_0.17_155)]" : "text-[oklch(0.55_0.22_25)]"}`}>
+                    {isPositive ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+                    {isPositive ? "+" : ""}{priceChange.toFixed(2)} ({isPositive ? "+" : ""}{priceChangePercent.toFixed(2)}%)
+                  </div>
+                )}
+              </div>
+            ) : null}
+
+            {/* Watchlist Button */}
+            {isAuthenticated && (
+              <Button
+                variant={isInWatchlist ? "secondary" : "outline"}
+                size="sm"
+                onClick={() => {
+                  if (isInWatchlist) removeFromWatchlist.mutate({ symbol: upperSymbol });
+                  else addToWatchlist.mutate({ symbol: upperSymbol });
+                }}
+                disabled={addToWatchlist.isPending || removeFromWatchlist.isPending}
+              >
+                {isInWatchlist ? <Check className="w-4 h-4 mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
+                {isInWatchlist ? "Watching" : "Watch"}
+              </Button>
+            )}
           </div>
         </div>
 
-        {/* Key Metrics + About */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 mb-8">
-          <div className="border border-border rounded-xl p-5">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-0">
-              <MetricCard label="Market Cap" value={formatMarketCap(stock.marketCap)} />
-              <MetricCard label="Current Price" value={`$${stock.price.toFixed(2)}`} />
-              <MetricCard label="High / Low" value={`$${stock.high52w} / $${stock.low52w}`} />
-              <MetricCard label="Stock P/E" value={stock.pe.toFixed(1)} />
-              <MetricCard label="Book Value" value={`$${stock.bookValue.toFixed(2)}`} />
-              <MetricCard label="Dividend Yield" value={`${stock.dividendYield.toFixed(2)}%`} />
-              <MetricCard label="ROCE" value={`${stock.roce.toFixed(1)}%`} />
-              <MetricCard label="ROE" value={`${stock.roe.toFixed(1)}%`} />
-              <MetricCard label="EPS (TTM)" value={`$${stock.eps.toFixed(2)}`} />
-              <MetricCard label="Debt/Equity" value={stock.debtToEquity.toFixed(2)} />
-              <MetricCard label="Current Ratio" value={stock.currentRatio.toFixed(2)} />
-              <MetricCard label="Beta" value={stock.beta.toFixed(2)} />
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div className="border border-border rounded-xl p-5">
-              <h3 className="font-display font-semibold text-sm mb-2 uppercase tracking-wide">About</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{stock.about}</p>
-            </div>
-            <div className="border border-border rounded-xl p-5">
-              <h3 className="font-display font-semibold text-sm mb-2 uppercase tracking-wide">Key Points</h3>
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Sector</span>
-                  <Link href={`/sector/${encodeURIComponent(stock.sector)}`} className="text-primary hover:underline">{stock.sector}</Link>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Industry</span>
-                  <span>{stock.industry}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Exchange</span>
-                  <span>{stock.exchange}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Revenue Growth</span>
-                  <span className={stock.revenueGrowth >= 0 ? "gain" : "loss"}>{stock.revenueGrowth}%</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Profit Growth</span>
-                  <span className={stock.profitGrowth >= 0 ? "gain" : "loss"}>{stock.profitGrowth}%</span>
-                </div>
+        {/* Key Metrics from Chart Meta */}
+        {meta && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+            {[
+              { label: "Day High", value: meta.regularMarketDayHigh ? `$${meta.regularMarketDayHigh.toFixed(2)}` : "N/A" },
+              { label: "Day Low", value: meta.regularMarketDayLow ? `$${meta.regularMarketDayLow.toFixed(2)}` : "N/A" },
+              { label: "52W High", value: meta.fiftyTwoWeekHigh ? `$${meta.fiftyTwoWeekHigh.toFixed(2)}` : "N/A" },
+              { label: "52W Low", value: meta.fiftyTwoWeekLow ? `$${meta.fiftyTwoWeekLow.toFixed(2)}` : "N/A" },
+              { label: "Volume", value: meta.regularMarketVolume ? formatVol(meta.regularMarketVolume) : "N/A" },
+              { label: "Prev Close", value: prevClose ? `$${prevClose.toFixed(2)}` : "N/A" },
+            ].map((item) => (
+              <div key={item.label} className="border border-border rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">{item.label}</p>
+                <p className="text-sm font-mono font-medium mt-0.5">{item.value}</p>
               </div>
-            </div>
+            ))}
           </div>
-        </div>
+        )}
 
         {/* Price Chart */}
-        {(activeTab === "chart" || activeTab === "analysis") && (
-          <section className="mb-8 border border-border rounded-xl p-5" id="chart">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-              <h2 className="font-display font-semibold">Price Chart</h2>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1">
-                  {periods.map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => setChartPeriod(p)}
-                      className={`px-2.5 py-1 text-xs rounded transition-colors ${
-                        chartPeriod === p ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent"
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex items-center gap-1 border-l border-border pl-3">
-                  <button
-                    onClick={() => setChartType("price")}
-                    className={`px-2.5 py-1 text-xs rounded transition-colors ${chartType === "price" ? "bg-accent font-medium" : "text-muted-foreground"}`}
-                  >
-                    Price
-                  </button>
-                  <button
-                    onClick={() => setChartType("pe")}
-                    className={`px-2.5 py-1 text-xs rounded transition-colors ${chartType === "pe" ? "bg-accent font-medium" : "text-muted-foreground"}`}
-                  >
-                    PE Ratio
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={priceHistory} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-                  <defs>
-                    <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="oklch(0.72 0.19 155)" stopOpacity={0.15} />
-                      <stop offset="95%" stopColor="oklch(0.72 0.19 155)" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.003 260)" vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    tick={{ fontSize: 10, fill: "oklch(0.5 0.02 260)" }}
-                    tickFormatter={(d) => new Date(d).toLocaleDateString("en-US", { month: "short", year: "2-digit" })}
-                    interval="preserveStartEnd"
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 10, fill: "oklch(0.5 0.02 260)" }}
-                    domain={["auto", "auto"]}
-                    tickFormatter={(v) => `$${v}`}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <Tooltip
-                    contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid oklch(0.92 0.003 260)", boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
-                    formatter={(value: number) => [`$${value.toFixed(2)}`, "Price"]}
-                    labelFormatter={(label) => new Date(label).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
-                  />
-                  <Area type="monotone" dataKey="price" stroke="oklch(0.45 0.12 155)" fill="url(#priceGradient)" strokeWidth={1.5} dot={false} />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-            {/* Volume Chart */}
-            <div className="h-[60px] mt-1">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={priceHistory.filter((_, i) => i % 4 === 0)} margin={{ top: 0, right: 5, bottom: 0, left: 5 }}>
-                  <Bar dataKey="volume" fill="oklch(0.72 0.19 155 / 0.25)" radius={[1, 1, 0, 0]} />
-                  <XAxis dataKey="date" hide />
-                  <YAxis hide />
-                  <Tooltip
-                    contentStyle={{ fontSize: 11, borderRadius: 6 }}
-                    formatter={(value: number) => [formatLargeNumber(value), "Volume"]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-              <label className="flex items-center gap-1.5">
-                <input type="checkbox" defaultChecked className="rounded border-border" /> Price
-              </label>
-              <label className="flex items-center gap-1.5">
-                <input type="checkbox" className="rounded border-border" /> 50 DMA
-              </label>
-              <label className="flex items-center gap-1.5">
-                <input type="checkbox" className="rounded border-border" /> 200 DMA
-              </label>
-              <label className="flex items-center gap-1.5">
-                <input type="checkbox" defaultChecked className="rounded border-border" /> Volume
-              </label>
-            </div>
-          </section>
-        )}
-
-        {/* Pros & Cons */}
-        {(activeTab === "analysis" || activeTab === "chart") && (
-          <section className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="border border-border rounded-xl p-5">
-              <h3 className="font-display font-semibold text-sm mb-3 uppercase tracking-wide">Pros</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {stock.roe > 20 && <li className="flex gap-2"><span className="gain font-medium">✓</span> Strong ROE of {stock.roe.toFixed(1)}% indicates efficient use of shareholder equity.</li>}
-                {stock.revenueGrowth > 10 && <li className="flex gap-2"><span className="gain font-medium">✓</span> Revenue growth of {stock.revenueGrowth}% exceeds industry average.</li>}
-                {stock.currentRatio > 1.5 && <li className="flex gap-2"><span className="gain font-medium">✓</span> Healthy current ratio of {stock.currentRatio.toFixed(2)} indicates good liquidity.</li>}
-                {stock.dividendYield > 1 && <li className="flex gap-2"><span className="gain font-medium">✓</span> Consistent dividend payer with {stock.dividendYield.toFixed(2)}% yield.</li>}
-                {stock.roce > 25 && <li className="flex gap-2"><span className="gain font-medium">✓</span> Excellent ROCE of {stock.roce.toFixed(1)}% shows efficient capital allocation.</li>}
-                {stock.profitGrowth > 15 && <li className="flex gap-2"><span className="gain font-medium">✓</span> Profit growth of {stock.profitGrowth}% demonstrates strong earnings momentum.</li>}
-              </ul>
-            </div>
-            <div className="border border-border rounded-xl p-5">
-              <h3 className="font-display font-semibold text-sm mb-3 uppercase tracking-wide">Cons</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {stock.pe > 40 && <li className="flex gap-2"><span className="loss font-medium">✗</span> High P/E ratio of {stock.pe.toFixed(1)} suggests stock may be overvalued.</li>}
-                {stock.debtToEquity > 1.5 && <li className="flex gap-2"><span className="loss font-medium">✗</span> High debt-to-equity ratio of {stock.debtToEquity.toFixed(2)} indicates leverage risk.</li>}
-                {stock.dividendYield === 0 && <li className="flex gap-2"><span className="loss font-medium">✗</span> Company does not pay dividends to shareholders.</li>}
-                {stock.profitGrowth < 0 && <li className="flex gap-2"><span className="loss font-medium">✗</span> Declining profits with {stock.profitGrowth}% growth rate.</li>}
-                {stock.beta > 1.5 && <li className="flex gap-2"><span className="loss font-medium">✗</span> High beta of {stock.beta.toFixed(2)} indicates above-average volatility.</li>}
-                {stock.currentRatio < 1 && <li className="flex gap-2"><span className="loss font-medium">✗</span> Current ratio below 1 ({stock.currentRatio.toFixed(2)}) may indicate liquidity concerns.</li>}
-              </ul>
-            </div>
-            <p className="text-xs text-muted-foreground col-span-full italic">* The pros and cons are machine generated based on financial metrics.</p>
-          </section>
-        )}
-
-        {/* Peer Comparison */}
-        {(activeTab === "peers" || activeTab === "analysis") && (
-          <section className="mb-8 border border-border rounded-xl p-5" id="peers">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="font-display font-semibold">Peer Comparison</h2>
-                <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
-                  <Link href={`/sector/${encodeURIComponent(stock.sector)}`} className="hover:text-primary">{stock.sector}</Link>
-                  <ChevronRight className="w-3 h-3" />
-                  <span>{stock.industry}</span>
-                </div>
-              </div>
-              <button className="text-xs text-primary hover:underline">Edit Columns</button>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>S.No.</th>
-                    <th>Name</th>
-                    <th className="numeric">CMP $</th>
-                    <th className="numeric">P/E</th>
-                    <th className="numeric">Mar Cap</th>
-                    <th className="numeric">Div Yld %</th>
-                    <th className="numeric">ROCE %</th>
-                    <th className="numeric">ROE %</th>
-                    <th className="numeric">D/E</th>
-                    <th className="numeric">Rev Growth %</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="bg-primary/[0.03]">
-                    <td>1.</td>
-                    <td><span className="font-medium">{stock.name}</span></td>
-                    <td className="numeric">{stock.price.toFixed(2)}</td>
-                    <td className="numeric">{stock.pe.toFixed(1)}</td>
-                    <td className="numeric">{formatMarketCap(stock.marketCap)}</td>
-                    <td className="numeric">{stock.dividendYield.toFixed(2)}</td>
-                    <td className="numeric">{stock.roce.toFixed(1)}</td>
-                    <td className="numeric">{stock.roe.toFixed(1)}</td>
-                    <td className="numeric">{stock.debtToEquity.toFixed(2)}</td>
-                    <td className="numeric"><span className={stock.revenueGrowth >= 0 ? "gain" : "loss"}>{stock.revenueGrowth}%</span></td>
-                  </tr>
-                  {peers.map((peer, i) => (
-                    <tr key={peer.symbol}>
-                      <td>{i + 2}.</td>
-                      <td><Link href={`/company/${peer.symbol}`} className="hover:text-primary">{peer.name}</Link></td>
-                      <td className="numeric">{peer.price.toFixed(2)}</td>
-                      <td className="numeric">{peer.pe.toFixed(1)}</td>
-                      <td className="numeric">{formatMarketCap(peer.marketCap)}</td>
-                      <td className="numeric">{peer.dividendYield.toFixed(2)}</td>
-                      <td className="numeric">{peer.roce.toFixed(1)}</td>
-                      <td className="numeric">{peer.roe.toFixed(1)}</td>
-                      <td className="numeric">{peer.debtToEquity.toFixed(2)}</td>
-                      <td className="numeric"><span className={peer.revenueGrowth >= 0 ? "gain" : "loss"}>{peer.revenueGrowth}%</span></td>
-                    </tr>
-                  ))}
-                  {/* Median row */}
-                  <tr className="border-t-2 bg-muted/30">
-                    <td></td>
-                    <td className="font-medium text-muted-foreground">Median</td>
-                    <td className="numeric text-muted-foreground">
-                      {([stock, ...peers].reduce((a, s) => a + s.price, 0) / (peers.length + 1)).toFixed(2)}
-                    </td>
-                    <td className="numeric text-muted-foreground">
-                      {([stock, ...peers].reduce((a, s) => a + s.pe, 0) / (peers.length + 1)).toFixed(1)}
-                    </td>
-                    <td className="numeric text-muted-foreground">—</td>
-                    <td className="numeric text-muted-foreground">
-                      {([stock, ...peers].reduce((a, s) => a + s.dividendYield, 0) / (peers.length + 1)).toFixed(2)}
-                    </td>
-                    <td className="numeric text-muted-foreground">
-                      {([stock, ...peers].reduce((a, s) => a + s.roce, 0) / (peers.length + 1)).toFixed(1)}
-                    </td>
-                    <td className="numeric text-muted-foreground">
-                      {([stock, ...peers].reduce((a, s) => a + s.roe, 0) / (peers.length + 1)).toFixed(1)}
-                    </td>
-                    <td className="numeric text-muted-foreground">—</td>
-                    <td className="numeric text-muted-foreground">—</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            {/* Detailed comparison search */}
-            <div className="mt-4 flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Detailed Comparison with:</span>
-              <input
-                type="text"
-                placeholder="e.g. MSFT"
-                className="px-3 py-1.5 text-sm border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 w-40"
-              />
-            </div>
-          </section>
-        )}
-
-        {/* Quarterly Results */}
-        {(activeTab === "quarters" || activeTab === "analysis") && (
-          <section className="mb-8 border border-border rounded-xl p-5" id="quarters">
-            <h2 className="font-display font-semibold mb-1">Quarterly Results</h2>
-            <p className="text-xs text-muted-foreground mb-4">Figures in $ Millions</p>
-            <div className="overflow-x-auto">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th></th>
-                    {quarterly.map(q => <th key={q.quarter} className="numeric">{q.quarter}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td className="font-medium">Revenue</td>{quarterly.map(q => <td key={q.quarter} className="numeric">{formatLargeNumber(q.revenue)}</td>)}</tr>
-                  <tr><td className="font-medium">Expenses</td>{quarterly.map(q => <td key={q.quarter} className="numeric">{formatLargeNumber(q.expenses)}</td>)}</tr>
-                  <tr><td className="font-medium">Operating Profit</td>{quarterly.map(q => <td key={q.quarter} className="numeric">{formatLargeNumber(q.operatingProfit)}</td>)}</tr>
-                  <tr><td className="font-medium">OPM %</td>{quarterly.map(q => <td key={q.quarter} className="numeric">{q.opm}%</td>)}</tr>
-                  <tr><td className="font-medium">Other Income</td>{quarterly.map(q => <td key={q.quarter} className="numeric">{formatLargeNumber(q.otherIncome)}</td>)}</tr>
-                  <tr><td className="font-medium">Interest</td>{quarterly.map(q => <td key={q.quarter} className="numeric">{formatLargeNumber(q.interest)}</td>)}</tr>
-                  <tr><td className="font-medium">Depreciation</td>{quarterly.map(q => <td key={q.quarter} className="numeric">{formatLargeNumber(q.depreciation)}</td>)}</tr>
-                  <tr><td className="font-medium">Profit Before Tax</td>{quarterly.map(q => <td key={q.quarter} className="numeric">{formatLargeNumber(q.profitBeforeTax)}</td>)}</tr>
-                  <tr><td className="font-medium">Tax %</td>{quarterly.map(q => <td key={q.quarter} className="numeric">{q.taxPercent}%</td>)}</tr>
-                  <tr className="font-semibold bg-muted/20"><td className="font-medium">Net Profit</td>{quarterly.map(q => <td key={q.quarter} className="numeric">{formatLargeNumber(q.netProfit)}</td>)}</tr>
-                  <tr><td className="font-medium">EPS $</td>{quarterly.map(q => <td key={q.quarter} className="numeric">{q.eps.toFixed(2)}</td>)}</tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
-
-        {/* Profit & Loss */}
-        {(activeTab === "pnl" || activeTab === "analysis") && (
-          <section className="mb-8 border border-border rounded-xl p-5" id="pnl">
-            <h2 className="font-display font-semibold mb-1">Profit & Loss</h2>
-            <p className="text-xs text-muted-foreground mb-4">Annual Figures in $ Millions</p>
-            <div className="overflow-x-auto">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th></th>
-                    {financials.map(f => <th key={f.year} className="numeric">{f.year}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td className="font-medium">Revenue</td>{financials.map(f => <td key={f.year} className="numeric">{formatLargeNumber(f.revenue)}</td>)}</tr>
-                  <tr><td className="font-medium">Expenses</td>{financials.map(f => <td key={f.year} className="numeric">{formatLargeNumber(f.expenses)}</td>)}</tr>
-                  <tr><td className="font-medium">Operating Profit</td>{financials.map(f => <td key={f.year} className="numeric">{formatLargeNumber(f.operatingProfit)}</td>)}</tr>
-                  <tr><td className="font-medium">OPM %</td>{financials.map(f => <td key={f.year} className="numeric">{f.opm}%</td>)}</tr>
-                  <tr><td className="font-medium">Other Income</td>{financials.map(f => <td key={f.year} className="numeric">{formatLargeNumber(f.otherIncome)}</td>)}</tr>
-                  <tr><td className="font-medium">Interest</td>{financials.map(f => <td key={f.year} className="numeric">{formatLargeNumber(f.interest)}</td>)}</tr>
-                  <tr><td className="font-medium">Depreciation</td>{financials.map(f => <td key={f.year} className="numeric">{formatLargeNumber(f.depreciation)}</td>)}</tr>
-                  <tr><td className="font-medium">Profit Before Tax</td>{financials.map(f => <td key={f.year} className="numeric">{formatLargeNumber(f.profitBeforeTax)}</td>)}</tr>
-                  <tr><td className="font-medium">Tax %</td>{financials.map(f => <td key={f.year} className="numeric">{f.taxPercent}%</td>)}</tr>
-                  <tr className="font-semibold bg-muted/20"><td className="font-medium">Net Profit</td>{financials.map(f => <td key={f.year} className="numeric">{formatLargeNumber(f.netProfit)}</td>)}</tr>
-                  <tr><td className="font-medium">EPS $</td>{financials.map(f => <td key={f.year} className="numeric">{f.eps.toFixed(2)}</td>)}</tr>
-                </tbody>
-              </table>
-            </div>
-            {/* Revenue & Profit Chart */}
-            <div className="mt-6 h-[200px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={financials} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.003 260)" vertical={false} />
-                  <XAxis dataKey="year" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => formatLargeNumber(v)} axisLine={false} tickLine={false} />
-                  <Tooltip formatter={(value: number) => formatLargeNumber(value)} />
-                  <Bar dataKey="revenue" fill="oklch(0.55 0.15 250 / 0.7)" name="Revenue" radius={[3, 3, 0, 0]} />
-                  <Bar dataKey="netProfit" fill="oklch(0.72 0.19 155)" name="Net Profit" radius={[3, 3, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </section>
-        )}
-
-        {/* Balance Sheet */}
-        {(activeTab === "balance" || activeTab === "analysis") && (
-          <section className="mb-8 border border-border rounded-xl p-5" id="balance">
-            <h2 className="font-display font-semibold mb-1">Balance Sheet</h2>
-            <p className="text-xs text-muted-foreground mb-4">Annual Figures in $ Millions</p>
-            <div className="overflow-x-auto">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th></th>
-                    {balanceSheet.map(b => <th key={b.year} className="numeric">{b.year}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td className="font-medium">Equity Capital</td>{balanceSheet.map(b => <td key={b.year} className="numeric">{formatLargeNumber(b.equity)}</td>)}</tr>
-                  <tr><td className="font-medium">Reserves</td>{balanceSheet.map(b => <td key={b.year} className="numeric">{formatLargeNumber(b.reserves)}</td>)}</tr>
-                  <tr><td className="font-medium">Borrowings</td>{balanceSheet.map(b => <td key={b.year} className="numeric">{formatLargeNumber(b.borrowings)}</td>)}</tr>
-                  <tr><td className="font-medium">Other Liabilities</td>{balanceSheet.map(b => <td key={b.year} className="numeric">{formatLargeNumber(b.otherLiabilities)}</td>)}</tr>
-                  <tr className="font-semibold border-t-2 bg-muted/20"><td className="font-medium">Total Liabilities</td>{balanceSheet.map(b => <td key={b.year} className="numeric">{formatLargeNumber(b.totalLiabilities)}</td>)}</tr>
-                  <tr><td className="font-medium">Fixed Assets</td>{balanceSheet.map(b => <td key={b.year} className="numeric">{formatLargeNumber(b.fixedAssets)}</td>)}</tr>
-                  <tr><td className="font-medium">Investments</td>{balanceSheet.map(b => <td key={b.year} className="numeric">{formatLargeNumber(b.investments)}</td>)}</tr>
-                  <tr><td className="font-medium">Other Assets</td>{balanceSheet.map(b => <td key={b.year} className="numeric">{formatLargeNumber(b.otherAssets)}</td>)}</tr>
-                  <tr className="font-semibold border-t-2 bg-muted/20"><td className="font-medium">Total Assets</td>{balanceSheet.map(b => <td key={b.year} className="numeric">{formatLargeNumber(b.totalAssets)}</td>)}</tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
-
-        {/* Cash Flow */}
-        {(activeTab === "cashflow" || activeTab === "analysis") && (
-          <section className="mb-8 border border-border rounded-xl p-5" id="cashflow">
-            <h2 className="font-display font-semibold mb-1">Cash Flows</h2>
-            <p className="text-xs text-muted-foreground mb-4">Annual Figures in $ Millions</p>
-            <div className="overflow-x-auto">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th></th>
-                    {cashFlow.map(c => <th key={c.year} className="numeric">{c.year}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td className="font-medium">Cash from Operating Activity</td>{cashFlow.map(c => <td key={c.year} className="numeric">{formatLargeNumber(c.operatingCashFlow)}</td>)}</tr>
-                  <tr><td className="font-medium">Cash from Investing Activity</td>{cashFlow.map(c => <td key={c.year} className={`numeric ${c.investingCashFlow < 0 ? "loss" : ""}`}>{formatLargeNumber(c.investingCashFlow)}</td>)}</tr>
-                  <tr><td className="font-medium">Cash from Financing Activity</td>{cashFlow.map(c => <td key={c.year} className={`numeric ${c.financingCashFlow < 0 ? "loss" : ""}`}>{formatLargeNumber(c.financingCashFlow)}</td>)}</tr>
-                  <tr className="font-semibold border-t-2 bg-muted/20"><td className="font-medium">Net Cash Flow</td>{cashFlow.map(c => <td key={c.year} className={`numeric ${c.netCashFlow < 0 ? "loss" : "gain"}`}>{formatLargeNumber(c.netCashFlow)}</td>)}</tr>
-                  <tr><td className="font-medium">Free Cash Flow</td>{cashFlow.map(c => <td key={c.year} className={`numeric ${c.freeCashFlow < 0 ? "loss" : "gain"}`}>{formatLargeNumber(c.freeCashFlow)}</td>)}</tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="mt-6 h-[200px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={cashFlow} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.003 260)" vertical={false} />
-                  <XAxis dataKey="year" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => formatLargeNumber(v)} axisLine={false} tickLine={false} />
-                  <Tooltip formatter={(value: number) => formatLargeNumber(value)} />
-                  <Bar dataKey="operatingCashFlow" fill="oklch(0.72 0.19 155)" name="Operating" radius={[3, 3, 0, 0]} />
-                  <Bar dataKey="freeCashFlow" fill="oklch(0.55 0.15 250 / 0.7)" name="Free Cash Flow" radius={[3, 3, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </section>
-        )}
-
-        {/* Ratios */}
-        {(activeTab === "ratios" || activeTab === "analysis") && (
-          <section className="mb-8 border border-border rounded-xl p-5" id="ratios">
-            <h2 className="font-display font-semibold mb-4">Ratios</h2>
-            <div className="overflow-x-auto">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th></th>
-                    {ratios.map(r => <th key={r.year} className="numeric">{r.year}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td className="font-medium">Debtor Days</td>{ratios.map(r => <td key={r.year} className="numeric">{r.debtorDays}</td>)}</tr>
-                  <tr><td className="font-medium">Inventory Days</td>{ratios.map(r => <td key={r.year} className="numeric">{r.inventoryDays}</td>)}</tr>
-                  <tr><td className="font-medium">Days Payable</td>{ratios.map(r => <td key={r.year} className="numeric">{r.daysPayable}</td>)}</tr>
-                  <tr><td className="font-medium">Cash Conversion Cycle</td>{ratios.map(r => <td key={r.year} className="numeric">{r.cashConversionCycle}</td>)}</tr>
-                  <tr><td className="font-medium">Working Capital Days</td>{ratios.map(r => <td key={r.year} className="numeric">{r.workingCapitalDays}</td>)}</tr>
-                  <tr><td className="font-medium">ROCE %</td>{ratios.map(r => <td key={r.year} className="numeric">{r.roce}%</td>)}</tr>
-                  <tr><td className="font-medium">ROE %</td>{ratios.map(r => <td key={r.year} className="numeric">{r.roe}%</td>)}</tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="mt-6 h-[200px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={ratios} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.003 260)" vertical={false} />
-                  <XAxis dataKey="year" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${v}%`} axisLine={false} tickLine={false} />
-                  <Tooltip formatter={(value: number) => `${value}%`} />
-                  <Line type="monotone" dataKey="roce" stroke="oklch(0.72 0.19 155)" strokeWidth={2} name="ROCE" dot={{ r: 3 }} />
-                  <Line type="monotone" dataKey="roe" stroke="oklch(0.55 0.15 250)" strokeWidth={2} name="ROE" dot={{ r: 3 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </section>
-        )}
-
-        {/* Shareholding Pattern */}
-        {(activeTab === "investors" || activeTab === "analysis") && (
-          <section className="mb-8 border border-border rounded-xl p-5" id="investors">
-            <h2 className="font-display font-semibold mb-4">Shareholding Pattern</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
-              <div className="overflow-x-auto">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th></th>
-                      {shareholding.map(s => <th key={s.quarter} className="numeric">{s.quarter}</th>)}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td className="font-medium">Promoters / Insiders</td>{shareholding.map(s => <td key={s.quarter} className="numeric">{s.promoters}%</td>)}</tr>
-                    <tr><td className="font-medium">FIIs / Foreign Institutions</td>{shareholding.map(s => <td key={s.quarter} className="numeric">{s.fii}%</td>)}</tr>
-                    <tr><td className="font-medium">DIIs / Domestic Institutions</td>{shareholding.map(s => <td key={s.quarter} className="numeric">{s.dii}%</td>)}</tr>
-                    <tr><td className="font-medium">Public / Retail</td>{shareholding.map(s => <td key={s.quarter} className="numeric">{s.public}%</td>)}</tr>
-                  </tbody>
-                </table>
-              </div>
-              <div className="flex flex-col items-center">
-                <p className="text-xs text-muted-foreground mb-2">Latest: {shareholding[shareholding.length - 1]?.quarter}</p>
-                <div className="h-[200px] w-[200px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={[
-                          { name: "Insiders", value: shareholding[shareholding.length - 1]?.promoters || 0 },
-                          { name: "FIIs", value: shareholding[shareholding.length - 1]?.fii || 0 },
-                          { name: "DIIs", value: shareholding[shareholding.length - 1]?.dii || 0 },
-                          { name: "Public", value: shareholding[shareholding.length - 1]?.public || 0 },
-                        ]}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={50}
-                        outerRadius={80}
-                        paddingAngle={2}
-                        dataKey="value"
-                      >
-                        {COLORS.map((color, index) => (
-                          <Cell key={`cell-${index}`} fill={color} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(value: number) => `${value}%`} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="flex flex-wrap gap-3 mt-2 justify-center">
-                  {["Insiders", "FIIs", "DIIs", "Public"].map((label, i) => (
-                    <div key={label} className="flex items-center gap-1.5">
-                      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[i] }} />
-                      <span className="text-xs text-muted-foreground">{label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Documents */}
-        {(activeTab === "documents" || activeTab === "analysis") && (
-          <section className="mb-8 border border-border rounded-xl p-5" id="documents">
-            <h2 className="font-display font-semibold mb-4">SEC Filings & Documents</h2>
-            <div className="space-y-2">
-              {documents.map((doc, i) => (
-                <a
-                  key={i}
-                  href={doc.url}
-                  className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50 transition-colors group"
+        <div className="border border-border rounded-xl p-5 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <h3 className="font-semibold">Price Chart</h3>
+            <div className="flex items-center gap-1 flex-wrap">
+              {rangeOptions.map((opt) => (
+                <button
+                  key={opt.range}
+                  onClick={() => { setChartRange(opt.range); setChartInterval(opt.interval); }}
+                  className={`px-2.5 py-1 text-xs font-medium rounded transition-colors ${
+                    chartRange === opt.range
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <FileText className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                    <div>
-                      <span className="text-sm font-medium group-hover:text-primary transition-colors">{doc.title}</span>
-                      <span className="text-xs text-muted-foreground ml-2 bg-muted px-1.5 py-0.5 rounded">{doc.type}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Calendar className="w-3 h-3" />
-                    {doc.date}
-                  </div>
-                </a>
+                  {opt.label}
+                </button>
               ))}
             </div>
-          </section>
-        )}
+          </div>
+
+          {chartLoading ? (
+            <div className="flex items-center justify-center h-72">
+              <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+              <span className="ml-2 text-sm text-muted-foreground">Loading chart data from Yahoo Finance...</span>
+            </div>
+          ) : chartError ? (
+            <div className="flex flex-col items-center justify-center h-72">
+              <AlertCircle className="w-10 h-10 text-destructive mb-3" />
+              <p className="text-sm font-medium text-destructive">Unable to load chart data for {upperSymbol}</p>
+              <p className="text-xs text-muted-foreground mt-1">The symbol may be invalid or Yahoo Finance data is temporarily unavailable.</p>
+            </div>
+          ) : priceChartData.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-72">
+              <AlertCircle className="w-8 h-8 text-muted-foreground mb-2" />
+              <p className="text-sm text-muted-foreground">No chart data available for this time range.</p>
+            </div>
+          ) : (
+            <>
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={priceChartData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+                    <defs>
+                      <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={isPositive ? "oklch(0.55 0.17 155)" : "oklch(0.55 0.22 25)"} stopOpacity={0.2} />
+                        <stop offset="95%" stopColor={isPositive ? "oklch(0.55 0.17 155)" : "oklch(0.55 0.22 25)"} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.003 260)" vertical={false} />
+                    <XAxis dataKey="date" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
+                    <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v}`} />
+                    <Tooltip
+                      contentStyle={{ borderRadius: "8px", border: "1px solid var(--border)", background: "var(--popover)", fontSize: 12 }}
+                      formatter={(value: number) => [`$${value.toFixed(2)}`, "Price"]}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="price"
+                      stroke={isPositive ? "oklch(0.45 0.15 155)" : "oklch(0.45 0.20 25)"}
+                      fill="url(#priceGradient)"
+                      strokeWidth={1.5}
+                      dot={false}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+              {/* Volume */}
+              <div className="h-16 mt-1">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={priceChartData.filter((_, i) => i % Math.max(1, Math.floor(priceChartData.length / 60)) === 0)} margin={{ top: 0, right: 5, bottom: 0, left: 5 }}>
+                    <Bar dataKey="volume" fill="oklch(0.55 0.17 155 / 0.25)" radius={[1, 1, 0, 0]} />
+                    <XAxis dataKey="date" hide />
+                    <YAxis hide />
+                    <Tooltip contentStyle={{ fontSize: 11, borderRadius: 6 }} formatter={(value: number) => [formatVol(value), "Volume"]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Tabs: About, Technical Insights, Holders, SEC Filings */}
+        <Tabs defaultValue="about" className="mb-6">
+          <TabsList className="flex-wrap">
+            <TabsTrigger value="about">About</TabsTrigger>
+            <TabsTrigger value="technicals">Technical Insights</TabsTrigger>
+            <TabsTrigger value="holders">Insider Holdings</TabsTrigger>
+            <TabsTrigger value="filings">SEC Filings</TabsTrigger>
+          </TabsList>
+
+          {/* About Tab */}
+          <TabsContent value="about" className="mt-4">
+            {profileLoading ? (
+              <div className="flex items-center gap-2 py-8 justify-center">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span className="text-muted-foreground">Loading company profile from Yahoo Finance...</span>
+              </div>
+            ) : profileError ? (
+              <div className="flex flex-col items-center gap-2 py-8 text-destructive">
+                <AlertCircle className="w-6 h-6" />
+                <p className="text-sm font-medium">Unable to load company profile</p>
+                <p className="text-xs text-muted-foreground">Yahoo Finance may not have profile data for {upperSymbol}.</p>
+              </div>
+            ) : profile ? (
+              <div className="space-y-4">
+                {profile.longBusinessSummary && (
+                  <div className="border border-border rounded-lg p-5">
+                    <h4 className="font-semibold text-sm mb-2">Company Description</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{profile.longBusinessSummary}</p>
+                  </div>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="border border-border rounded-lg p-5">
+                    <h4 className="font-semibold text-sm mb-3">Company Details</h4>
+                    <dl className="space-y-2.5">
+                      {profile.sector && <div className="flex justify-between"><dt className="text-sm text-muted-foreground">Sector</dt><dd className="text-sm font-medium">{profile.sector}</dd></div>}
+                      {profile.industry && <div className="flex justify-between"><dt className="text-sm text-muted-foreground">Industry</dt><dd className="text-sm font-medium">{profile.industry}</dd></div>}
+                      {profile.country && <div className="flex justify-between"><dt className="text-sm text-muted-foreground">Country</dt><dd className="text-sm font-medium">{profile.country}</dd></div>}
+                      {profile.state && <div className="flex justify-between"><dt className="text-sm text-muted-foreground">State</dt><dd className="text-sm font-medium">{profile.state}</dd></div>}
+                      {profile.city && <div className="flex justify-between"><dt className="text-sm text-muted-foreground">City</dt><dd className="text-sm font-medium">{profile.city}</dd></div>}
+                      {profile.fullTimeEmployees > 0 && <div className="flex justify-between"><dt className="text-sm text-muted-foreground">Employees</dt><dd className="text-sm font-medium">{profile.fullTimeEmployees.toLocaleString()}</dd></div>}
+                      {profile.phone && <div className="flex justify-between"><dt className="text-sm text-muted-foreground">Phone</dt><dd className="text-sm font-medium">{profile.phone}</dd></div>}
+                      {profile.website && (
+                        <div className="flex justify-between">
+                          <dt className="text-sm text-muted-foreground">Website</dt>
+                          <dd><a href={profile.website} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline flex items-center gap-1">{new URL(profile.website).hostname} <ExternalLink className="w-3 h-3" /></a></dd>
+                        </div>
+                      )}
+                    </dl>
+                  </div>
+                  {profile.companyOfficers && profile.companyOfficers.length > 0 && (
+                    <div className="border border-border rounded-lg p-5">
+                      <h4 className="font-semibold text-sm mb-3">Key Officers</h4>
+                      <div className="space-y-2.5">
+                        {profile.companyOfficers.slice(0, 6).map((officer, i) => (
+                          <div key={i} className="flex justify-between items-start gap-2">
+                            <span className="text-sm font-medium">{officer.name}</span>
+                            <span className="text-xs text-muted-foreground text-right max-w-[50%]">{officer.title}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="py-8 text-center text-muted-foreground">
+                <p>No profile data available for {upperSymbol}.</p>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Technical Insights Tab */}
+          <TabsContent value="technicals" className="mt-4">
+            {insightsLoading ? (
+              <div className="flex items-center gap-2 py-8 justify-center">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span className="text-muted-foreground">Loading technical insights...</span>
+              </div>
+            ) : insightsError ? (
+              <div className="flex flex-col items-center gap-2 py-8 text-destructive">
+                <AlertCircle className="w-6 h-6" />
+                <p className="text-sm font-medium">Unable to load insights data</p>
+                <p className="text-xs text-muted-foreground">Yahoo Finance insights may not be available for {upperSymbol}.</p>
+              </div>
+            ) : insights ? (
+              <div className="space-y-4">
+                {/* Recommendation */}
+                {insights.recommendation && (
+                  <div className="border border-border rounded-lg p-5">
+                    <h4 className="font-semibold text-sm mb-3">Analyst Recommendation</h4>
+                    <div className="flex items-center gap-6">
+                      <div className={`px-4 py-2 rounded-lg text-sm font-semibold ${
+                        insights.recommendation.rating?.toLowerCase().includes("buy")
+                          ? "bg-[oklch(0.55_0.17_155/0.1)] text-[oklch(0.45_0.17_155)]"
+                          : insights.recommendation.rating?.toLowerCase().includes("sell")
+                          ? "bg-[oklch(0.55_0.22_25/0.1)] text-[oklch(0.45_0.22_25)]"
+                          : "bg-muted text-muted-foreground"
+                      }`}>
+                        {insights.recommendation.rating || "N/A"}
+                      </div>
+                      {insights.recommendation.targetPrice != null && (
+                        <div>
+                          <p className="text-xs text-muted-foreground">Target Price</p>
+                          <p className="text-lg font-mono font-semibold">${insights.recommendation.targetPrice.toFixed(2)}</p>
+                        </div>
+                      )}
+                      {insights.recommendation.provider && (
+                        <div>
+                          <p className="text-xs text-muted-foreground">Provider</p>
+                          <p className="text-sm">{insights.recommendation.provider}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Technical Outlook */}
+                {insights.technicalEvents && (
+                  <div className="border border-border rounded-lg p-5">
+                    <h4 className="font-semibold text-sm mb-3">Technical Outlook</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {[
+                        { label: "Short Term", data: insights.technicalEvents.shortTermOutlook },
+                        { label: "Intermediate Term", data: insights.technicalEvents.intermediateTermOutlook },
+                        { label: "Long Term", data: insights.technicalEvents.longTermOutlook },
+                      ].map((term) => (
+                        <div key={term.label} className="border border-border rounded-lg p-4 text-center">
+                          <p className="text-xs text-muted-foreground mb-2">{term.label}</p>
+                          <div className="flex items-center justify-center gap-1.5 mb-1">
+                            {term.data.direction === "up" ? (
+                              <TrendingUp className="w-5 h-5 text-[oklch(0.55_0.17_155)]" />
+                            ) : term.data.direction === "down" ? (
+                              <TrendingDown className="w-5 h-5 text-[oklch(0.55_0.22_25)]" />
+                            ) : (
+                              <Minus className="w-5 h-5 text-muted-foreground" />
+                            )}
+                            <span className={`text-sm font-semibold capitalize ${
+                              term.data.direction === "up" ? "text-[oklch(0.55_0.17_155)]" :
+                              term.data.direction === "down" ? "text-[oklch(0.55_0.22_25)]" : ""
+                            }`}>
+                              {term.data.direction || "Neutral"}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{term.data.scoreDescription || `Score: ${term.data.score}`}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Key Technicals */}
+                {insights.keyTechnicals && (
+                  <div className="border border-border rounded-lg p-5">
+                    <h4 className="font-semibold text-sm mb-3">Key Technical Levels</h4>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground">Support</p>
+                        <p className="text-lg font-mono font-medium text-[oklch(0.55_0.17_155)]">
+                          {insights.keyTechnicals.support != null ? `$${insights.keyTechnicals.support.toFixed(2)}` : "N/A"}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground">Resistance</p>
+                        <p className="text-lg font-mono font-medium text-[oklch(0.55_0.22_25)]">
+                          {insights.keyTechnicals.resistance != null ? `$${insights.keyTechnicals.resistance.toFixed(2)}` : "N/A"}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground">Stop Loss</p>
+                        <p className="text-lg font-mono font-medium">
+                          {insights.keyTechnicals.stopLoss != null ? `$${insights.keyTechnicals.stopLoss.toFixed(2)}` : "N/A"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Valuation */}
+                {insights.valuation && (
+                  <div className="border border-border rounded-lg p-5">
+                    <h4 className="font-semibold text-sm mb-3">Valuation</h4>
+                    <div className="space-y-2">
+                      {insights.valuation.description && <p className="text-sm text-muted-foreground">{insights.valuation.description}</p>}
+                      <div className="flex gap-4 flex-wrap">
+                        {insights.valuation.discount && (
+                          <div className="text-sm"><span className="text-muted-foreground">Discount: </span><span className="font-medium">{insights.valuation.discount}</span></div>
+                        )}
+                        {insights.valuation.relativeValue && (
+                          <div className="text-sm"><span className="text-muted-foreground">Relative Value: </span><span className="font-medium">{insights.valuation.relativeValue}</span></div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Significant Developments */}
+                {insights.sigDevs && insights.sigDevs.length > 0 && (
+                  <div className="border border-border rounded-lg p-5">
+                    <h4 className="font-semibold text-sm mb-3">Significant Developments</h4>
+                    <div className="space-y-2">
+                      {insights.sigDevs.slice(0, 8).map((dev, i) => (
+                        <div key={i} className="flex items-start justify-between gap-4 py-2 border-b border-border last:border-0">
+                          <p className="text-sm">{dev.headline}</p>
+                          <span className="text-xs text-muted-foreground shrink-0">{dev.date}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="py-8 text-center text-muted-foreground">
+                <p>No technical insights available for {upperSymbol}.</p>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Holders Tab */}
+          <TabsContent value="holders" className="mt-4">
+            {holdersLoading ? (
+              <div className="flex items-center gap-2 py-8 justify-center">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span className="text-muted-foreground">Loading insider holdings from Yahoo Finance...</span>
+              </div>
+            ) : holdersError ? (
+              <div className="flex flex-col items-center gap-2 py-8 text-destructive">
+                <AlertCircle className="w-6 h-6" />
+                <p className="text-sm font-medium">Unable to load holders data</p>
+                <p className="text-xs text-muted-foreground">Insider holdings data may not be available for {upperSymbol}.</p>
+              </div>
+            ) : holders && holders.length > 0 ? (
+              <div className="border border-border rounded-lg p-5">
+                <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  Insider Holdings
+                </h4>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border">
+                        <th className="text-left py-2 text-xs text-muted-foreground font-medium">Name</th>
+                        <th className="text-left py-2 text-xs text-muted-foreground font-medium">Relation</th>
+                        <th className="text-left py-2 text-xs text-muted-foreground font-medium">Transaction</th>
+                        <th className="text-right py-2 text-xs text-muted-foreground font-medium">Shares Held</th>
+                        <th className="text-right py-2 text-xs text-muted-foreground font-medium">Last Transaction</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {holders.map((h, i) => (
+                        <tr key={i} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors">
+                          <td className="py-2.5 font-medium">{h.name}</td>
+                          <td className="py-2.5 text-muted-foreground">{h.relation}</td>
+                          <td className="py-2.5 text-muted-foreground">{h.transactionDescription}</td>
+                          <td className="py-2.5 text-right font-mono">{h.positionDirect != null ? h.positionDirect.toLocaleString() : "N/A"}</td>
+                          <td className="py-2.5 text-right text-muted-foreground">{h.latestTransDate || "N/A"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : (
+              <div className="py-8 text-center text-muted-foreground">
+                <p>No insider holdings data available for {upperSymbol}.</p>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* SEC Filings Tab */}
+          <TabsContent value="filings" className="mt-4">
+            {insightsLoading ? (
+              <div className="flex items-center gap-2 py-8 justify-center">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span className="text-muted-foreground">Loading SEC filings...</span>
+              </div>
+            ) : insights?.secReports && insights.secReports.length > 0 ? (
+              <div className="border border-border rounded-lg p-5">
+                <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  SEC Filings
+                </h4>
+                <div className="space-y-1">
+                  {insights.secReports.map((filing, i) => (
+                    <div key={i} className="flex items-center justify-between py-2.5 border-b border-border last:border-0 hover:bg-accent/30 transition-colors rounded px-2 -mx-2">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-mono bg-muted px-2 py-0.5 rounded font-medium">{filing.type}</span>
+                        <span className="text-sm">{filing.title}</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground shrink-0 ml-4">{filing.filedDate}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="py-8 text-center text-muted-foreground">
+                <p>No SEC filings data available for {upperSymbol}.</p>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+
+        {/* Data Attribution */}
+        <div className="text-center mt-8 pb-4">
+          <p className="text-xs text-muted-foreground">
+            All data sourced from Yahoo Finance in real-time. Prices may be delayed up to 15 minutes. Not financial advice.
+          </p>
+        </div>
       </main>
 
       <Footer />

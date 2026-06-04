@@ -1,150 +1,290 @@
-import { Link, useParams } from "wouter";
-import { ArrowUpRight, ArrowDownRight, Download, Bell } from "lucide-react";
+import { useMemo } from "react";
+import { useParams, Link } from "wouter";
+import { ArrowUpRight, ArrowDownRight, Loader2, AlertCircle, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { prebuiltScreens, stocks, formatMarketCap } from "@/lib/stockData";
+import { trpc } from "@/lib/trpc";
+
+// Screen definitions with their stock symbols - these are curated lists of real tickers
+const screenDefinitions: Record<string, { name: string; description: string; symbols: string[]; sortBy: "changePercent" | "volume" | "price"; sortOrder: "desc" | "asc" }> = {
+  "top-market-cap": {
+    name: "Top 10 by Market Cap",
+    description: "The largest companies by market capitalization on NYSE & NASDAQ.",
+    symbols: ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "BRK-B", "JPM", "V"],
+    sortBy: "price",
+    sortOrder: "desc",
+  },
+  "top-gainers": {
+    name: "Top Gainers Today",
+    description: "Stocks with the highest percentage gains in today's session.",
+    symbols: ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "JPM", "V", "UNH", "HD", "PG", "MA", "DIS", "NFLX", "AMD", "CRM", "AVGO", "COST", "ADBE"],
+    sortBy: "changePercent",
+    sortOrder: "desc",
+  },
+  "top-losers": {
+    name: "Top Losers Today",
+    description: "Stocks with the biggest percentage drops in today's session.",
+    symbols: ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "JPM", "V", "UNH", "HD", "PG", "MA", "DIS", "NFLX", "AMD", "CRM", "AVGO", "COST", "ADBE"],
+    sortBy: "changePercent",
+    sortOrder: "asc",
+  },
+  "high-volume": {
+    name: "High Volume",
+    description: "Most actively traded stocks by volume today.",
+    symbols: ["AAPL", "MSFT", "NVDA", "TSLA", "AMD", "AMZN", "META", "INTC", "BAC", "PLTR", "SOFI", "NIO", "RIVN", "COIN", "SNAP", "UBER", "SQ", "GOOGL", "HOOD", "LCID"],
+    sortBy: "volume",
+    sortOrder: "desc",
+  },
+  "near-52w-high": {
+    name: "Near 52-Week High",
+    description: "Stocks trading close to their 52-week high price.",
+    symbols: ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "AVGO", "COST", "CRM", "NOW", "PANW", "CRWD", "NFLX", "LIN", "ISRG", "VRTX", "SNPS", "KLAC", "CDNS", "BKNG"],
+    sortBy: "price",
+    sortOrder: "desc",
+  },
+  "near-52w-low": {
+    name: "Near 52-Week Low",
+    description: "Stocks trading close to their 52-week low price.",
+    symbols: ["INTC", "VZ", "T", "PFE", "BMY", "MMM", "NIO", "LCID", "RIVN", "SNAP", "LYFT", "HOOD", "RBLX", "U", "ROKU", "SNOW", "PINS", "COIN", "SOFI", "DASH"],
+    sortBy: "price",
+    sortOrder: "asc",
+  },
+  "tech-mega-cap": {
+    name: "Tech Mega Caps",
+    description: "The largest technology companies (FAANG+).",
+    symbols: ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "AVGO", "ORCL", "CRM"],
+    sortBy: "price",
+    sortOrder: "desc",
+  },
+  "semiconductor": {
+    name: "Semiconductors",
+    description: "Major semiconductor and chip companies.",
+    symbols: ["NVDA", "AVGO", "AMD", "INTC", "QCOM", "TXN", "ADI", "MU", "LRCX", "KLAC", "MRVL", "CDNS", "SNPS"],
+    sortBy: "changePercent",
+    sortOrder: "desc",
+  },
+  "cloud-saas": {
+    name: "Cloud & SaaS",
+    description: "Leading cloud computing and SaaS companies.",
+    symbols: ["CRM", "NOW", "SNOW", "DDOG", "NET", "CRWD", "ZS", "TEAM", "WDAY", "PANW", "FTNT", "SHOP", "ADBE"],
+    sortBy: "changePercent",
+    sortOrder: "desc",
+  },
+  "blue-chip": {
+    name: "Blue Chip Stocks",
+    description: "Established, financially stable large-cap companies.",
+    symbols: ["AAPL", "MSFT", "JPM", "JNJ", "V", "UNH", "PG", "HD", "MA", "KO", "PEP", "MRK", "ABT", "COST", "LIN"],
+    sortBy: "price",
+    sortOrder: "desc",
+  },
+  "financial-sector": {
+    name: "Financial Sector",
+    description: "Major banks, insurance, and financial services companies.",
+    symbols: ["JPM", "BAC", "V", "MA", "GS", "MS", "AXP", "BLK", "SCHW", "C"],
+    sortBy: "changePercent",
+    sortOrder: "desc",
+  },
+  "healthcare": {
+    name: "Healthcare & Pharma",
+    description: "Leading healthcare, pharmaceutical, and biotech companies.",
+    symbols: ["UNH", "JNJ", "PFE", "MRK", "ABT", "AMGN", "GILD", "ISRG", "SYK", "ZTS", "VRTX", "REGN", "MDT", "BMY"],
+    sortBy: "changePercent",
+    sortOrder: "desc",
+  },
+  "ev-companies": {
+    name: "EV & Clean Energy",
+    description: "Electric vehicle and clean energy companies.",
+    symbols: ["TSLA", "RIVN", "LCID", "NIO", "F", "GM", "NEE", "ENPH", "FSLR", "PLUG"],
+    sortBy: "changePercent",
+    sortOrder: "desc",
+  },
+  "fintech": {
+    name: "Fintech & Digital",
+    description: "Financial technology and digital payment companies.",
+    symbols: ["SQ", "PYPL", "COIN", "SOFI", "HOOD", "AFRM", "UPST", "NU", "MELI", "SHOP"],
+    sortBy: "changePercent",
+    sortOrder: "desc",
+  },
+  "social-media": {
+    name: "Social & Media",
+    description: "Social media, streaming, and digital media companies.",
+    symbols: ["META", "NFLX", "DIS", "SNAP", "PINS", "RBLX", "ROKU", "TTD", "SPOT", "ABNB"],
+    sortBy: "changePercent",
+    sortOrder: "desc",
+  },
+};
+
+function formatVol(num: number | undefined | null): string {
+  if (num == null || isNaN(num)) return "N/A";
+  if (Math.abs(num) >= 1e9) return (num / 1e9).toFixed(2) + "B";
+  if (Math.abs(num) >= 1e6) return (num / 1e6).toFixed(2) + "M";
+  if (Math.abs(num) >= 1e3) return (num / 1e3).toFixed(1) + "K";
+  return num.toString();
+}
 
 export default function ScreenDetail() {
   const params = useParams<{ id: string }>();
-  const screen = prebuiltScreens.find(s => s.id === params.id);
+  const screenId = params.id || "";
+  const screen = screenDefinitions[screenId];
+
+  const queryInput = useMemo(() => ({
+    symbols: screen?.symbols || [],
+    sortBy: (screen?.sortBy || "changePercent") as "price" | "change" | "changePercent" | "volume",
+    sortOrder: (screen?.sortOrder || "desc") as "asc" | "desc",
+  }), [screenId]);
+
+  const { data: rawQuotes, isLoading, error } = trpc.stocks.screen.useQuery(
+    queryInput,
+    { enabled: !!screen, staleTime: 60_000, retry: 1 }
+  );
+
+  // Filter results based on screen type:
+  // - "top-gainers" should only show stocks with positive change
+  // - "top-losers" should only show stocks with negative change
+  const quotes = useMemo(() => {
+    if (!rawQuotes) return rawQuotes;
+    if (screenId === "top-gainers") {
+      return rawQuotes.filter(q => q.changePercent > 0);
+    }
+    if (screenId === "top-losers") {
+      return rawQuotes.filter(q => q.changePercent < 0);
+    }
+    return rawQuotes;
+  }, [rawQuotes, screenId]);
 
   if (!screen) {
     return (
-      <div className="min-h-screen flex flex-col bg-background">
+      <div className="min-h-screen flex flex-col bg-background text-foreground">
         <Header />
-        <main className="flex-1 container py-16 text-center">
-          <h1 className="font-display font-bold text-2xl mb-4">Screen Not Found</h1>
-          <p className="text-muted-foreground">This screen does not exist.</p>
-          <Link href="/screens" className="text-primary hover:underline mt-4 inline-block">← Back to Screens</Link>
+        <main className="flex-1 container py-20 text-center">
+          <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Screen Not Found</h2>
+          <p className="text-muted-foreground mb-6">The screen "{screenId}" does not exist.</p>
+          <Link href="/screens" className="text-primary hover:underline">← Back to Screens</Link>
         </main>
         <Footer />
       </div>
     );
   }
 
-  const matchedStocks = screen.stocks
-    .map(sym => stocks.find(s => s.symbol === sym))
-    .filter(Boolean) as typeof stocks;
-
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
+
       <main className="flex-1 container py-8">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
-          <Link href="/screens" className="hover:text-primary transition-colors">Screens</Link>
+        <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+          <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
           <span>/</span>
-          <span className="text-foreground">{screen.name}</span>
-        </div>
+          <Link href="/screens" className="hover:text-foreground transition-colors">Screens</Link>
+          <span>/</span>
+          <span className="text-foreground font-medium">{screen.name}</span>
+        </nav>
 
-        {/* Screen Header */}
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-8">
-          <div>
-            <h1 className="font-display font-bold text-2xl mb-2">{screen.name}</h1>
-            <p className="text-muted-foreground text-sm max-w-2xl">{screen.description}</p>
-            <span className="inline-block mt-3 text-xs uppercase tracking-wider font-medium text-primary/70 bg-primary/5 px-2.5 py-1 rounded">
-              {screen.category}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1.5 border border-border px-3 py-2 rounded-lg text-sm hover:bg-accent transition-colors">
-              <Bell className="w-4 h-4" /> Set Alert
-            </button>
-            <button className="flex items-center gap-1.5 border border-border px-3 py-2 rounded-lg text-sm hover:bg-accent transition-colors">
-              <Download className="w-4 h-4" /> Export
-            </button>
-          </div>
-        </div>
-
-        {/* Query Display */}
-        <div className="border border-border rounded-xl p-4 mb-6 bg-muted/30">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2 font-medium">Screen Query</p>
-          <code className="text-sm font-mono text-foreground">
-            {screen.category === "Growth" && "Revenue growth > 20% AND Profit growth > 30% AND Market Cap > $10B"}
-            {screen.category === "Value" && "P/E < 15 AND Dividend Yield > 2% AND ROCE > 15%"}
-            {screen.category === "Dividends" && "Dividend Yield > 2% AND Consecutive Dividend Years > 25 AND Payout Ratio < 75%"}
-            {screen.category === "Technical" && "Price > 50 DMA AND Price > 200 DMA AND Volume > Average Volume * 1.5"}
-            {screen.category === "Quality" && "ROCE > 30% AND ROE > 20% AND Debt/Equity < 0.5"}
-            {screen.category === "Formula" && "Earnings Yield > 8% AND ROIC > 25% ORDER BY Combined Rank ASC"}
-          </code>
-        </div>
-
-        {/* Results Count */}
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">{matchedStocks.length}</span> stocks match this screen
-          </p>
-          <button className="text-xs text-primary hover:underline">Edit Columns</button>
+        {/* Header */}
+        <div className="mb-6">
+          <Link href="/screens" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-3">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Screens
+          </Link>
+          <h1 className="text-2xl font-bold">{screen.name}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{screen.description}</p>
         </div>
 
         {/* Results Table */}
-        <div className="border border-border rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="data-table">
-              <thead>
-                <tr className="bg-muted/30">
-                  <th>S.No.</th>
-                  <th>Name</th>
-                  <th className="numeric">CMP $</th>
-                  <th className="numeric">Change %</th>
-                  <th className="numeric">P/E</th>
-                  <th className="numeric">Market Cap</th>
-                  <th className="numeric">Div Yld %</th>
-                  <th className="numeric">ROCE %</th>
-                  <th className="numeric">ROE %</th>
-                  <th className="numeric">Rev Growth %</th>
-                  <th className="numeric">Profit Growth %</th>
-                </tr>
-              </thead>
-              <tbody>
-                {matchedStocks.map((stock, i) => (
-                  <tr key={stock.symbol}>
-                    <td className="text-muted-foreground">{i + 1}.</td>
-                    <td>
-                      <Link href={`/company/${stock.symbol}`} className="hover:text-primary transition-colors">
-                        <span className="font-medium">{stock.name}</span>
-                        <span className="text-xs text-muted-foreground ml-1.5">{stock.symbol}</span>
-                      </Link>
-                    </td>
-                    <td className="numeric">{stock.price.toFixed(2)}</td>
-                    <td className="numeric">
-                      <span className={`flex items-center justify-end gap-0.5 ${stock.changePercent >= 0 ? "gain" : "loss"}`}>
-                        {stock.changePercent >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-                        {Math.abs(stock.changePercent).toFixed(2)}%
-                      </span>
-                    </td>
-                    <td className="numeric">{stock.pe.toFixed(1)}</td>
-                    <td className="numeric">{formatMarketCap(stock.marketCap)}</td>
-                    <td className="numeric">{stock.dividendYield.toFixed(2)}</td>
-                    <td className="numeric">{stock.roce.toFixed(1)}</td>
-                    <td className="numeric">{stock.roe.toFixed(1)}</td>
-                    <td className="numeric">
-                      <span className={stock.revenueGrowth >= 0 ? "gain" : "loss"}>
-                        {stock.revenueGrowth > 0 ? "+" : ""}{stock.revenueGrowth}%
-                      </span>
-                    </td>
-                    <td className="numeric">
-                      <span className={stock.profitGrowth >= 0 ? "gain" : "loss"}>
-                        {stock.profitGrowth > 0 ? "+" : ""}{stock.profitGrowth}%
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-primary mb-3" />
+            <p className="text-sm text-muted-foreground">Fetching real-time data from Yahoo Finance...</p>
+            <p className="text-xs text-muted-foreground mt-1">Loading {screen.symbols.length} stocks</p>
           </div>
-        </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <AlertCircle className="w-10 h-10 text-destructive mb-3" />
+            <p className="text-sm font-medium text-destructive">Failed to load screen data</p>
+            <p className="text-xs text-muted-foreground mt-1">Yahoo Finance data may be temporarily unavailable. Please try again later.</p>
+          </div>
+        ) : quotes && quotes.length > 0 ? (
+          <>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">{quotes.length}</span> stocks loaded with real-time data
+              </p>
+            </div>
+            <div className="border border-border rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/30 border-b border-border">
+                    <tr>
+                      <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">#</th>
+                      <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Symbol</th>
+                      <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Name</th>
+                      <th className="text-right py-3 px-4 text-xs font-semibold text-muted-foreground">Price</th>
+                      <th className="text-right py-3 px-4 text-xs font-semibold text-muted-foreground">Change</th>
+                      <th className="text-right py-3 px-4 text-xs font-semibold text-muted-foreground">% Change</th>
+                      <th className="text-right py-3 px-4 text-xs font-semibold text-muted-foreground">Volume</th>
+                      <th className="text-right py-3 px-4 text-xs font-semibold text-muted-foreground">Day High</th>
+                      <th className="text-right py-3 px-4 text-xs font-semibold text-muted-foreground">Day Low</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {quotes.map((quote, i) => {
+                      const isPositive = quote.change >= 0;
+                      return (
+                        <tr key={quote.symbol} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors">
+                          <td className="py-3 px-4 text-xs text-muted-foreground">{i + 1}</td>
+                          <td className="py-3 px-4">
+                            <Link href={`/company/${quote.symbol}`} className="font-semibold text-primary hover:underline">
+                              {quote.symbol}
+                            </Link>
+                          </td>
+                          <td className="py-3 px-4 text-muted-foreground max-w-[200px] truncate">
+                            {quote.shortName || quote.symbol}
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono font-medium">
+                            ${quote.regularMarketPrice.toFixed(2)}
+                          </td>
+                          <td className={`py-3 px-4 text-right font-mono text-xs ${isPositive ? "text-[oklch(0.55_0.17_155)]" : "text-[oklch(0.55_0.22_25)]"}`}>
+                            <span className="inline-flex items-center gap-0.5">
+                              {isPositive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                              {isPositive ? "+" : ""}{quote.change.toFixed(2)}
+                            </span>
+                          </td>
+                          <td className={`py-3 px-4 text-right font-mono text-xs font-medium ${isPositive ? "text-[oklch(0.55_0.17_155)]" : "text-[oklch(0.55_0.22_25)]"}`}>
+                            {isPositive ? "+" : ""}{quote.changePercent.toFixed(2)}%
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono text-xs text-muted-foreground">
+                            {formatVol(quote.regularMarketVolume)}
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono text-xs">
+                            {quote.regularMarketDayHigh != null ? `$${quote.regularMarketDayHigh.toFixed(2)}` : "N/A"}
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono text-xs">
+                            {quote.regularMarketDayLow != null ? `$${quote.regularMarketDayLow.toFixed(2)}` : "N/A"}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20">
+            <AlertCircle className="w-8 h-8 text-muted-foreground mb-3" />
+            <p className="text-sm text-muted-foreground">No data returned for this screen.</p>
+          </div>
+        )}
 
-        {/* Median Row */}
-        <div className="border border-border rounded-xl mt-4 p-4 bg-muted/20">
-          <div className="flex items-center gap-6 text-sm">
-            <span className="font-medium">Median Values:</span>
-            <span className="text-muted-foreground">P/E: <span className="font-mono">{(matchedStocks.reduce((a, s) => a + s.pe, 0) / matchedStocks.length).toFixed(1)}</span></span>
-            <span className="text-muted-foreground">ROCE: <span className="font-mono">{(matchedStocks.reduce((a, s) => a + s.roce, 0) / matchedStocks.length).toFixed(1)}%</span></span>
-            <span className="text-muted-foreground">Div Yld: <span className="font-mono">{(matchedStocks.reduce((a, s) => a + s.dividendYield, 0) / matchedStocks.length).toFixed(2)}%</span></span>
-          </div>
+        {/* Attribution */}
+        <div className="text-center mt-8">
+          <p className="text-xs text-muted-foreground">
+            Data sourced from Yahoo Finance in real-time. Prices may be delayed up to 15 minutes. Not financial advice.
+          </p>
         </div>
       </main>
+
       <Footer />
     </div>
   );
