@@ -32,14 +32,21 @@
 - [x] Save checkpoint and export to GitHub
 - [x] Fix Top Gainers/Losers screen filtering (only show positive/negative stocks)
 
-## Phase 5: Static Site Rebuild for GitHub Pages
-- [ ] Research CORS-friendly Yahoo Finance API endpoints for browser use
-- [ ] Create client-side Yahoo Finance data service (replacing server-side tRPC)
-- [ ] Remove tRPC/server dependencies from frontend pages
-- [ ] Rewire all pages to use React Query + client-side fetch
-- [ ] Convert watchlist to localStorage-only (no DB)
-- [ ] Remove authentication dependency
-- [ ] Configure Vite for static build with GitHub Pages base path
-- [ ] Add GitHub Actions workflow for automatic deployment
-- [ ] Test static build locally
-- [ ] Push to GitHub and verify GitHub Pages deployment
+## Phase 5: Manus Forge API Integration (Completed)
+- [x] Rewrite yahooFinance.ts to use Manus Forge API for all stock data
+- [x] Rewrite financialData.ts to use Forge API for financial statements/ratios
+- [x] Configure VITE_FORGE_API_KEY and VITE_FORGE_API_URL secrets
+- [x] Verify live data works for all symbols (not just AAPL)
+
+## Phase 6: Screener.in-Style Features
+- [x] Add Insights tab with technical analysis, valuation, recommendations
+- [x] Add Shareholding tab with insider holders data
+- [x] Add Company Profile section with business summary and officers
+- [x] Add SEC Reports section with recent filings
+- [x] Add Significant Developments section
+- [x] Enhance Ratios tab with company scoring metrics and data availability notice
+- [x] Replace market cap with prev close in key metrics (market cap not available from API)
+- [x] Improve peer comparison with price-based metrics
+- [x] Add vitest coverage for client data helpers (25 tests passing)
+- [x] Validate company detail page end-to-end
+- [x] Note: Financial statements NOT available from Yahoo Finance API through Forge - tabs show empty state messages

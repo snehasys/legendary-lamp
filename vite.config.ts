@@ -21,5 +21,10 @@ export default defineConfig({
   base: "/legendary-lamp/",
   server: {
     host: true,
+    allowedHosts: true,
+  },
+  preview: {
+    host: true,
+    allowedHosts: true,
   },
 });
