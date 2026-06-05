@@ -8,17 +8,20 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-baseline gap-0.5 mb-3">
-              <span className="font-bold text-lg tracking-tight">screener</span>
-              <span className="text-primary font-bold text-lg">.us</span>
+              <span className="font-display font-bold text-lg tracking-tight">screener</span>
+              <span className="text-primary font-display font-bold text-lg">.us</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Real-time stock analysis and screening tool for NYSE &amp; NASDAQ investors. Powered by Yahoo Finance data.
+              Free stock analysis and screening tool for NYSE & NASDAQ investors. Fundamental data, financial statements, and peer comparison.
+            </p>
+            <p className="text-xs text-muted-foreground mt-4">
+              © 2024–2026. All rights reserved.
             </p>
           </div>
 
           {/* Product */}
           <div>
-            <h4 className="font-semibold text-sm mb-3">Product</h4>
+            <h4 className="font-display font-semibold text-sm mb-3">Product</h4>
             <ul className="space-y-2">
               <li><Link href="/screens" className="text-sm text-muted-foreground hover:text-primary transition-colors">Stock Screens</Link></li>
               <li><Link href="/query" className="text-sm text-muted-foreground hover:text-primary transition-colors">Custom Screen</Link></li>
@@ -27,24 +30,25 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Popular Stocks */}
+          {/* Resources */}
           <div>
-            <h4 className="font-semibold text-sm mb-3">Popular</h4>
+            <h4 className="font-display font-semibold text-sm mb-3">Resources</h4>
             <ul className="space-y-2">
-              <li><Link href="/company/AAPL" className="text-sm text-muted-foreground hover:text-primary transition-colors">Apple (AAPL)</Link></li>
-              <li><Link href="/company/MSFT" className="text-sm text-muted-foreground hover:text-primary transition-colors">Microsoft (MSFT)</Link></li>
-              <li><Link href="/company/GOOGL" className="text-sm text-muted-foreground hover:text-primary transition-colors">Alphabet (GOOGL)</Link></li>
-              <li><Link href="/company/NVDA" className="text-sm text-muted-foreground hover:text-primary transition-colors">NVIDIA (NVDA)</Link></li>
+              <li><Link href="/sector/Technology" className="text-sm text-muted-foreground hover:text-primary transition-colors">Technology Stocks</Link></li>
+              <li><Link href="/sector/Healthcare" className="text-sm text-muted-foreground hover:text-primary transition-colors">Healthcare Stocks</Link></li>
+              <li><Link href="/sector/Financial%20Services" className="text-sm text-muted-foreground hover:text-primary transition-colors">Financial Stocks</Link></li>
+              <li><Link href="/sector/Energy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Energy Stocks</Link></li>
             </ul>
           </div>
 
-          {/* Data Source */}
+          {/* Company */}
           <div>
-            <h4 className="font-semibold text-sm mb-3">Data</h4>
+            <h4 className="font-display font-semibold text-sm mb-3">Company</h4>
             <ul className="space-y-2">
-              <li className="text-sm text-muted-foreground">Source: Yahoo Finance</li>
-              <li className="text-sm text-muted-foreground">Prices may be delayed</li>
-              <li className="text-sm text-muted-foreground">Not financial advice</li>
+              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">About Us</a></li>
+              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact</a></li>
+              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</a></li>
             </ul>
           </div>
         </div>
@@ -52,7 +56,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-border mt-8 pt-6">
           <p className="text-xs text-muted-foreground text-center">
-            All market data provided by Yahoo Finance. Prices may be delayed up to 15 minutes. For informational purposes only — not financial advice.
+            Data provided for informational purposes only. Not financial advice. Market data may be delayed.
           </p>
         </div>
       </div>
