@@ -4,6 +4,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -40,24 +42,11 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
-  --font-display: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --color-gain: oklch(0.72 0.19 155);
-  --color-loss: oklch(0.63 0.24 25);
-  --color-emerald: oklch(0.72 0.19 155);
+  --color-gain: var(--gain);
+  --color-loss: var(--loss);
 }
 
 :root {
-  --primary: oklch(0.45 0.12 155);
-  --primary-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.45 0.12 155);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --chart-1: oklch(0.72 0.19 155);
-  --chart-2: oklch(0.55 0.15 250);
-  --chart-3: oklch(0.65 0.18 30);
-  --chart-4: oklch(0.6 0.12 280);
-  --chart-5: oklch(0.5 0.1 200);
   --radius: 0.5rem;
   --background: oklch(0.995 0 0);
   --foreground: oklch(0.15 0.01 260);
@@ -65,58 +54,71 @@
   --card-foreground: oklch(0.15 0.01 260);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0.01 260);
-  --secondary: oklch(0.97 0.003 260);
-  --secondary-foreground: oklch(0.35 0.02 260);
-  --muted: oklch(0.96 0.003 260);
+  --primary: oklch(0.45 0.15 260);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.96 0.005 260);
+  --secondary-foreground: oklch(0.35 0.01 260);
+  --muted: oklch(0.96 0.005 260);
   --muted-foreground: oklch(0.5 0.02 260);
-  --accent: oklch(0.96 0.003 260);
+  --accent: oklch(0.96 0.005 260);
   --accent-foreground: oklch(0.15 0.01 260);
-  --destructive: oklch(0.63 0.24 25);
+  --destructive: oklch(0.55 0.22 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.92 0.003 260);
-  --input: oklch(0.92 0.003 260);
-  --ring: oklch(0.45 0.12 155);
-  --sidebar: oklch(0.985 0 0);
+  --border: oklch(0.91 0.005 260);
+  --input: oklch(0.91 0.005 260);
+  --ring: oklch(0.45 0.15 260);
+  --gain: oklch(0.55 0.17 155);
+  --loss: oklch(0.55 0.22 25);
+  --chart-1: oklch(0.45 0.15 260);
+  --chart-2: oklch(0.55 0.17 155);
+  --chart-3: oklch(0.6 0.15 40);
+  --chart-4: oklch(0.55 0.15 300);
+  --chart-5: oklch(0.5 0.1 200);
+  --sidebar: oklch(0.98 0 0);
   --sidebar-foreground: oklch(0.15 0.01 260);
-  --sidebar-accent: oklch(0.96 0.003 260);
+  --sidebar-primary: oklch(0.45 0.15 260);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.96 0.005 260);
   --sidebar-accent-foreground: oklch(0.15 0.01 260);
-  --sidebar-border: oklch(0.92 0.003 260);
-  --sidebar-ring: oklch(0.45 0.12 155);
+  --sidebar-border: oklch(0.91 0.005 260);
+  --sidebar-ring: oklch(0.45 0.15 260);
 }
 
 .dark {
-  --primary: oklch(0.72 0.19 155);
-  --primary-foreground: oklch(0.15 0.01 260);
-  --sidebar-primary: oklch(0.72 0.19 155);
-  --sidebar-primary-foreground: oklch(0.15 0.01 260);
-  --background: oklch(0.13 0.015 260);
+  --background: oklch(0.12 0.01 260);
   --foreground: oklch(0.92 0.005 260);
-  --card: oklch(0.17 0.015 260);
+  --card: oklch(0.16 0.01 260);
   --card-foreground: oklch(0.92 0.005 260);
-  --popover: oklch(0.17 0.015 260);
+  --popover: oklch(0.16 0.01 260);
   --popover-foreground: oklch(0.92 0.005 260);
-  --secondary: oklch(0.22 0.015 260);
-  --secondary-foreground: oklch(0.8 0.005 260);
-  --muted: oklch(0.22 0.015 260);
-  --muted-foreground: oklch(0.65 0.015 260);
-  --accent: oklch(0.22 0.015 260);
+  --primary: oklch(0.65 0.15 260);
+  --primary-foreground: oklch(0.12 0.01 260);
+  --secondary: oklch(0.22 0.01 260);
+  --secondary-foreground: oklch(0.85 0.005 260);
+  --muted: oklch(0.22 0.01 260);
+  --muted-foreground: oklch(0.6 0.02 260);
+  --accent: oklch(0.22 0.01 260);
   --accent-foreground: oklch(0.92 0.005 260);
-  --destructive: oklch(0.63 0.24 25);
+  --destructive: oklch(0.6 0.2 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.28 0.015 260);
-  --input: oklch(0.28 0.015 260);
-  --ring: oklch(0.72 0.19 155);
-  --chart-1: oklch(0.72 0.19 155);
-  --chart-2: oklch(0.55 0.15 250);
-  --chart-3: oklch(0.65 0.18 30);
-  --chart-4: oklch(0.6 0.12 280);
-  --chart-5: oklch(0.5 0.1 200);
-  --sidebar: oklch(0.17 0.015 260);
+  --border: oklch(0.25 0.01 260);
+  --input: oklch(0.25 0.01 260);
+  --ring: oklch(0.65 0.15 260);
+  --gain: oklch(0.65 0.17 155);
+  --loss: oklch(0.6 0.2 25);
+  --chart-1: oklch(0.65 0.15 260);
+  --chart-2: oklch(0.65 0.17 155);
+  --chart-3: oklch(0.65 0.15 40);
+  --chart-4: oklch(0.65 0.15 300);
+  --chart-5: oklch(0.6 0.1 200);
+  --sidebar: oklch(0.14 0.01 260);
   --sidebar-foreground: oklch(0.92 0.005 260);
-  --sidebar-accent: oklch(0.22 0.015 260);
+  --sidebar-primary: oklch(0.65 0.15 260);
+  --sidebar-primary-foreground: oklch(0.12 0.01 260);
+  --sidebar-accent: oklch(0.22 0.01 260);
   --sidebar-accent-foreground: oklch(0.92 0.005 260);
-  --sidebar-border: oklch(0.28 0.015 260);
-  --sidebar-ring: oklch(0.72 0.19 155);
+  --sidebar-border: oklch(0.25 0.01 260);
+  --sidebar-ring: oklch(0.65 0.15 260);
 }
 
 @layer base {
@@ -125,10 +127,6 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
-    font-feature-settings: "tnum" 1;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
@@ -168,26 +166,20 @@
     .container {
       padding-left: 2rem;
       padding-right: 2rem;
-      max-width: 1400px;
+      max-width: 1280px;
     }
   }
 
-  .data-table {
-    @apply w-full text-sm;
+  .text-gain {
+    color: var(--gain);
   }
-  .data-table th {
-    @apply text-left text-muted-foreground font-medium py-2 px-3 border-b text-xs uppercase tracking-wide;
+  .text-loss {
+    color: var(--loss);
   }
-  .data-table td {
-    @apply py-2.5 px-3 border-b font-mono text-sm;
+  .bg-gain {
+    background-color: var(--gain);
   }
-  .data-table tr:hover td {
-    @apply bg-muted/50;
+  .bg-loss {
+    background-color: var(--loss);
   }
-  .data-table .numeric {
-    @apply text-right tabular-nums;
-  }
-
-  .gain { color: var(--color-gain); }
-  .loss { color: var(--color-loss); }
 }

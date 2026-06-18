@@ -1,0 +1,48 @@
+## Available Data from Yahoo Finance via Forge API
+
+### get_stock_chart (meta)
+- regularMarketPrice, regularMarketDayHigh, regularMarketDayLow
+- regularMarketVolume, regularMarketTime
+- fiftyTwoWeekHigh, fiftyTwoWeekLow
+- chartPreviousClose
+- longName, shortName, exchangeName, currency
+- Price history (timestamps, open, high, low, close, volume)
+
+### get_stock_insights
+- instrumentInfo.technicalEvents (short/mid/long term outlook with direction + score)
+- instrumentInfo.keyTechnicals (support, resistance, stopLoss)
+- instrumentInfo.valuation (relativeValue, description, discount, provider)
+- companySnapshot.company (SCORING data only: innovativeness, hiring, sustainability, insiderSentiments, earningsReports, dividends)
+- companySnapshot.sector (same scoring keys for sector comparison)
+- companySnapshot.sectorInfo (sector name)
+- recommendation (may be empty - {})
+- events (technical events like CCI)
+- reports (100 analyst reports from Argus Research etc.)
+- sigDevs (significant developments with headline + date)
+
+### get_stock_profile
+- summaryProfile only: longBusinessSummary, sector, industry, fullTimeEmployees, website, phone, address, city, state, country, companyOfficers
+
+### get_stock_holders
+- insiderHolders.holders (name, relation, transactionDescription, latestTransDate, positionDirect)
+- NO netSharePurchaseActivity
+- NO institutionOwnership
+
+### get_stock_sec_filing
+- secFilings.filings (date, type, title, edgarUrl, exhibits[])
+- Types include: SD, 8-K, 10-Q, 10-K, etc.
+
+## What We CANNOT Get:
+- PE ratio, Forward PE, PEG, PB, PS
+- EV/Revenue, EV/EBITDA
+- Market Cap, Enterprise Value, Shares Outstanding
+- Gross Margin, Operating Margin, Net Margin
+- ROE, ROA, Debt/Equity, Current Ratio
+- Revenue Growth, Earnings Growth
+- Dividend Yield
+- Income Statement, Balance Sheet, Cash Flow data
+- Institutional ownership percentages
+
+## Conclusion:
+The Ratios tab and Financial Statement tabs will show empty states.
+The app's strength is in: Price data, Technical Analysis, Insights, Insider Holdings, SEC Filings, Company Profile.
