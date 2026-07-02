@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflection AI — Complete Interview Mastery Guide</title>
+<style>
+:root{
+  --bg:#0a0e17; --bg2:#0f1524; --panel:#141b2d; --panel2:#1a2338;
+  --ink:#e8edf7; --muted:#9aa8c4; --line:#25304a;
+  --green:#76b900; --green-d:#5c8f00; --green-soft:rgba(118,185,0,.14);
+  --cyan:#38e0d0; --amber:#ffc34d; --red:#ff5c72; --red-soft:rgba(255,92,114,.12);
+  --blue:#5aa9ff; --purple:#b07bff;
+  --radius:16px; --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.7;font-size:16px;overflow-x:hidden;
+  background-image:radial-gradient(900px 500px at 85% -5%,rgba(118,185,0,.10),transparent 60%),radial-gradient(700px 400px at 5% 10%,rgba(90,169,255,.08),transparent 55%);}
+::selection{background:var(--green-soft);color:#fff}
+a{color:var(--green);text-decoration:none} a:hover{text-decoration:underline}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--green),var(--cyan));z-index:999;transition:width .1s}
+nav{position:sticky;top:0;z-index:900;backdrop-filter:blur(14px);background:rgba(10,14,23,.82);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:18px;height:60px}
+nav .brand{font-weight:800;letter-spacing:.5px;font-size:15px;white-space:nowrap}
+nav .brand span{color:var(--green)}
+nav .links{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav .links::-webkit-scrollbar{display:none}
+nav .links a{color:var(--muted);font-size:13px;font-weight:600;padding:8px 11px;border-radius:9px;white-space:nowrap;transition:.2s}
+nav .links a:hover{color:var(--ink);background:var(--panel2);text-decoration:none}
+header.hero{padding:96px 0 70px;position:relative;text-align:center}
+.tag{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--green);border:1px solid var(--green);padding:6px 14px;border-radius:999px;margin-bottom:26px;background:var(--green-soft)}
+.hero h1{font-size:clamp(2.2rem,6vw,3.5rem);line-height:1.1;font-weight:900;letter-spacing:-1px}
+.hero h1 .grad{background:linear-gradient(120deg,var(--green),var(--cyan) 60%,var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero p.sub{max-width:720px;margin:24px auto 0;color:var(--muted);font-size:1.12rem}
+.hero .cta{margin-top:36px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;padding:13px 22px;border-radius:12px;border:1px solid var(--line);transition:.2s;cursor:pointer}
+.btn.primary{background:var(--green);color:#0a0e17;border-color:var(--green)}
+.btn.primary:hover{background:var(--green-d);text-decoration:none;transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--ink)} .btn.ghost:hover{background:var(--panel2);text-decoration:none}
+section{padding:64px 0;border-top:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:12px;display:block}
+h2.sec{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.lead{color:var(--muted);font-size:1.05rem;max-width:760px;margin-bottom:34px}
+h3{font-size:1.35rem;font-weight:700;margin:34px 0 12px}
+p{margin-bottom:16px;color:#d3dcee} strong{color:#fff}
+.card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:22px;position:relative}
+.grid{display:grid;gap:18px}
+.grid.two{grid-template-columns:1fr 1fr} .grid.three{grid-template-columns:repeat(3,1fr)}
+@media(max-width:820px){.grid.two,.grid.three{grid-template-columns:1fr}}
+.myth{border-left:4px solid var(--red);background:linear-gradient(90deg,var(--red-soft),transparent 70%);border-radius:10px;padding:16px 18px;margin-bottom:14px}
+.fact{border-left:4px solid var(--green);background:linear-gradient(90deg,var(--green-soft),transparent 70%);border-radius:10px;padding:16px 18px}
+.myth .lbl,.fact .lbl{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;display:block;margin-bottom:6px}
+.myth .lbl{color:var(--red)} .fact .lbl{color:var(--green)}
+.tbl{width:100%;border-collapse:collapse;font-size:14.5px;overflow:hidden;border-radius:12px;border:1px solid var(--line)}
+.tbl th,.tbl td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
+.tbl th{background:var(--panel2);color:#fff;font-weight:700;font-size:13px;letter-spacing:.4px}
+.tbl tr:last-child td{border-bottom:none} .tbl tr:hover td{background:rgba(118,185,0,.05)}
+.tbl td:first-child{font-weight:700;color:#fff} .tbl .hl{color:var(--green);font-weight:700}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.callout{border-radius:12px;padding:16px 18px;margin:18px 0;font-size:14.5px;border:1px solid var(--line)}
+.callout .h{font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.callout.tip{background:var(--green-soft);border-color:rgba(118,185,0,.4)}
+.callout.warn{background:var(--red-soft);border-color:rgba(255,92,114,.4)}
+.callout.info{background:rgba(90,169,255,.1);border-color:rgba(90,169,255,.4)}
+.callout.said{background:rgba(255,195,77,.09);border-color:rgba(255,195,77,.4)}
+code{font-family:var(--mono);background:#0b1120;border:1px solid var(--line);padding:2px 7px;border-radius:6px;font-size:13px;color:var(--cyan)}
+pre{background:#0b1120;border:1px solid var(--line);border-radius:12px;padding:18px;overflow-x:auto;margin:16px 0}
+pre code{background:none;border:none;padding:0;color:#cfe3ff;font-size:13.5px;line-height:1.65;display:block}
+.cmt{color:#5f7599}
+.quiz{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-bottom:18px}
+.quiz .q{font-weight:700;font-size:1.08rem;margin-bottom:16px}
+.opt{display:block;width:100%;text-align:left;background:var(--bg2);border:1px solid var(--line);color:var(--ink);padding:13px 16px;border-radius:10px;margin-bottom:10px;cursor:pointer;transition:.15s;font-size:14.5px;font-family:inherit}
+.opt:hover{border-color:var(--green);background:var(--panel)}
+.opt.correct{border-color:var(--green);background:var(--green-soft);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-soft);color:#fff}
+.explain{display:none;margin-top:12px;padding:14px 16px;border-radius:10px;background:rgba(90,169,255,.08);border:1px solid rgba(90,169,255,.35);font-size:14px}
+.explain.show{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.flip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.flip{background:none;border:none;padding:0;perspective:1200px;height:170px;cursor:pointer;font-family:inherit}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:18px;text-align:center}
+.flip-front{background:linear-gradient(150deg,var(--panel2),var(--panel));font-weight:800;font-size:1.05rem;color:#fff}
+.flip-front .hint{position:absolute;bottom:10px;font-size:10px;letter-spacing:1px;color:var(--muted);font-weight:600;text-transform:uppercase}
+.flip-back{background:linear-gradient(150deg,#10281c,#0d1c16);transform:rotateY(180deg);border-color:var(--green-d);font-size:13.5px;color:#d7efc9;line-height:1.55}
+.badge{display:inline-block;font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:6px;font-weight:700;letter-spacing:.5px}
+.b-green{background:var(--green-soft);color:var(--green)} .b-red{background:var(--red-soft);color:var(--red)}
+.b-amber{background:rgba(255,195,77,.14);color:var(--amber)} .b-blue{background:rgba(90,169,255,.14);color:var(--blue)}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.chip{font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+.stat-row{display:flex;gap:16px;flex-wrap:wrap;margin:20px 0}
+.stat{flex:1;min-width:150px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:18px}
+.stat .n{font-size:1.9rem;font-weight:900;color:var(--green);font-family:var(--mono)} .stat .l{font-size:12.5px;color:var(--muted);margin-top:4px}
+footer{padding:50px 0 70px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:14px}
+footer .big{font-size:1.4rem;color:#fff;font-weight:800;margin-bottom:10px}
+.mock{border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.mock .qq{background:var(--panel2);padding:14px 18px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mock .qq:hover{background:#1e2942}
+.mock .aa{padding:0 18px;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease}
+.mock .aa.open{max-height:2400px;padding:16px 18px}
+.mock .qq .tw{color:var(--green);font-family:var(--mono);font-size:20px;transition:transform .3s}
+.mock .qq.open .tw{transform:rotate(45deg)}
+.tab-bar{display:flex;gap:4px;margin-bottom:24px;border-bottom:2px solid var(--line);padding-bottom:0}
+.tab-btn{background:none;border:none;color:var(--muted);font-family:var(--sans);font-size:14px;font-weight:700;padding:12px 18px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:.2s}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.active{color:var(--green);border-bottom-color:var(--green)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">Reflection<span>AI</span> · Interview Guide</div>
+    <div class="links">
+      <a href="#overview">Overview</a>
+      <a href="#round1">Agentic Coding</a>
+      <a href="#round2">Design Survey</a>
+      <a href="#round3">Case Study</a>
+      <a href="#round4">Culture</a>
+      <a href="#quiz">Quiz</a>
+      <a href="#flash">Flashcards</a>
+      <a href="#mock">Mock Q&A</a>
+      <a href="#cheat">Cheat Sheet</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">Interview Mastery Plan</span>
+    <h1>Your Complete Guide to<br><span class="grad">Reflection AI Interviews</span></h1>
+    <p class="sub">Four rounds. One mission: building frontier open intelligence. This guide covers every nuance, what interviewers look for, and gives you dozens of sample questions with detailed model answers — all tailored to Reflection's unique DNA.</p>
+    <div class="cta">
+      <a class="btn primary" href="#round1">Start with Agentic Coding</a>
+      <a class="btn ghost" href="#cheat">Jump to Cheat Sheet</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ SECTION: COMPANY OVERVIEW ============ -->
+<section id="overview">
+  <div class="wrap">
+    <span class="eyebrow">Section 01 — Know the Company</span>
+    <h2 class="sec">Reflection AI: The Company Behind the Interview</h2>
+    <p class="lead">Before you walk into any round, you need to deeply understand who Reflection is, what they're building, and what they value. This context shapes every answer you give.</p>
+
+    <div class="stat-row">
+      <div class="stat"><div class="n">$2B</div><div class="l">Series B raised (Oct 2025)</div></div>
+      <div class="stat"><div class="n">~55</div><div class="l">Open roles across engineering</div></div>
+      <div class="stat"><div class="n">2024</div><div class="l">Year founded</div></div>
+    </div>
+
+    <div class="card">
+      <h3>Founders</h3>
+      <p><strong>Ioannis Antonoglou (CTO)</strong> — DeepMind employee #25, founding engineer. Core architect of AlphaGo, AlphaZero, and MuZero. Led RLHF for Gemini 1 and 1.5. Expert in GPU kernel optimization, TPU systems, and RL at massive scale.</p>
+      <p><strong>Misha Laskin (CEO)</strong> — PhD in quantum physics (Yale), Y Combinator founder, postdoc at UC Berkeley under Pieter Abbeel. Led reward modeling for Gemini 1.5. Co-authored the Decision Transformer paper. Deep expertise in RL, data augmentation, and representation learning.</p>
+    </div>
+
+    <div class="card">
+      <h3>Mission & Technical Focus</h3>
+      <p>Reflection's mission is to build <strong>frontier open intelligence accessible to all</strong>. They believe the foundation of AI should remain open — not controlled by a handful of closed labs. Their technical thesis: combining large-scale LLM pretraining with advanced reinforcement learning from the ground up.</p>
+      <p>Their first product focus is <strong>autonomous coding agents</strong> — systems that integrate into codebases, plan, write, test, and deploy code independently. The core belief: "Solve coding, solve AGI." Coding is the bellwether for general autonomous intelligence.</p>
+    </div>
+
+    <div class="card">
+      <h3>Technical Stack (from job descriptions)</h3>
+      <div class="chip-row">
+        <span class="chip">PyTorch</span>
+        <span class="chip">JAX</span>
+        <span class="chip">Megatron</span>
+        <span class="chip">Triton Kernels</span>
+        <span class="chip">NCCL</span>
+        <span class="chip">RDMA</span>
+        <span class="chip">NVLink</span>
+        <span class="chip">Ray</span>
+        <span class="chip">Kubernetes</span>
+        <span class="chip">Slurm</span>
+        <span class="chip">FSDP/ZeRO</span>
+        <span class="chip">MoE</span>
+      </div>
+      <p>They train massive Mixture-of-Experts models across thousands of GPUs. Their infrastructure team focuses on numerical stability, throughput, reproducibility, and RL training loops at scale.</p>
+    </div>
+
+    <div class="card">
+      <h3>Values & Principles</h3>
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>Value</th><th>What It Means in Practice</th></tr></thead>
+        <tbody>
+          <tr><td>High Trust</td><td>Assume the best in each other. Move fast, make hard decisions together.</td></tr>
+          <tr><td>Intellectual Honesty</td><td>Test hypotheses, adapt to evidence, seek truth over ego.</td></tr>
+          <tr><td>Do the Simple Thing</td><td>Start simple, learn, iterate. Best solutions aren't the most complex.</td></tr>
+          <tr><td>Reliable & Trustworthy</td><td>Ship models that reflect the team. Push frontiers without compromising safety.</td></tr>
+          <tr><td>Team First</td><td>No politics. Close collaboration. We're in this together.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="callout info"><div class="h">Key Insight for Interviews</div>Reflection values <strong>agency, craftsmanship, and kindness</strong>. They want people who thrive in high-agency environments, enjoy solving hard technical problems, and can work at the boundary between ML algorithms, distributed systems, and high-performance computing. Every answer should signal these traits.</div>
+  </div>
+</section>
+
+<!-- ============ SECTION: ROUND 1 — AGENTIC CODING ============ -->
+<section id="round1">
+  <div class="wrap">
+    <span class="eyebrow">Section 02 — Round 1</span>
+    <h2 class="sec">Agentic Coding Round (60 min)</h2>
+    <p class="lead">A coding interview where you implement a single problem with multiple extensions, using your preferred IDE and AI tools. This tests how you actually build software in 2026 — with AI as your copilot.</p>
+
+    <div class="card">
+      <h3>What Makes This Different</h3>
+      <p>Unlike traditional LeetCode interviews, Reflection's Agentic Coding round is designed to mirror real engineering work. You use your own IDE, your preferred language, and any AI tools you want (Copilot, Cursor, Claude, etc.). The emphasis is on <strong>how you think, iterate, and extend</strong> — not whether you memorized an algorithm.</p>
+      <p>The problem starts simple and grows in complexity. Each extension tests whether you can adapt your initial design. Interviewers watch for: Do you refactor when needed? Do you recognize when your initial approach won't scale? Do you use AI tools strategically rather than blindly?</p>
+    </div>
+
+    <div class="card">
+      <h3>What Interviewers Look For</h3>
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>Dimension</th><th>What They Want to See</th><th>Red Flags</th></tr></thead>
+        <tbody>
+          <tr><td>Code Quality</td><td>Clean, readable, well-structured code. Good naming, separation of concerns, appropriate abstractions.</td><td>Spaghetti code, no error handling, copy-paste without understanding.</td></tr>
+          <tr><td>Efficiency</td><td>Appropriate data structures and algorithms. Awareness of time/space complexity.</td><td>O(n^3) when O(n log n) is obvious. No consideration of performance.</td></tr>
+          <tr><td>Problem-Solving</td><td>Breaking down the problem, identifying edge cases, asking clarifying questions.</td><td>Jumping to code without thinking. Missing obvious edge cases.</td></tr>
+          <tr><td>Trade-off Reasoning</td><td>Articulating WHY you chose an approach. Discussing alternatives and their costs.</td><td>Only knowing one way to solve something. No discussion of trade-offs.</td></tr>
+          <tr><td>Iterative Extension</td><td>Gracefully extending your solution when new requirements arrive. Refactoring when needed.</td><td>Patching hacks on top of hacks. Resistance to changing initial approach.</td></tr>
+          <tr><td>AI Tool Usage</td><td>Strategic use of AI for boilerplate, syntax lookup, test generation. Critically reviewing AI output.</td><td>Blindly accepting AI suggestions. Not understanding generated code. Over-reliance without judgment.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="callout warn"><div class="h">Critical Setup</div>Before the interview: have your IDE ready, language installed, AI tools configured, and verify you can compile and run code while screen-sharing. Test your screen share setup. Nothing kills momentum like 10 minutes of setup debugging.</div>
+
+    <div class="card">
+      <h3>Sample Problems & Solutions</h3>
+
+      <h3>Problem 1: Rate Limiter</h3>
+      <p><strong>Part A:</strong> Implement a rate limiter that allows at most N requests per second for a given user ID.</p>
+      <p><strong>Part B:</strong> Extend it to support sliding window (not just fixed windows).</p>
+      <p><strong>Part C:</strong> Make it distributed — multiple instances need to coordinate. Discuss trade-offs between consistency and availability.</p>
+
+      <div class="callout tip"><div class="h">Model Approach</div>
+      <p>Start with a simple token bucket or fixed-window counter using a dictionary. For Part B, implement a sliding window log or sliding window counter hybrid — explain that the log approach is precise but memory-heavy, while the counter approach approximates but is O(1) space per user. For Part C, discuss Redis-based centralized state vs. local approximation with periodic sync. Articulate the CAP trade-off: strict consistency requires coordination (latency cost), while eventual consistency may briefly over-allow requests.</p>
+      </div>
+
+      <h3>Problem 2: Task Scheduler for Async Jobs</h3>
+      <p><strong>Part A:</strong> Build a simple task queue that processes jobs in FIFO order with configurable concurrency.</p>
+      <p><strong>Part B:</strong> Add priority levels and ensure high-priority tasks preempt lower ones.</p>
+      <p><strong>Part C:</strong> Add retry logic with exponential backoff and a dead-letter queue for permanently failed tasks.</p>
+
+      <div class="callout tip"><div class="h">Model Approach</div>
+      <p>Use a priority queue (heap) with a worker pool. For concurrency, use asyncio or threading with a semaphore. When adding retries, wrap each task execution in a retry decorator with configurable max attempts and backoff multiplier. The dead-letter queue is just a separate collection that stores tasks exceeding max retries along with their failure metadata. Discuss: should retry count be per-task or per-task-type? What happens if the scheduler crashes mid-retry?</p>
+      </div>
+
+      <h3>Problem 3: Log Aggregation Pipeline</h3>
+      <p><strong>Part A:</strong> Parse structured log lines and compute per-endpoint latency percentiles (p50, p95, p99).</p>
+      <p><strong>Part B:</strong> Handle streaming input — process logs as they arrive, maintaining running percentiles.</p>
+      <p><strong>Part C:</strong> Add anomaly detection — flag endpoints whose p99 exceeds 2x their historical baseline.</p>
+
+      <div class="callout tip"><div class="h">Model Approach</div>
+      <p>For batch percentiles, sort and index. For streaming, use a t-digest or quantile sketch data structure — explain the trade-off between exact computation (requires storing all values) and approximate streaming algorithms (bounded memory). For anomaly detection, maintain an exponential moving average of historical p99 and compare incoming windows against it. Discuss: what window size balances responsiveness vs. noise? How do you handle cold-start when there's no history?</p>
+      </div>
+
+      <h3>Problem 4: File Synchronization Engine</h3>
+      <p><strong>Part A:</strong> Given two directory trees (represented as nested dicts), compute the diff — files added, removed, modified.</p>
+      <p><strong>Part B:</strong> Generate a minimal set of operations (copy, delete, move) to synchronize source to target.</p>
+      <p><strong>Part C:</strong> Handle rename detection — if a file's content hash matches a deleted file, treat it as a rename rather than delete+add.</p>
+
+      <div class="callout tip"><div class="h">Model Approach</div>
+      <p>Represent each file as (path, content_hash, modified_time). Diff by walking both trees and comparing. For move detection, build a hash-to-path index for deleted files and check new files against it. Discuss: content hashing is expensive for large files — when would you use mtime-based shortcuts? How does this relate to how git detects renames (similarity threshold)?</p>
+      </div>
+
+      <h3>Problem 5: LRU Cache with TTL</h3>
+      <p><strong>Part A:</strong> Implement an LRU cache with O(1) get/put.</p>
+      <p><strong>Part B:</strong> Add per-key TTL (time-to-live) — expired entries should be evicted.</p>
+      <p><strong>Part C:</strong> Make it thread-safe with minimal lock contention. Discuss the trade-offs of different locking strategies.</p>
+
+      <div class="callout tip"><div class="h">Model Approach</div>
+      <p>Classic doubly-linked list + hashmap for LRU. For TTL, add expiry timestamps and lazily evict on access (check expiry on get) plus a background sweep for proactive cleanup. For thread safety, discuss: global lock (simple but contention), sharded locks (partition keyspace), or lock-free approaches with CAS operations. At Reflection's scale, sharded locks with consistent hashing give the best balance of correctness and throughput.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Pro Tips for This Round</h3>
+      <p><strong>1. Think aloud constantly.</strong> The interviewer can't see your thought process if you're silent. Narrate your reasoning: "I'm choosing a hashmap here because we need O(1) lookup by user ID..."</p>
+      <p><strong>2. Start with the simplest correct solution.</strong> Don't over-engineer Part A. Get something working, then refactor when complexity demands it.</p>
+      <p><strong>3. Use AI tools strategically.</strong> Let AI handle boilerplate (imports, class scaffolding, test setup) while you focus on the core logic and design decisions. Review what it generates.</p>
+      <p><strong>4. When extending, pause and redesign if needed.</strong> It's a strength to say "My current approach won't cleanly support this extension — let me refactor the core abstraction."</p>
+      <p><strong>5. Write at least one test.</strong> Even a simple assertion shows you care about correctness. Use AI to generate edge-case tests quickly.</p>
+      <p><strong>6. Discuss system-level trade-offs even in a coding round.</strong> This is Reflection — they care about how your code would behave at scale, under failure, in production.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION: ROUND 2 — DESIGN SURVEY ============ -->
+<section id="round2">
+  <div class="wrap">
+    <span class="eyebrow">Section 03 — Round 2</span>
+    <h2 class="sec">Design Survey (60 min)</h2>
+    <p class="lead">Two parts: a breadth-of-knowledge survey covering networking, GPUs, data, and backend infrastructure, followed by a system design question evaluating robustness, scalability, and trade-offs.</p>
+
+    <div class="card">
+      <h3>Part 1: Breadth-of-Knowledge Survey (~25-30 min)</h3>
+      <p>This is a rapid-fire assessment of your systems knowledge across multiple domains. The interviewer will ask short, pointed questions to gauge your depth in areas critical to Reflection's infrastructure. You don't need to be an expert in everything, but you need solid fundamentals across the board.</p>
+
+      <h3>Networking</h3>
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>Question</th><th>What a Strong Answer Covers</th></tr></thead>
+        <tbody>
+          <tr><td>Explain the difference between InfiniBand and Ethernet for GPU cluster networking.</td><td>InfiniBand: lossless fabric, RDMA-native, lower latency (~1-2μs), higher bandwidth (400Gb/s NDR), kernel bypass. Ethernet: ubiquitous, cheaper, requires RoCE for RDMA, higher latency (~5-10μs), but closing the gap with 800GbE. Reflection likely uses InfiniBand for inter-node GPU communication and Ethernet for storage/management.</td></tr>
+          <tr><td>What is RDMA and why does it matter for distributed training?</td><td>Remote Direct Memory Access — allows one machine to read/write another's memory without involving the CPU or OS kernel. Eliminates context switches and copies. Critical for AllReduce operations where GPUs exchange gradients — reduces communication overhead from milliseconds to microseconds.</td></tr>
+          <tr><td>Explain NCCL and its role in distributed training.</td><td>NVIDIA Collective Communications Library — optimizes multi-GPU and multi-node collective operations (AllReduce, AllGather, Broadcast). Automatically selects optimal algorithms based on topology (ring, tree, or hybrid). Uses NVLink intra-node and InfiniBand/RoCE inter-node. The backbone of PyTorch's distributed training.</td></tr>
+          <tr><td>What is a fat-tree network topology and why is it used in GPU clusters?</td><td>A Clos network providing full bisection bandwidth — any node can communicate with any other at full link speed simultaneously. Built with leaf switches (connected to nodes) and spine switches (interconnecting leaves). Prevents bandwidth bottlenecks during AllReduce operations where all nodes communicate simultaneously.</td></tr>
+          <tr><td>What happens when there's network congestion during an AllReduce operation?</td><td>A single slow link creates a straggler effect — all other nodes must wait at the synchronization barrier. This can reduce effective cluster throughput by 20-40% even if only one link is degraded. Adaptive routing and congestion control (ECN, PFC for lossless fabrics) help, but the fundamental fix is proper network provisioning and monitoring.</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>GPUs & Hardware</h3>
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>Question</th><th>What a Strong Answer Covers</th></tr></thead>
+        <tbody>
+          <tr><td>Describe the H100 GPU architecture at a high level.</td><td>Hopper architecture. 80GB HBM3 at 3.35 TB/s bandwidth. 132 SMs with 4th-gen Tensor Cores (FP8 support). 900 GB/s NVLink (4th gen, 18 links). Transformer Engine for mixed-precision training. 700W TDP. Key advance over A100: FP8 Tensor Cores, 3x NVLink bandwidth, hardware thread block clusters.</td></tr>
+          <tr><td>What is NVLink and how does it differ from PCIe for GPU communication?</td><td>NVLink is NVIDIA's proprietary high-bandwidth GPU interconnect. H100 NVLink: 900 GB/s bidirectional (18 links). PCIe Gen5 x16: 128 GB/s bidirectional. NVLink is ~7x faster. Used for intra-node GPU-to-GPU communication. Critical for tensor parallelism where layers are split across GPUs within a node.</td></tr>
+          <tr><td>Explain the memory hierarchy of a modern GPU training system.</td><td>Registers (fastest, per-thread) → Shared Memory/L1 (per-SM, ~228KB on H100) → L2 Cache (50MB on H100) → HBM (80GB, 3.35TB/s) → NVLink (peer GPU memory) → Host RAM via PCIe → Remote node via InfiniBand. Each level trades capacity for bandwidth/latency. Training optimization is about keeping data in the fastest tier possible.</td></tr>
+          <tr><td>What are XID errors and why do they matter?</td><td>NVIDIA GPU error codes logged by the driver. XID 79 = "GPU has fallen off the bus" (PCIe link failure). XID 48 = double-bit ECC error (uncorrectable memory). XID 63 = row remapping failure. These indicate hardware degradation. In a training cluster, a single XID error can crash a multi-thousand-GPU job. Proactive monitoring and node quarantine are essential.</td></tr>
+          <tr><td>What is the Transformer Engine on H100?</td><td>Hardware-accelerated dynamic precision management for Transformer workloads. Automatically selects between FP8 and FP16 per-layer based on tensor statistics. Maintains accuracy while doubling throughput vs. FP16-only training. Uses per-tensor scaling factors computed on-the-fly. This is why H100 is ~3x faster than A100 for LLM training.</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Data & Storage</h3>
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>Question</th><th>What a Strong Answer Covers</th></tr></thead>
+        <tbody>
+          <tr><td>How do you handle petabyte-scale training data pipelines?</td><td>Distributed storage (parallel filesystems like Lustre/GPFS, or object stores like S3). Data loading: prefetch and pipeline I/O with compute. Tokenization as a preprocessing step stored in memory-mapped files. Deduplication (MinHash/SimHash). Quality filtering. Sharding across workers with deterministic shuffling for reproducibility.</td></tr>
+          <tr><td>What is checkpointing in distributed training and what are the trade-offs?</td><td>Periodically saving model state (weights, optimizer state, scheduler state, RNG state) to persistent storage. Trade-off: frequent checkpoints = less lost work on failure but more I/O overhead and storage cost. Async checkpointing (write to fast local NVMe, then background-copy to distributed storage) minimizes training interruption. At 1000+ GPUs, checkpoint size can be hundreds of GB.</td></tr>
+          <tr><td>How would you design a data deduplication pipeline for web-scale training data?</td><td>Multi-stage: exact dedup (hash-based), near-dedup (MinHash with LSH for fuzzy matching), URL-based dedup, n-gram overlap filtering. Run as a MapReduce/Spark job. Trade-off: aggressive dedup improves model quality but risks removing legitimate repeated patterns. Typical threshold: ~80% Jaccard similarity for near-dedup.</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Backend Infrastructure</h3>
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>Question</th><th>What a Strong Answer Covers</th></tr></thead>
+        <tbody>
+          <tr><td>Explain the different parallelism strategies for training large models.</td><td><strong>Data Parallelism:</strong> replicate model, shard data. Each GPU processes different batches, gradients are synchronized via AllReduce. <strong>Tensor Parallelism:</strong> split individual layers across GPUs (e.g., split weight matrices column-wise). Requires high-bandwidth intra-node links (NVLink). <strong>Pipeline Parallelism:</strong> split model into stages across nodes. Uses micro-batching to keep GPUs busy. <strong>Expert Parallelism:</strong> for MoE models, route different experts to different GPUs. <strong>Sequence Parallelism:</strong> split along sequence dimension for attention computation. In practice, use hybrid: TP within a node, PP across nodes, DP across replicas.</td></tr>
+          <tr><td>What is FSDP/ZeRO and why is it important?</td><td>Fully Sharded Data Parallelism (FSDP) / ZeRO (Zero Redundancy Optimizer). Instead of replicating full model state on every GPU, shard optimizer states (ZeRO-1), gradients (ZeRO-2), and parameters (ZeRO-3) across GPUs. Gather parameters on-demand for computation, then discard. Reduces per-GPU memory from O(model_size) to O(model_size/N). Enables training models that don't fit on a single GPU with data-parallel-like simplicity.</td></tr>
+          <tr><td>How does Kubernetes interact with GPU scheduling for ML workloads?</td><td>K8s uses device plugins (nvidia-device-plugin) to expose GPUs as schedulable resources. Pods request GPUs via resource limits. Challenges: GPU topology awareness (want co-located GPUs for NVLink), gang scheduling (all pods for a training job must start together), preemption policies, and health monitoring. Many teams layer Slurm or custom schedulers on top for better ML-specific scheduling.</td></tr>
+          <tr><td>Describe how you would design a model serving infrastructure for low-latency inference.</td><td>Model parallelism for large models (tensor parallel across GPUs). Continuous batching to maximize throughput. KV-cache management for autoregressive generation. Speculative decoding for latency reduction. Load balancing with session affinity for stateful generation. Quantization (INT8/FP8) for throughput. Monitoring: TTFT (time to first token), TPS (tokens per second), p99 latency.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Part 2: System Design Question (~30-35 min)</h3>
+      <p>You'll be given an open-ended design problem. The interviewer evaluates your ability to make principled trade-offs, design for robustness and scalability, and communicate clearly.</p>
+
+      <h3>Sample Design 1: Design a Distributed Training Job Scheduler</h3>
+      <p><strong>Requirements:</strong> Schedule training jobs across a cluster of 1000+ GPUs. Support gang scheduling (all GPUs for a job allocated simultaneously). Handle node failures gracefully. Prioritize jobs based on urgency and resource needs.</p>
+      <div class="callout tip"><div class="h">Model Approach</div>
+      <p>I'd start with the core scheduling loop: maintain a priority queue of pending jobs and a resource inventory of available GPUs. For gang scheduling, I need atomic allocation — either all requested GPUs are available or the job waits. Key components: (1) Resource Manager tracking GPU health, topology, and allocation state. (2) Scheduler with pluggable policies (FIFO, fair-share, priority-based). (3) Health Monitor that detects failed nodes and triggers job migration. (4) Checkpoint Coordinator that ensures jobs save state before preemption. For fault tolerance, I'd use a replicated state machine (Raft/Paxos) for the scheduler's allocation state. The critical trade-off is between utilization (packing small jobs into gaps) and locality (keeping a job's GPUs topologically close for NVLink bandwidth). I'd implement topology-aware scheduling that prefers allocating within the same NVLink domain, falling back to cross-node only when necessary.</p>
+      </div>
+
+      <h3>Sample Design 2: Design a Real-time Model Evaluation Pipeline</h3>
+      <p><strong>Requirements:</strong> Continuously evaluate model checkpoints against a suite of benchmarks as training progresses. Results must be available within minutes of a checkpoint. Support hundreds of evaluation tasks in parallel. Handle evaluation failures gracefully.</p>
+      <div class="callout tip"><div class="h">Model Approach</div>
+      <p>Architecture: (1) Checkpoint Watcher monitors storage for new checkpoints. (2) Eval Orchestrator fans out evaluation tasks to a pool of GPU workers. (3) Result Aggregator collects scores and publishes to a dashboard. Key design decisions: decouple eval from training (separate GPU pool to avoid contention). Use a task queue (e.g., Celery/Ray) for distributing eval tasks. Implement progressive evaluation — run fast benchmarks first, slow ones only if fast ones pass a threshold. For fault tolerance: idempotent eval tasks with automatic retry. For scalability: shard large benchmarks across multiple workers. Trade-off: dedicating GPUs to eval reduces training throughput, but early detection of training issues (loss spikes, benchmark regressions) saves far more compute than it costs.</p>
+      </div>
+
+      <h3>Sample Design 3: Design a Distributed Key-Value Store for Model Weights</h3>
+      <p><strong>Requirements:</strong> Store and serve model weights (hundreds of GB per model). Support fast reads for inference serving. Handle versioning (multiple checkpoints). Optimize for sequential read patterns.</p>
+      <div class="callout tip"><div class="h">Model Approach</div>
+      <p>Model weights are large, immutable blobs with sequential access patterns — this shapes the design. I'd use a tiered storage approach: hot tier (NVMe SSDs on inference nodes for active model versions), warm tier (distributed object store for recent checkpoints), cold tier (archival storage for old versions). For serving: memory-map weight files for zero-copy loading. Use tensor-level sharding so each inference GPU loads only its shard. Versioning via content-addressed storage (hash of weights = version ID). For fast loading: pre-shard weights at checkpoint time, store in the layout expected by the inference framework. Trade-off: pre-sharding increases storage cost but eliminates reshape latency at load time. At Reflection's scale, the seconds saved per model load across thousands of daily loads justifies the storage overhead.</p>
+      </div>
+    </div>
+
+    <div class="callout info"><div class="h">Design Survey Strategy</div>
+    <p>For the breadth section: be concise but precise. Give the key numbers and trade-offs. It's okay to say "I'm less familiar with X but here's my understanding..." — intellectual honesty is a Reflection value.</p>
+    <p>For the design section: drive the conversation. State assumptions, draw the high-level architecture, then dive into the most interesting component. Always discuss: What fails? How do you detect it? How do you recover?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION: ROUND 3 — CASE STUDY ============ -->
+<section id="round3">
+  <div class="wrap">
+    <span class="eyebrow">Section 04 — Round 3</span>
+    <h2 class="sec">Case Study: Production Debugging (60 min)</h2>
+    <p class="lead">You'll work through production-style debugging scenarios using diagrams, logs, and metrics. The goal: demonstrate you can debug at the platform layer, moving fluidly between job-level, node-level, and device-level signals.</p>
+
+    <div class="card">
+      <h3>What This Round Tests</h3>
+      <p>This is not a coding round. It's about your <strong>debugging methodology</strong> and <strong>platform thinking</strong>. Reflection builds infrastructure that trains models across thousands of GPUs. When something goes wrong, the platform itself should detect issues before they reach a researcher. They want to see:</p>
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>Skill</th><th>What They Assess</th></tr></thead>
+        <tbody>
+          <tr><td>Signal Fluency</td><td>Can you move between job-level metrics (loss curves, throughput), node-level signals (CPU/GPU utilization, memory), and device-level indicators (XID errors, temperatures, ECC counts)?</td></tr>
+          <tr><td>Fault Localization</td><td>Given symptoms, can you systematically narrow down the root cause? Do you follow a structured approach or guess randomly?</td></tr>
+          <tr><td>Platform Thinking</td><td>What should the platform have caught automatically? What health checks, alerts, or automated remediation would prevent this from reaching a human?</td></tr>
+          <tr><td>Communication</td><td>Can you explain your reasoning clearly? Do you state hypotheses and then validate/invalidate them?</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Debugging Framework: The 5-Layer Model</h3>
+      <p>When presented with a scenario, systematically check each layer:</p>
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>Layer</th><th>Signals to Check</th><th>Common Failures</th></tr></thead>
+        <tbody>
+          <tr><td>1. Application/Job</td><td>Loss curve, throughput (samples/sec), gradient norms, NaN detection</td><td>Learning rate too high, data corruption, numerical instability</td></tr>
+          <tr><td>2. Framework/Runtime</td><td>NCCL timeouts, CUDA OOM, deadlocks, collective operation latency</td><td>Rank mismatch, memory leak, synchronization bug</td></tr>
+          <tr><td>3. Node/OS</td><td>CPU utilization, memory usage, disk I/O, network throughput, dmesg logs</td><td>OOM killer, disk full, NIC flap, kernel panic</td></tr>
+          <tr><td>4. Device/GPU</td><td>XID errors, temperature, power draw, ECC errors, NVLink errors, clock speeds</td><td>Thermal throttling, HBM degradation, PCIe link failure, NVLink CRC errors</td></tr>
+          <tr><td>5. Network/Fabric</td><td>Link errors, port counters, congestion signals, routing tables</td><td>Cable degradation, switch failure, congestion, routing asymmetry</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Scenario 1: The Silent Slowdown</h3>
+      <p><strong>Situation:</strong> A 512-GPU training job has been running for 3 days. The researcher reports that throughput has gradually degraded by 30% over the last 12 hours. No errors in the training logs. The job hasn't crashed.</p>
+
+      <p><strong>Metrics provided:</strong></p>
+      <ul style="margin:12px 0 12px 24px;color:var(--muted)">
+        <li>Training throughput: dropped from 1200 samples/sec to 840 samples/sec</li>
+        <li>GPU utilization: most GPUs at 95%, but 4 GPUs on node-37 showing 72%</li>
+        <li>GPU temperature on node-37: 83°C (others at 68-72°C)</li>
+        <li>No XID errors in dmesg</li>
+        <li>NCCL collective latency: p99 increased from 2ms to 8ms</li>
+      </ul>
+
+      <div class="callout tip"><div class="h">Model Debugging Walkthrough</div>
+      <p><strong>Hypothesis 1:</strong> The 4 GPUs on node-37 are thermal throttling. At 83°C, H100s begin throttling clock speeds. This creates a straggler effect — every AllReduce must wait for the slowest participant.</p>
+      <p><strong>Validation:</strong> Check <code>nvidia-smi -q -d CLOCK</code> on node-37. If current clocks are below base clock (e.g., 1.2 GHz vs. 1.98 GHz base), thermal throttling is confirmed.</p>
+      <p><strong>Root cause investigation:</strong> Why is node-37 hot? Check: (1) Fan RPM — a failed fan reduces airflow. (2) Ambient temperature — is this node in a hot aisle recirculation zone? (3) Workload imbalance — is this node doing more work? (4) Dust/airflow obstruction.</p>
+      <p><strong>Immediate fix:</strong> Drain node-37, replace with a healthy spare, restart from last checkpoint.</p>
+      <p><strong>Platform improvement:</strong> The platform should have: (1) Temperature-based alerts at 78°C (before throttling begins). (2) Automatic straggler detection comparing per-node collective latency. (3) Proactive node replacement when sustained thermal anomalies are detected. (4) Throughput regression alerts comparing current rate to rolling baseline.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Scenario 2: The Mysterious NCCL Timeout</h3>
+      <p><strong>Situation:</strong> A 1024-GPU training job crashes with "NCCL Watchdog Timeout" after running for 6 hours. This is the third time this week. Each time, the timeout occurs on a different rank.</p>
+
+      <p><strong>Logs provided:</strong></p>
+      <pre><code>[Rank 847] NCCL WARN Watchdog caught collective timeout on AllReduce
+[Rank 847] Last enqueued collective: AllReduce (count=134217728, datatype=float16)
+[Rank 847] Timeout after 600000ms
+<span class="cmt"># All other ranks show: "Connection closed by remote peer"</span></code></pre>
+
+      <div class="callout tip"><div class="h">Model Debugging Walkthrough</div>
+      <p><strong>Key insight:</strong> NCCL timeouts are symptoms, not causes. The rank that reports the timeout is often NOT the problematic one — it's the one that noticed the failure. The actual culprit is the rank that went silent.</p>
+      <p><strong>Step 1:</strong> Identify which rank(s) stopped responding. Check: which ranks did NOT report the timeout? Those are likely the ones that crashed or hung first.</p>
+      <p><strong>Step 2:</strong> On the silent ranks, check: dmesg for XID errors, GPU memory errors, NVLink errors. Check if the CUDA context is still alive. Check if the process received a signal (SIGKILL from OOM killer?).</p>
+      <p><strong>Step 3:</strong> Since it happens on different ranks each time, this suggests a systemic issue rather than a single bad node. Possible causes: (a) Intermittent network fabric issues (cable degradation, switch port errors). (b) Memory errors that manifest stochastically. (c) A race condition in the training code triggered under specific timing conditions.</p>
+      <p><strong>Step 4:</strong> Check InfiniBand port error counters across all switches. Look for SymbolErrors, LinkDowned, or RcvErrors that correlate with crash times.</p>
+      <p><strong>Platform improvement:</strong> (1) Pre-job health checks: run NCCL all-reduce benchmark on allocated nodes before starting the job. (2) Continuous fabric monitoring with per-port error rate alerts. (3) Automatic node quarantine when a node is involved in 2+ NCCL timeouts within a window. (4) Detailed per-rank heartbeat monitoring to identify the first rank to go silent.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Scenario 3: Loss Spike After Checkpoint Resume</h3>
+      <p><strong>Situation:</strong> A training job was preempted and restarted from a checkpoint. After resuming, the loss immediately spikes and doesn't recover. The same checkpoint was used successfully 2 days ago when the job was manually restarted.</p>
+
+      <p><strong>Metrics provided:</strong></p>
+      <ul style="margin:12px 0 12px 24px;color:var(--muted)">
+        <li>Loss before preemption: 2.3 (steadily decreasing)</li>
+        <li>Loss after resume: 8.7 (and climbing)</li>
+        <li>Learning rate: matches expected schedule value</li>
+        <li>Gradient norm: 100x higher than pre-preemption</li>
+      </ul>
+
+      <div class="callout tip"><div class="h">Model Debugging Walkthrough</div>
+      <p><strong>Hypothesis 1: RNG state mismatch.</strong> If the random number generator state wasn't properly restored, data shuffling and dropout patterns change, but this typically causes minor degradation, not a 4x loss spike.</p>
+      <p><strong>Hypothesis 2: Optimizer state corruption.</strong> If optimizer states (Adam momentum/variance) weren't loaded correctly, the effective learning rate is wrong. Check: are optimizer state tensors all zeros? Are they loaded from the correct checkpoint file?</p>
+      <p><strong>Hypothesis 3: Data pipeline state mismatch.</strong> The dataloader resumed from the wrong position, feeding already-seen data or skipping critical data. Check: what's the global step counter? Does it match the checkpoint's step?</p>
+      <p><strong>Hypothesis 4 (most likely): Node topology changed.</strong> The job resumed on different nodes with different GPU-to-rank mapping. If model shards are loaded onto wrong ranks (e.g., pipeline stage 3's weights loaded onto stage 1's GPU), the forward pass produces garbage. Check: is the rank-to-node mapping identical to the original run?</p>
+      <p><strong>Platform improvement:</strong> (1) Checkpoint validation: verify tensor shapes and statistics match expected values before training resumes. (2) Topology-aware restart: ensure rank mapping is consistent or properly remapped. (3) Automatic loss sanity check: if loss exceeds 2x pre-checkpoint value within 100 steps of resume, halt and alert. (4) Checkpoint integrity hashes to detect corruption.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Active Health Checking Design Discussion</h3>
+      <p>If time allows, the interviewer will ask you to design an active health checking system. Here's what they're looking for:</p>
+
+      <div class="grid two">
+        <div class="card">
+          <h3>Passive vs. Active Health Checks</h3>
+          <p><strong>Passive:</strong> Monitor signals that are already being produced (GPU telemetry, network counters, system logs). Low overhead but reactive — you only detect failures after they manifest.</p>
+          <p><strong>Active:</strong> Proactively run diagnostic workloads to detect degradation before it impacts production. Higher overhead but catches issues earlier. Examples: periodic NCCL benchmarks, memory stress tests, NVLink bandwidth checks.</p>
+        </div>
+        <div class="card">
+          <h3>When to Run Active Checks</h3>
+          <p><strong>Pre-job:</strong> Before allocating nodes to a training job, run a quick health validation (GPU memory test, NVLink bandwidth test, NCCL all-reduce). Catches degraded nodes before they waste hours of compute.</p>
+          <p><strong>Inter-job:</strong> Between job allocations, run deeper diagnostics (DCGM Level 3, full memory scan).</p>
+          <p><strong>Periodic:</strong> During idle periods, run comprehensive stress tests. Track trends over time to predict failures.</p>
+        </div>
+      </div>
+
+      <div class="callout tip"><div class="h">Model Answer: Active Health Checking System</div>
+      <p>I'd design a three-tier health checking system. Tier 1 (continuous, passive): collect GPU telemetry via DCGM — temperatures, power, ECC counts, clock speeds — and alert on anomalies using statistical baselines. Tier 2 (pre-job, active): before any job starts, run a 60-second NCCL all-reduce benchmark across allocated nodes. If any node's bandwidth is more than 10% below expected, quarantine it and reallocate. Tier 3 (periodic, deep): during idle windows, run DCGM Level 3 diagnostics (12-minute comprehensive test covering memory, PCIe, NVLink, and thermal behavior under load). The key trade-off is between check thoroughness and GPU availability — every minute spent on health checks is a minute not spent training. I'd optimize by making Tier 1 zero-overhead (piggyback on existing telemetry), Tier 2 fast enough to be imperceptible (60 seconds vs. hours of training), and Tier 3 only during genuine idle time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION: ROUND 4 — CULTURE ============ -->
+<section id="round4">
+  <div class="wrap">
+    <span class="eyebrow">Section 05 — Round 4</span>
+    <h2 class="sec">Culture Interview (30 min)</h2>
+    <p class="lead">A conversation focused on culture fit. At Reflection, this means: high agency, intellectual honesty, simplicity-first thinking, team orientation, and genuine passion for the mission of open intelligence.</p>
+
+    <div class="card">
+      <h3>What They're Really Assessing</h3>
+      <p>This isn't a "tell me about a time" behavioral gauntlet. It's a genuine conversation to determine: Would this person thrive in our environment? Would we enjoy working with them? Do they share our values?</p>
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>Trait</th><th>How They Probe It</th><th>What Good Looks Like</th></tr></thead>
+        <tbody>
+          <tr><td>High Agency</td><td>"Tell me about something you built that nobody asked you to build."</td><td>Self-directed projects. Taking initiative without permission. Solving problems you noticed before others did.</td></tr>
+          <tr><td>Intellectual Honesty</td><td>"Tell me about a time you were wrong about something technical."</td><td>Genuine admission of error. What you learned. How you updated your mental model. No ego-protection.</td></tr>
+          <tr><td>Simplicity</td><td>"Describe a complex system you simplified."</td><td>Removing unnecessary complexity. Choosing boring technology when it works. Resisting over-engineering.</td></tr>
+          <tr><td>Team First</td><td>"How do you handle disagreements with teammates?"</td><td>Disagree and commit. Prioritize team velocity over being right. Help others succeed.</td></tr>
+          <tr><td>Mission Alignment</td><td>"Why Reflection? Why open models?"</td><td>Genuine belief in open intelligence. Understanding of why it matters. Not just "it's a hot company."</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Sample Questions & Model Answers</h3>
+
+      <div class="mock"><div class="qq">Why Reflection? What draws you to this mission? <span class="tw">+</span></div>
+        <div class="aa"><p>I believe the foundation of intelligence should be open — not because it's idealistic, but because it's how the best technology has always been built. Linux, the internet protocols, the Transformer architecture itself — all open. Reflection is the team with the deepest RL expertise (AlphaGo lineage) combined with the conviction to actually ship frontier open models. The fact that Ioannis and Misha left Gemini to do this tells me they believe the window is closing, and I want to be part of keeping it open.</p></div></div>
+
+      <div class="mock"><div class="qq">Tell me about a time you showed high agency. <span class="tw">+</span></div>
+        <div class="aa"><p>At my previous role, I noticed our training jobs were failing 3x more on certain nodes but nobody was tracking it systematically. Without being asked, I built a simple dashboard that correlated job failures with node hardware telemetry. Within a week, we identified 12 nodes with degrading NVLink connections that were causing intermittent NCCL timeouts. The fix saved roughly 200 GPU-hours per week in wasted restarts. I didn't ask permission because the data was already there — it just needed someone to connect the dots.</p></div></div>
+
+      <div class="mock"><div class="qq">Tell me about a time you were wrong about a technical decision. <span class="tw">+</span></div>
+        <div class="aa"><p>I once advocated strongly for building a custom distributed training framework instead of using PyTorch's native DistributedDataParallel. I argued we needed more control over gradient synchronization. Three months in, we'd built something that was marginally faster but significantly harder to maintain, debug, and onboard new people onto. The maintenance burden ate all the performance gains. I was wrong because I optimized for peak performance over team velocity and simplicity. We migrated back to the standard tooling and I learned that "do the simple thing that works" isn't just a platitude — it's a competitive advantage when you're iterating fast.</p></div></div>
+
+      <div class="mock"><div class="qq">How do you handle disagreements with teammates? <span class="tw">+</span></div>
+        <div class="aa"><p>I try to separate the technical question from the ego question. If someone disagrees with my approach, I genuinely want to understand their reasoning — maybe they see a constraint I missed. I'll ask "what would change my mind?" and "what would change yours?" to find the crux of the disagreement. If we can't resolve it quickly, I bias toward: whoever is doing the implementation gets to choose, and we revisit with data after a week. The worst outcome is a team that's paralyzed by debate. Ship something, learn, iterate.</p></div></div>
+
+      <div class="mock"><div class="qq">What's your working style? How do you do your best work? <span class="tw">+</span></div>
+        <div class="aa"><p>I do my best work when I have a clear problem, autonomy to solve it, and fast feedback loops. I prefer working in-person for the high-bandwidth collaboration — especially when debugging or designing systems together. I'm most productive in focused blocks of 3-4 hours, and I protect that time. I also believe in writing things down — design docs, post-mortems, decision logs — because it forces clarity and helps the team move faster even when I'm not in the room.</p></div></div>
+
+      <div class="mock"><div class="qq">What excites you most about the technical challenges at Reflection? <span class="tw">+</span></div>
+        <div class="aa"><p>The intersection of RL and large-scale systems is genuinely unsolved at frontier scale. Training a massive MoE model with RL post-training requires solving problems that don't have textbook answers — how do you maintain training stability when your reward signal is noisy? How do you scale self-play or search to thousands of GPUs? These are the same problems that made AlphaGo work, but now applied to language and code. I find that deeply exciting because the solutions will compound — solving it for coding agents means you've built the infrastructure to solve it for general agents.</p></div></div>
+    </div>
+
+    <div class="callout warn"><div class="h">Things to Avoid</div>
+    <p><strong>Don't:</strong> Give generic answers that could apply to any AI company. Don't say "I want to work on cutting-edge AI" without specifics. Don't badmouth previous employers. Don't be falsely humble or falsely confident.</p>
+    <p><strong>Do:</strong> Be specific about why Reflection (not just "AI" in general). Show you've researched the founders, the technical approach, the open-weight thesis. Be genuine — they can tell when you're performing vs. being real.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUIZ SECTION ============ -->
+<section id="quiz">
+  <div class="wrap">
+    <span class="eyebrow">Section 06 — Test Yourself</span>
+    <h2 class="sec">Rapid-Fire Quiz</h2>
+    <p class="lead">Test your knowledge across all four interview dimensions. Click an answer to check — wrong answers include the explanation.</p>
+
+    <div class="quiz" data-correct="2">
+      <div class="q">1. What is the bidirectional NVLink bandwidth on an H100 GPU?</div>
+      <button class="opt">450 GB/s</button>
+      <button class="opt">600 GB/s</button>
+      <button class="opt">900 GB/s</button>
+      <button class="opt">1.8 TB/s</button>
+      <div class="explain">The H100 has 4th-generation NVLink with 18 links providing 900 GB/s total bidirectional bandwidth. This is 7x the bandwidth of PCIe Gen5 x16 (128 GB/s) and 1.5x the A100's NVLink bandwidth (600 GB/s).</div>
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="q">2. In a 16,384-GPU cluster, what is the approximate Mean Time To Failure (MTTF) according to Meta's research?</div>
+      <button class="opt">7.9 hours</button>
+      <button class="opt">1.8 hours</button>
+      <button class="opt">14 minutes</button>
+      <button class="opt">24 hours</button>
+      <div class="explain">Meta's research shows MTTF of ~1.8 hours at 16,384 GPUs. At 1,024 GPUs it's ~7.9 hours, and at 131,072 GPUs it drops to just 14 minutes. This illustrates why fault tolerance is critical at scale.</div>
+    </div>
+
+    <div class="quiz" data-correct="3">
+      <div class="q">3. When debugging an NCCL timeout, which rank is most likely the root cause?</div>
+      <button class="opt">The rank that reported the timeout first</button>
+      <button class="opt">Rank 0 (the coordinator)</button>
+      <button class="opt">The rank with the highest GPU utilization</button>
+      <button class="opt">The rank(s) that did NOT report the timeout (went silent)</button>
+      <div class="explain">NCCL timeouts are reported by ranks that are waiting for a response. The actual culprit is typically the rank that went silent — it crashed, hung, or lost network connectivity before it could participate in the collective operation.</div>
+    </div>
+
+    <div class="quiz" data-correct="0">
+      <div class="q">4. What parallelism strategy is best suited for communication within a single node (high NVLink bandwidth)?</div>
+      <button class="opt">Tensor Parallelism</button>
+      <button class="opt">Pipeline Parallelism</button>
+      <button class="opt">Data Parallelism</button>
+      <button class="opt">Expert Parallelism</button>
+      <div class="explain">Tensor Parallelism splits individual layers across GPUs and requires high-bandwidth, low-latency communication for every forward/backward pass. NVLink (900 GB/s) within a node makes this feasible. Pipeline Parallelism is better suited for cross-node communication where bandwidth is lower.</div>
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="q">5. What is FSDP/ZeRO-3's primary benefit?</div>
+      <button class="opt">Faster gradient computation</button>
+      <button class="opt">Reduced network communication</button>
+      <button class="opt">Reduced per-GPU memory usage by sharding parameters across all GPUs</button>
+      <button class="opt">Automatic mixed-precision training</button>
+      <div class="explain">ZeRO-3 (FSDP) shards model parameters, gradients, AND optimizer states across all GPUs. Each GPU only stores 1/N of the full model state, enabling training of models that are N times larger than what fits on a single GPU. The trade-off is increased communication to gather parameters on-demand.</div>
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="q">6. Reflection AI was founded by researchers from which organization?</div>
+      <button class="opt">OpenAI</button>
+      <button class="opt">Google DeepMind</button>
+      <button class="opt">Meta FAIR</button>
+      <button class="opt">Anthropic</button>
+      <div class="explain">Both founders — Ioannis Antonoglou and Misha Laskin — came from Google DeepMind. Ioannis was a founding engineer (employee #25) who built AlphaGo/AlphaZero/MuZero, and Misha led reward modeling for Gemini. They left in early 2024 to start Reflection.</div>
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="q">7. In an "Agentic Coding" interview, what is the MOST important signal when using AI tools?</div>
+      <button class="opt">Speed of code generation</button>
+      <button class="opt">Not using AI at all to prove raw skill</button>
+      <button class="opt">Strategic use with critical review of AI-generated code</button>
+      <button class="opt">Using AI for every single line of code</button>
+      <div class="explain">The interview assesses judgment — knowing when to use AI (boilerplate, syntax, tests) vs. when to think independently (architecture, trade-offs, edge cases). Critically reviewing AI output and understanding what it generates is the key differentiator.</div>
+    </div>
+
+    <div class="quiz" data-correct="0">
+      <div class="q">8. What XID error code indicates "GPU has fallen off the bus"?</div>
+      <button class="opt">XID 79</button>
+      <button class="opt">XID 48</button>
+      <button class="opt">XID 63</button>
+      <button class="opt">XID 31</button>
+      <div class="explain">XID 79 indicates a PCIe link failure where the GPU is no longer accessible to the system. XID 48 is a double-bit ECC error (uncorrectable memory error), and XID 63 is a row remapping failure. These are critical hardware failures requiring immediate node replacement.</div>
+    </div>
+
+    <div class="quiz" data-correct="3">
+      <div class="q">9. What is Reflection's core technical thesis?</div>
+      <button class="opt">Scaling model parameters is all you need</button>
+      <button class="opt">Closed models are safer than open models</button>
+      <button class="opt">Fine-tuning existing models is sufficient</button>
+      <button class="opt">Combining large-scale pretraining with advanced RL from the ground up</button>
+      <div class="explain">Reflection's thesis is that frontier intelligence requires combining large-scale LLM pretraining with advanced reinforcement learning — the same RL techniques that powered AlphaGo/AlphaZero, now applied to language models. This is distinct from just scaling parameters or just doing RLHF post-training.</div>
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="q">10. When a training job resumes from checkpoint and loss immediately spikes, what should you check FIRST?</div>
+      <button class="opt">Learning rate schedule</button>
+      <button class="opt">Whether model shards loaded onto correct ranks (topology mapping)</button>
+      <button class="opt">GPU temperature</button>
+      <button class="opt">Network bandwidth</button>
+      <div class="explain">An immediate, large loss spike after checkpoint resume most commonly indicates that model parameters were loaded onto incorrect ranks — e.g., pipeline stage 3's weights on stage 1's GPU. This produces garbage outputs immediately. Learning rate issues cause gradual degradation, not instant spikes.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FLASHCARDS SECTION ============ -->
+<section id="flash">
+  <div class="wrap">
+    <span class="eyebrow">Section 07 — Spaced Repetition</span>
+    <h2 class="sec">Flashcards: Tap to Flip</h2>
+    <p class="lead">Core vocabulary and concepts you must know cold. Tap any card to reveal the answer.</p>
+    <div class="flip-grid">
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">NCCL<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">NVIDIA Collective Communications Library. Optimizes multi-GPU collective ops (AllReduce, AllGather). Selects algorithms based on topology. Uses NVLink intra-node, InfiniBand inter-node.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Tensor Parallelism<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Splitting individual model layers across GPUs. Requires high-bandwidth intra-node links (NVLink). Each GPU computes a portion of each layer's output. Best within a single node.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Pipeline Parallelism<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Splitting model into sequential stages across nodes. Uses micro-batching to keep GPUs busy. Introduces "bubble" overhead. Better for cross-node communication where bandwidth is limited.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">FSDP / ZeRO-3<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Fully Sharded Data Parallelism. Shards parameters, gradients, AND optimizer states across all GPUs. Each GPU stores only 1/N of model state. Gathers parameters on-demand for computation.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Mixture of Experts (MoE)<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Architecture where only a subset of "expert" sub-networks activate per input token. Allows massive parameter counts with constant compute cost. Routing network selects which experts process each token.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">RDMA<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Remote Direct Memory Access. Allows one machine to read/write another's memory without CPU/OS involvement. Eliminates context switches and copies. ~1-2μs latency. Critical for AllReduce at scale.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">AllReduce<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Collective operation that combines values from all processes and distributes the result to all. Used for gradient synchronization in data-parallel training. Ring or tree algorithms depending on topology.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">XID Errors<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">NVIDIA GPU error codes. XID 79 = GPU off bus (PCIe failure). XID 48 = uncorrectable ECC error. XID 63 = row remapping failure. Indicate hardware degradation requiring node quarantine.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Goodput<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Ratio of useful compute time to total training time. Accounts for failures, restarts, checkpointing overhead. Industry average ~90%. Higher goodput = less wasted compute from interruptions.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">MTBF / MTTF<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Mean Time Between/To Failure. At 1024 GPUs: ~7.9 hours MTTF. At 16,384 GPUs: ~1.8 hours. Measured in GPU-hours (total uptime / number of failures). Key reliability metric for clusters.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Transformer Engine<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">H100 hardware feature for dynamic FP8/FP16 precision selection per-layer. Computes per-tensor scaling factors on-the-fly. Doubles throughput vs FP16-only while maintaining accuracy. Key H100 advantage.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Fat-Tree Topology<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Clos network providing full bisection bandwidth. Leaf switches connect to nodes, spine switches interconnect leaves. Any-to-any communication at full link speed. Standard for GPU cluster networking.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Gang Scheduling<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">All resources for a distributed job must be allocated simultaneously. If any node fails, the entire job must be rescheduled. Ensures synchronous training can proceed without partial allocation deadlocks.</div>
+      </div></button>
+
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Decision Transformer<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Paper co-authored by Misha Laskin. Reframes RL as sequence modeling — conditioning on desired returns to generate actions. Leverages Transformer scalability for RL. Foundational to Reflection's approach.</div>
+      </div></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MOCK INTERVIEW SECTION ============ -->
+<section id="mock">
+  <div class="wrap">
+    <span class="eyebrow">Section 08 — Dress Rehearsal</span>
+    <h2 class="sec">Mock Interview: Full Q&A Bank</h2>
+    <p class="lead">Practice these questions aloud. Click each to reveal a model answer written to be spoken naturally in an interview setting.</p>
+
+    <h3>Agentic Coding Questions</h3>
+
+    <div class="mock"><div class="qq">Walk me through how you'd approach a problem you've never seen before in this coding round. <span class="tw">+</span></div>
+      <div class="aa"><p>First, I'd read the problem carefully and ask clarifying questions — what are the input constraints? What edge cases matter? Then I'd think about the simplest correct approach before touching code. I'd sketch the data structures and algorithm verbally, get your buy-in on the approach, then implement it cleanly. I'd use AI tools for boilerplate and test scaffolding, but I'd write the core logic myself so I can reason about it when extensions arrive. After Part A works, I'd pause before each extension to consider whether my current design accommodates it or needs refactoring.</p></div></div>
+
+    <div class="mock"><div class="qq">Your initial solution works for Part A but won't scale for Part B. What do you do? <span class="tw">+</span></div>
+      <div class="aa"><p>I'd acknowledge it explicitly: "My current approach is O(n^2) which won't work for the larger input size in Part B. Let me refactor." I'd identify the bottleneck, propose the better approach, and restructure. I wouldn't try to patch the existing code with hacks — that signals I'm afraid to throw away code. Good engineers know when to refactor. I'd keep the tests from Part A to ensure I don't break existing functionality during the rewrite.</p></div></div>
+
+    <div class="mock"><div class="qq">How do you decide when to use an AI tool vs. writing code yourself? <span class="tw">+</span></div>
+      <div class="aa"><p>I use AI for things where correctness is easily verifiable and the code is well-understood: boilerplate, standard patterns, test generation, syntax I don't remember. I write core algorithmic logic myself because that's where the design decisions live — the AI doesn't know my constraints or the extensions coming next. I also always read what AI generates before accepting it. If I can't explain why the code works, I rewrite it.</p></div></div>
+
+    <h3>Design Survey Questions</h3>
+
+    <div class="mock"><div class="qq">Explain how you would design a system to train a 1-trillion parameter MoE model. <span class="tw">+</span></div>
+      <div class="aa"><p>A 1T MoE model needs hybrid parallelism. Within each node (8 GPUs connected via NVLink), I'd use tensor parallelism to split dense layers. Across nodes, pipeline parallelism for the sequential stages. For the MoE layers specifically, expert parallelism — each expert lives on a dedicated GPU, and a routing network dispatches tokens to the appropriate expert. Data parallelism across the outer dimension for throughput. The critical challenges are: load balancing across experts (some experts get more tokens), communication overhead for token routing, and memory management for the massive optimizer states. I'd use ZeRO-3 to shard optimizer state and implement auxiliary loss terms to encourage balanced expert utilization.</p></div></div>
+
+    <div class="mock"><div class="qq">What's the difference between RDMA and traditional TCP/IP networking, and why does it matter for training? <span class="tw">+</span></div>
+      <div class="aa"><p>Traditional TCP/IP goes through the kernel network stack — data copies from user space to kernel buffers, through the protocol stack, out the NIC. Each hop adds latency and CPU overhead. RDMA bypasses all of that — the NIC reads directly from application memory and writes directly to remote application memory. Zero CPU involvement, zero copies, ~1-2 microsecond latency vs. ~50-100 microseconds for TCP. For distributed training, this matters enormously because AllReduce operations happen every training step — shaving microseconds off each collective saves hours over a multi-day training run across thousands of GPUs.</p></div></div>
+
+    <div class="mock"><div class="qq">How would you handle a situation where your training cluster has heterogeneous GPU generations? <span class="tw">+</span></div>
+      <div class="aa"><p>Heterogeneous clusters are tricky because synchronous training runs at the speed of the slowest participant. My approach: first, never mix GPU generations within a single training job's data-parallel group — the faster GPUs would idle waiting for slower ones. Instead, use the different generations for different workloads: frontier GPUs for the main training run, older GPUs for evaluation, data preprocessing, or smaller experiments. If you must mix, consider asynchronous SGD or local SGD where faster workers take more steps between synchronization points — but this introduces optimization challenges. The cleanest solution is homogeneous allocation per job with heterogeneous scheduling across jobs.</p></div></div>
+
+    <h3>Case Study Questions</h3>
+
+    <div class="mock"><div class="qq">A training job shows 40% throughput degradation but no errors. Walk me through your debugging process. <span class="tw">+</span></div>
+      <div class="aa"><p>No errors but degraded throughput — this is a straggler problem. Step 1: Check per-GPU utilization across all nodes. Look for outliers — any GPU significantly below the mean. Step 2: For the slow GPUs, check thermal state (throttling?), clock speeds (power-capped?), and memory bandwidth (ECC corrections slowing things down?). Step 3: Check network — are collective operation latencies uniform or is one node's contribution consistently late? Use NCCL debug logging to see per-rank timing. Step 4: Check the data pipeline — is one worker's dataloader slower (disk I/O bottleneck, slow NFS mount)? The 40% degradation without errors strongly suggests thermal throttling or network degradation on a subset of nodes creating a straggler effect on the synchronous collective operations.</p></div></div>
+
+    <div class="mock"><div class="qq">What platform-level signals should automatically detect a degrading GPU before it crashes a job? <span class="tw">+</span></div>
+      <div class="aa"><p>I'd monitor five key signals continuously: (1) ECC error rate — single-bit corrections trending upward predict imminent double-bit failures. Alert at 10+ corrections per hour. (2) Temperature trend — sustained operation above 78°C predicts throttling. (3) NVLink CRC error rate — any non-zero rate indicates link degradation. (4) PCIe replay count — increasing replays mean the link is marginal. (5) Clock speed vs. expected — if a GPU consistently runs below base clock under load, something is wrong. The platform should correlate these signals: a GPU showing elevated ECC errors AND temperature should be quarantined immediately, not just alerted on. Proactive replacement during a maintenance window is always cheaper than a mid-training crash.</p></div></div>
+
+    <div class="mock"><div class="qq">Design an automated remediation system for node failures during training. <span class="tw">+</span></div>
+      <div class="aa"><p>The system has three phases: Detect, Isolate, Recover. Detection: continuous health monitoring (the signals I mentioned) plus job-level watchdogs (if a rank hasn't made progress in N seconds, assume failure). Isolation: immediately mark the failed node as unhealthy in the scheduler, prevent new jobs from being allocated there, and notify the training job's checkpoint coordinator. Recovery: trigger an automatic checkpoint save on remaining healthy ranks, allocate a replacement node from the spare pool, run a quick health validation on the replacement, then restart the job from the checkpoint with the new node. The key metric is MTTR — time from failure detection to job resumption. Target: under 5 minutes for the common case. The spare pool size is a trade-off: more spares = faster recovery but higher cost. I'd size it based on historical failure rates — typically 2-5% of cluster capacity.</p></div></div>
+
+    <h3>Culture Questions</h3>
+
+    <div class="mock"><div class="qq">What does "do the simple thing that works" mean to you in practice? <span class="tw">+</span></div>
+      <div class="aa"><p>It means resisting the urge to over-engineer on the first pass. When I'm designing a system, I ask: what's the simplest architecture that solves today's problem correctly? Not the one that handles hypothetical future requirements, not the one that uses the most sophisticated algorithm — the one that works, is easy to understand, and is easy to change later. In practice, this means: use a database before building a custom storage engine, use a cron job before building an event-driven architecture, use a monolith before microservices. You can always add complexity when you have evidence it's needed. You can rarely remove it once it's there.</p></div></div>
+
+    <div class="mock"><div class="qq">How do you stay current with the rapidly evolving AI/ML landscape? <span class="tw">+</span></div>
+      <div class="aa"><p>I follow a few high-signal sources rather than trying to read everything: the key arxiv papers (I track authors I trust), a few technical blogs and newsletters, and I try to reproduce interesting results in small-scale experiments. But honestly, the best way I stay current is by building things. When a new technique comes out — say, a new RL algorithm or a training optimization — I try to implement a simplified version to understand it at a mechanical level. Reading papers gives you the "what," but implementing gives you the "why" and the "where does this break."</p></div></div>
+  </div>
+</section>
+
+<!-- ============ CHEAT SHEET SECTION ============ -->
+<section id="cheat">
+  <div class="wrap">
+    <span class="eyebrow">Section 09 — Last-Minute Review</span>
+    <h2 class="sec">The Cheat Sheet</h2>
+    <p class="lead">Condensed, scannable facts for review the night before or morning of your interview.</p>
+    <div class="grid two">
+      <div class="card">
+        <h3>Reflection AI Key Facts</h3>
+        <p><strong>Founded:</strong> Early 2024<br>
+        <strong>Founders:</strong> Ioannis Antonoglou (CTO, DeepMind #25, AlphaGo architect) + Misha Laskin (CEO, Gemini reward modeling, Decision Transformer)<br>
+        <strong>Mission:</strong> Frontier open intelligence accessible to all<br>
+        <strong>Funding:</strong> $2B Series B (Oct 2025), backed by Sequoia, NVIDIA, Lightspeed<br>
+        <strong>Focus:</strong> Open-weight LLMs + advanced RL, autonomous coding agents<br>
+        <strong>Values:</strong> High trust, intellectual honesty, simplicity, reliability, team first<br>
+        <strong>Offices:</strong> SF, NYC, London</p>
+      </div>
+      <div class="card">
+        <h3>H100 GPU Numbers</h3>
+        <p><strong>HBM3:</strong> 80 GB at 3.35 TB/s<br>
+        <strong>NVLink:</strong> 900 GB/s bidirectional (18 links)<br>
+        <strong>PCIe:</strong> Gen5 x16, 128 GB/s<br>
+        <strong>Tensor Cores:</strong> 4th gen, FP8 support<br>
+        <strong>TDP:</strong> 700W<br>
+        <strong>Throttle temp:</strong> ~83°C<br>
+        <strong>SMs:</strong> 132<br>
+        <strong>L2 Cache:</strong> 50 MB</p>
+      </div>
+      <div class="card">
+        <h3>Parallelism Strategies</h3>
+        <p><strong>Data Parallel:</strong> Replicate model, shard data, AllReduce gradients<br>
+        <strong>Tensor Parallel:</strong> Split layers across GPUs (intra-node, NVLink)<br>
+        <strong>Pipeline Parallel:</strong> Split model stages across nodes (micro-batching)<br>
+        <strong>Expert Parallel:</strong> MoE experts on different GPUs<br>
+        <strong>FSDP/ZeRO:</strong> Shard params+grads+optimizer across all GPUs<br>
+        <strong>Hybrid:</strong> TP within node + PP across nodes + DP across replicas</p>
+      </div>
+      <div class="card">
+        <h3>Failure Modes & Signals</h3>
+        <p><strong>Thermal throttle:</strong> >83°C, clock drops, straggler effect<br>
+        <strong>XID 79:</strong> GPU off bus (PCIe failure)<br>
+        <strong>XID 48:</strong> Uncorrectable ECC (memory failure)<br>
+        <strong>NCCL timeout:</strong> Symptom, not cause — check silent ranks<br>
+        <strong>MTTF at 1K GPUs:</strong> ~7.9 hours<br>
+        <strong>MTTF at 16K GPUs:</strong> ~1.8 hours<br>
+        <strong>Industry goodput:</strong> ~90%<br>
+        <strong>Industry MFU:</strong> 35-45%</p>
+      </div>
+      <div class="card">
+        <h3>Networking Essentials</h3>
+        <p><strong>InfiniBand NDR:</strong> 400 Gb/s, lossless, RDMA-native, ~1-2μs<br>
+        <strong>Ethernet:</strong> Ubiquitous, needs RoCE for RDMA, ~5-10μs<br>
+        <strong>RDMA:</strong> Kernel bypass, zero-copy, direct memory access<br>
+        <strong>Fat-tree:</strong> Full bisection bandwidth, leaf+spine topology<br>
+        <strong>NCCL:</strong> Ring/tree AllReduce, topology-aware<br>
+        <strong>PTP:</strong> Sub-microsecond time sync (required for NCCL)</p>
+      </div>
+      <div class="card">
+        <h3>Interview Day Checklist</h3>
+        <p><strong>Agentic Coding:</strong> IDE ready, language installed, AI tools configured, screen share tested, can compile+run locally<br>
+        <strong>Design Survey:</strong> Know GPU specs, parallelism strategies, networking basics, storage patterns<br>
+        <strong>Case Study:</strong> Practice the 5-layer debugging framework, know XID codes, understand straggler effects<br>
+        <strong>Culture:</strong> Prepare 3-4 stories showing agency, honesty, simplicity. Know WHY Reflection specifically.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="big">You've Got This, Hashish.</div>
+    <p>Reflection is building something genuinely important — frontier open intelligence that keeps AI accessible to everyone. You've done the research, you know the technical depth, and you understand their values. Now go show them what you can build.</p>
+    <p style="margin-top:22px;font-family:var(--mono);font-size:12px;color:var(--muted)">Sources: Sequoia Capital (Reflection AI Spotlight, Apr 2025), Lightspeed Venture Partners (Mar 2025), Reflection AI Blog (Oct 2025), Meta FAIR "Revisiting Reliability in Large-Scale ML Research Clusters" (arXiv:2410.21680), Nebius "Fault-tolerant Training" (Aug 2025), CoreWeave "Why Distributed Training Fails at Scale" (May 2026), NVIDIA H100 Architecture Whitepaper, Reflection AI Careers Page & Job Descriptions (jobs.ashbyhq.com/reflectionai).</p>
+  </div>
+</footer>
+
+<script>
+// progress bar
+const prog=document.getElementById('progress');
+addEventListener('scroll',()=>{const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;prog.style.width=p+'%';});
+// quiz
+document.querySelectorAll('.quiz').forEach(q=>{
+  const correct=+q.dataset.correct;const opts=[...q.querySelectorAll('.opt')];const exp=q.querySelector('.explain');
+  opts.forEach((o,i)=>o.addEventListener('click',()=>{
+    if(q.dataset.done)return;q.dataset.done=1;
+    opts[correct].classList.add('correct');
+    if(i!==correct)o.classList.add('wrong');
+    exp.classList.add('show');
+  }));
+});
+// flashcards
+document.querySelectorAll('.flip').forEach(f=>f.addEventListener('click',()=>f.classList.toggle('flipped')));
+// mock accordions
+document.querySelectorAll('.mock .qq').forEach(q=>q.addEventListener('click',()=>{q.classList.toggle('open');q.nextElementSibling.classList.toggle('open');}));
+// active nav highlight
+const secs=[...document.querySelectorAll('section[id]')];const navlinks=[...document.querySelectorAll('nav .links a')];
+addEventListener('scroll',()=>{let cur='';secs.forEach(s=>{if(scrollY>=s.offsetTop-120)cur=s.id;});
+  navlinks.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+cur?'#e8edf7':'';a.style.background=a.getAttribute('href')==='#'+cur?'var(--panel2)':'';});});
+</script>
+</body>
+</html>
