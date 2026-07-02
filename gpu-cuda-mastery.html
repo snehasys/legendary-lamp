@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<!--
+  INTERVIEW-MASTERY ARTEFACT — GPU/CUDA Systems Engineer @ NVIDIA
+  ================================================================
+  Generated from interview debrief feedback. Self-contained, zero dependencies.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPU &amp; CUDA Mastery Plan — Interview Recovery Guide</title>
+<style>
+:root{
+  --bg:#0a0e17; --bg2:#0f1524; --panel:#141b2d; --panel2:#1a2338;
+  --ink:#e8edf7; --muted:#9aa8c4; --line:#25304a;
+  --green:#76b900; --green-d:#5c8f00; --green-soft:rgba(118,185,0,.14);
+  --cyan:#38e0d0; --amber:#ffc34d; --red:#ff5c72; --red-soft:rgba(255,92,114,.12);
+  --blue:#5aa9ff; --purple:#b07bff;
+  --radius:16px; --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.7;font-size:16px;overflow-x:hidden;
+  background-image:radial-gradient(900px 500px at 85% -5%,rgba(118,185,0,.10),transparent 60%),radial-gradient(700px 400px at 5% 10%,rgba(90,169,255,.08),transparent 55%);}
+::selection{background:var(--green-soft);color:#fff}
+a{color:var(--green);text-decoration:none} a:hover{text-decoration:underline}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--green),var(--cyan));z-index:999;transition:width .1s}
+nav{position:sticky;top:0;z-index:900;backdrop-filter:blur(14px);background:rgba(10,14,23,.82);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:18px;height:60px}
+nav .brand{font-weight:800;letter-spacing:.5px;font-size:15px;white-space:nowrap}
+nav .brand span{color:var(--green)}
+nav .links{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav .links::-webkit-scrollbar{display:none}
+nav .links a{color:var(--muted);font-size:13px;font-weight:600;padding:8px 11px;border-radius:9px;white-space:nowrap;transition:.2s}
+nav .links a:hover{color:var(--ink);background:var(--panel2);text-decoration:none}
+header.hero{padding:96px 0 70px;position:relative;text-align:center}
+.tag{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--green);border:1px solid var(--green);padding:6px 14px;border-radius:999px;margin-bottom:26px;background:var(--green-soft)}
+.hero h1{font-size:clamp(2.2rem,6vw,4rem);line-height:1.05;font-weight:900;letter-spacing:-1px}
+.hero h1 .grad{background:linear-gradient(120deg,var(--green),var(--cyan) 60%,var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero p.sub{max-width:720px;margin:24px auto 0;color:var(--muted);font-size:1.12rem}
+.hero .cta{margin-top:36px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;padding:13px 22px;border-radius:12px;border:1px solid var(--line);transition:.2s;cursor:pointer}
+.btn.primary{background:var(--green);color:#0a0e17;border-color:var(--green)}
+.btn.primary:hover{background:var(--green-d);text-decoration:none;transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--ink)} .btn.ghost:hover{background:var(--panel2);text-decoration:none}
+section{padding:64px 0;border-top:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:12px;display:block}
+h2.sec{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.lead{color:var(--muted);font-size:1.05rem;max-width:760px;margin-bottom:34px}
+h3{font-size:1.35rem;font-weight:700;margin:34px 0 12px}
+p{margin-bottom:16px;color:#d3dcee} strong{color:#fff}
+.card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:22px;position:relative}
+.grid{display:grid;gap:18px}
+.grid.two{grid-template-columns:1fr 1fr} .grid.three{grid-template-columns:repeat(3,1fr)}
+@media(max-width:820px){.grid.two,.grid.three{grid-template-columns:1fr}}
+.myth{border-left:4px solid var(--red);background:linear-gradient(90deg,var(--red-soft),transparent 70%);border-radius:10px;padding:16px 18px;margin-bottom:14px}
+.fact{border-left:4px solid var(--green);background:linear-gradient(90deg,var(--green-soft),transparent 70%);border-radius:10px;padding:16px 18px}
+.myth .lbl,.fact .lbl{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;display:block;margin-bottom:6px}
+.myth .lbl{color:var(--red)} .fact .lbl{color:var(--green)}
+.tbl{width:100%;border-collapse:collapse;font-size:14.5px;overflow:hidden;border-radius:12px;border:1px solid var(--line)}
+.tbl th,.tbl td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
+.tbl th{background:var(--panel2);color:#fff;font-weight:700;font-size:13px;letter-spacing:.4px}
+.tbl tr:last-child td{border-bottom:none} .tbl tr:hover td{background:rgba(118,185,0,.05)}
+.tbl td:first-child{font-weight:700;color:#fff} .tbl .hl{color:var(--green);font-weight:700}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.callout{border-radius:12px;padding:16px 18px;margin:18px 0;font-size:14.5px;border:1px solid var(--line)}
+.callout .h{font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.callout.tip{background:var(--green-soft);border-color:rgba(118,185,0,.4)}
+.callout.warn{background:var(--red-soft);border-color:rgba(255,92,114,.4)}
+.callout.info{background:rgba(90,169,255,.1);border-color:rgba(90,169,255,.4)}
+.callout.said{background:rgba(255,195,77,.09);border-color:rgba(255,195,77,.4)}
+code{font-family:var(--mono);background:#0b1120;border:1px solid var(--line);padding:2px 7px;border-radius:6px;font-size:13px;color:var(--cyan)}
+pre{background:#0b1120;border:1px solid var(--line);border-radius:12px;padding:18px;overflow-x:auto;margin:16px 0}
+pre code{background:none;border:none;padding:0;color:#cfe3ff;font-size:13.5px;line-height:1.65;display:block}
+.cmt{color:#5f7599}
+.quiz{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-bottom:18px}
+.quiz .q{font-weight:700;font-size:1.08rem;margin-bottom:16px}
+.opt{display:block;width:100%;text-align:left;background:var(--bg2);border:1px solid var(--line);color:var(--ink);padding:13px 16px;border-radius:10px;margin-bottom:10px;cursor:pointer;transition:.15s;font-size:14.5px;font-family:inherit}
+.opt:hover{border-color:var(--green);background:var(--panel)}
+.opt.correct{border-color:var(--green);background:var(--green-soft);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-soft);color:#fff}
+.explain{display:none;margin-top:12px;padding:14px 16px;border-radius:10px;background:rgba(90,169,255,.08);border:1px solid rgba(90,169,255,.35);font-size:14px}
+.explain.show{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.flip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.flip{background:none;border:none;padding:0;perspective:1200px;height:170px;cursor:pointer;font-family:inherit}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:18px;text-align:center}
+.flip-front{background:linear-gradient(150deg,var(--panel2),var(--panel));font-weight:800;font-size:1.05rem;color:#fff}
+.flip-front .hint{position:absolute;bottom:10px;font-size:10px;letter-spacing:1px;color:var(--muted);font-weight:600;text-transform:uppercase}
+.flip-back{background:linear-gradient(150deg,#10281c,#0d1c16);transform:rotateY(180deg);border-color:var(--green-d);font-size:13.5px;color:#d7efc9;line-height:1.55}
+.badge{display:inline-block;font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:6px;font-weight:700;letter-spacing:.5px}
+.b-green{background:var(--green-soft);color:var(--green)} .b-red{background:var(--red-soft);color:var(--red)}
+.b-amber{background:rgba(255,195,77,.14);color:var(--amber)} .b-blue{background:rgba(90,169,255,.14);color:var(--blue)}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.chip{font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+.stat-row{display:flex;gap:16px;flex-wrap:wrap;margin:20px 0}
+.stat{flex:1;min-width:150px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:18px}
+.stat .n{font-size:1.9rem;font-weight:900;color:var(--green);font-family:var(--mono)} .stat .l{font-size:12.5px;color:var(--muted);margin-top:4px}
+footer{padding:50px 0 70px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:14px}
+footer .big{font-size:1.4rem;color:#fff;font-weight:800;margin-bottom:10px}
+.mock{border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.mock .qq{background:var(--panel2);padding:14px 18px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mock .qq:hover{background:#1e2942}
+.mock .aa{padding:0 18px;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease}
+.mock .aa.open{max-height:1200px;padding:16px 18px}
+.mock .qq .tw{color:var(--green);font-family:var(--mono);font-size:20px;transition:transform .3s}
+.mock .qq.open .tw{transform:rotate(45deg)}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">GPU<span>Mastery</span> · NVIDIA Prep</div>
+    <div class="links">
+      <a href="#autopsy">The Autopsy</a>
+      <a href="#myths">Myth-Busting</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#memory">Memory</a>
+      <a href="#interconnect">Interconnect</a>
+      <a href="#quiz">Quiz</a>
+      <a href="#flash">Flashcards</a>
+      <a href="#mock">Mock Interview</a>
+      <a href="#cheat">Cheat Sheet</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">Interview Recovery Plan</span>
+    <h1>You Know GPUs.<br><span class="grad">Now Master the Details.</span></h1>
+    <p class="sub">Your systems thinking and real-world ops experience impressed the panel. Three factual slips and one shallow answer held you back. This guide fixes all of them — with the exact numbers, mental models, and spoken answers you need for round two.</p>
+    <div class="cta">
+      <a class="btn primary" href="#autopsy">See What Happened</a>
+      <a class="btn ghost" href="#cheat">Skip to Cheat Sheet</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ SECTION 01: THE AUTOPSY ============ -->
+<section id="autopsy">
+  <div class="wrap">
+    <span class="eyebrow">Section 01 — Honest Debrief</span>
+    <h2 class="sec">The Autopsy: What the Feedback Actually Said</h2>
+    <p class="lead">The interviewer's debrief had five data points. Two were genuine strengths you under-sold. Three were factual gaps that cost you the offer. Let's map each one to its fix.</p>
+    <div class="tbl-scroll">
+    <table class="tbl">
+      <thead><tr><th>What happened in the interview</th><th>The real gap</th><th>Where we fix it</th></tr></thead>
+      <tbody>
+        <tr><td>Described multi-GPU training pipeline clearly</td><td class="hl">Strength — under-sold with vague "it's fast"</td><td><a href="#interconnect">§ Interconnect</a></td></tr>
+        <tr><td>Said H100 has "around 50,000 CUDA cores"</td><td>Off by 3x — it's 16,896 (SXM) or 14,592 (PCIe)</td><td><a href="#myths">§ Myth-Busting</a></td></tr>
+        <tr><td>Claimed a warp is "64 threads"</td><td>Warp size is 32 threads — always has been on NVIDIA</td><td><a href="#myths">§ Myth-Busting</a></td></tr>
+        <tr><td>Confused Tensor Cores with CUDA cores</td><td>Concept confusion — different units doing different ops</td><td><a href="#architecture">§ Architecture</a></td></tr>
+        <tr><td>Mentioned NVLink but couldn't give bandwidth</td><td>Shallow breadth — knows the name, not the numbers</td><td><a href="#interconnect">§ Interconnect</a></td></tr>
+        <tr><td>Discussed shared memory usage in kernels</td><td class="hl">Strength — real CUDA programming experience</td><td><a href="#memory">§ Memory</a></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="callout tip"><div class="h">💪 The reframe</div>You have genuine hands-on GPU experience — that's the hard part. The gaps are just vocabulary and spec memorization, which are the easiest things to fix. Two study sessions and you'll nail these cold.</div>
+  </div>
+</section>
+
+<!-- ============ SECTION 02: MYTH-BUSTING ============ -->
+<section id="myths">
+  <div class="wrap">
+    <span class="eyebrow">Section 02 — The Big Fixes</span>
+    <h2 class="sec">Myth-Busting: The Answers That Sank You</h2>
+    <p class="lead">These three wrong answers were the difference between "strong hire" and "not yet." Each one has a specific correct number — memorize it, understand why, and never miss it again.</p>
+
+    <!-- MYTH 1: CUDA Core Count -->
+    <div class="card">
+      <h3>🔴 Myth 1 — "The H100 has around 50,000 CUDA cores"</h3>
+      <div class="myth"><span class="lbl">What was said</span>The candidate stated the H100 has "around 50,000 CUDA cores, maybe more" — likely conflating total FP32 throughput numbers or confusing with AMD's stream processor counts.</div>
+      <div class="fact"><span class="lbl">What's true</span>The NVIDIA H100 SXM5 has <strong>16,896 CUDA cores</strong> (132 SMs × 128 FP32 cores/SM). The PCIe variant has <strong>14,592 CUDA cores</strong> (114 SMs × 128). No NVIDIA GPU has ever shipped with 50,000 CUDA cores.</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">16,896</div><div class="l">CUDA cores (H100 SXM5)</div></div>
+        <div class="stat"><div class="n">132</div><div class="l">Streaming Multiprocessors</div></div>
+        <div class="stat"><div class="n">128</div><div class="l">FP32 cores per SM</div></div>
+      </div>
+      <p>The confusion likely arose from marketing materials quoting peak TFLOPS or from AMD GPUs that use "stream processors" with different granularity. NVIDIA's naming is consistent: each SM in Hopper has 128 FP32 CUDA cores, 4 Tensor Cores (4th gen), and dedicated units for INT32, FP64, and special functions.</p>
+      <div class="callout tip"><div class="h">🎤 Say this instead</div>The H100 SXM5 has 16,896 CUDA cores across 132 Streaming Multiprocessors — that's 128 FP32 cores per SM. The PCIe variant disables some SMs, landing at 14,592 cores across 114 SMs. What makes Hopper special isn't raw core count but the 4th-gen Tensor Cores and the new TMA unit that lets a handful of threads saturate the full 3.35 TB/s memory bandwidth.</div>
+    </div>
+
+    <!-- MYTH 2: Warp Size -->
+    <div class="card">
+      <h3>🔴 Myth 2 — "A warp is 64 threads"</h3>
+      <div class="myth"><span class="lbl">What was said</span>The candidate said "a warp is 64 threads, I think — or maybe 128 on the newer ones." This suggests confusion with AMD's wavefront size (which is 64 on RDNA) or with the number of cores per SM.</div>
+      <div class="fact"><span class="lbl">What's true</span>An NVIDIA warp is <strong>always 32 threads</strong>. This has been constant since the Tesla architecture (2006). All threads in a warp execute the same instruction in lockstep (SIMT). AMD's equivalent — a "wavefront" — is 64 threads on GCN/CDNA and 32 on RDNA.</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">32</div><div class="l">Threads per warp (NVIDIA, always)</div></div>
+        <div class="stat"><div class="n">64</div><div class="l">Threads per wavefront (AMD GCN/CDNA)</div></div>
+      </div>
+      <p>The warp size of 32 is fundamental to CUDA programming. It determines coalesced memory access patterns, warp-level primitives like <code>__shfl_sync()</code>, and the minimum divergence granularity. Getting this wrong signals unfamiliarity with the execution model.</p>
+      <div class="callout tip"><div class="h">🎤 Say this instead</div>A warp on NVIDIA hardware is 32 threads — it's been 32 since the very first CUDA-capable GPU in 2006. All 32 threads share a program counter and execute in SIMT fashion. This is why we align memory accesses to 32-element boundaries and why branch divergence within a warp serializes both paths. AMD uses 64-thread wavefronts on CDNA, which is probably where the confusion comes from.</div>
+    </div>
+
+    <!-- MYTH 3: Tensor Cores confused with CUDA Cores -->
+    <div class="card">
+      <h3>🔴 Myth 3 — "Tensor Cores are just faster CUDA cores"</h3>
+      <div class="myth"><span class="lbl">What was said</span>When asked about Tensor Cores, the candidate described them as "basically CUDA cores but optimized for matrix math" — implying they're the same unit with a different mode, rather than distinct hardware.</div>
+      <div class="fact"><span class="lbl">What's true</span>Tensor Cores are <strong>physically separate hardware units</strong> from CUDA (FP32) cores. A CUDA core performs one FP32 fused multiply-add per clock. A 4th-gen Tensor Core (H100) performs a <strong>full 16×8×16 matrix multiply-accumulate</strong> per clock in FP16/BF16/TF32/FP8, delivering orders of magnitude more throughput for matrix workloads.</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">1,979</div><div class="l">FP16 Tensor TFLOPS (H100 SXM, dense)</div></div>
+        <div class="stat"><div class="n">67</div><div class="l">FP32 CUDA TFLOPS (same GPU)</div></div>
+      </div>
+      <p>The H100 SXM has 528 Tensor Cores (4 per SM × 132 SMs) alongside its 16,896 CUDA cores. They occupy different silicon, have different instruction sets (<code>mma.sync</code> / <code>wgmma</code> for Tensor Cores vs standard FMA for CUDA cores), and serve different workloads. Tensor Cores need structured matrix inputs; CUDA cores handle arbitrary scalar/vector ops.</p>
+      <div class="callout tip"><div class="h">🎤 Say this instead</div>Tensor Cores are dedicated matrix-multiply-accumulate engines — physically separate silicon from the FP32 CUDA cores. On H100, each SM has 4 fourth-generation Tensor Cores that can execute a 16-by-8-by-16 MMA in one clock at FP16, BF16, TF32, or FP8 precision. That's how H100 hits nearly 2 petaFLOPS of FP16 Tensor throughput while the CUDA cores alone deliver about 67 TFLOPS of FP32. You invoke them through <code>wgmma</code> instructions or via cuBLAS/cuDNN which maps to them automatically.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 03: DEEP-DIVE — GPU Architecture ============ -->
+<section id="architecture">
+  <div class="wrap">
+    <span class="eyebrow">Section 03 — Deep Dive</span>
+    <h2 class="sec">Hopper Architecture: The Full Picture</h2>
+    <p class="lead">Understanding how an SM is organized — and what lives inside it — is the mental model that prevents all three myths above from recurring.</p>
+
+    <div class="grid two">
+      <div class="card">
+        <h3>Inside One Hopper SM</h3>
+        <p>Each of the 132 SMs in H100 SXM contains:</p>
+        <p><strong>128 FP32 CUDA cores</strong> (organized as 4 processing blocks of 32)<br>
+        <strong>64 FP64 cores</strong> (half the FP32 count)<br>
+        <strong>64 INT32 cores</strong><br>
+        <strong>4 Tensor Cores</strong> (4th gen, supporting FP8/FP16/BF16/TF32/FP64)<br>
+        <strong>4 Texture units</strong><br>
+        <strong>256 KB</strong> combined L1/shared memory (configurable split)<br>
+        <strong>1 Tensor Memory Accelerator (TMA)</strong> — new in Hopper</p>
+      </div>
+      <div class="card">
+        <h3>The Execution Model</h3>
+        <p>Threads are grouped into <strong>warps of 32</strong>. Each SM can hold up to <strong>64 active warps</strong> (2,048 threads). The warp scheduler picks ready warps each cycle — this latency hiding is how GPUs achieve high throughput despite individual thread stalls.</p>
+        <p>A <strong>thread block</strong> (max 1,024 threads) maps to one SM and shares that SM's shared memory. Multiple blocks can co-reside on one SM if resources allow — this is <strong>occupancy</strong>.</p>
+      </div>
+    </div>
+
+    <h3>H100 SXM vs. H100 PCIe — Key Differences</h3>
+    <div class="tbl-scroll">
+    <table class="tbl">
+      <thead><tr><th>Spec</th><th>H100 SXM5</th><th>H100 PCIe</th></tr></thead>
+      <tbody>
+        <tr><td>SMs</td><td>132</td><td>114</td></tr>
+        <tr><td>CUDA Cores (FP32)</td><td>16,896</td><td>14,592</td></tr>
+        <tr><td>Tensor Cores</td><td>528</td><td>456</td></tr>
+        <tr><td>Memory</td><td>80 GB HBM3</td><td>80 GB HBM2e</td></tr>
+        <tr><td>Memory Bandwidth</td><td>3.35 TB/s</td><td>2.0 TB/s</td></tr>
+        <tr><td>TDP</td><td>700 W</td><td>350 W</td></tr>
+        <tr><td>NVLink</td><td>Yes (900 GB/s)</td><td>No</td></tr>
+        <tr><td>FP16 Tensor (dense)</td><td>1,979 TFLOPS</td><td>1,513 TFLOPS</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="callout info"><div class="h">💡 Why this matters</div>Interviewers ask about SXM vs PCIe to test whether you understand that "H100" isn't one GPU — it's a family. The SXM variant uses a different memory technology (HBM3 vs HBM2e), draws twice the power, and gets NVLink. Knowing this signals you've actually deployed these systems.</div>
+
+    <div class="callout tip"><div class="h">🎤 The model answer</div>The Hopper SM has 128 FP32 CUDA cores and 4 fourth-gen Tensor Cores, plus a new Tensor Memory Accelerator. The full H100 SXM5 die has 132 SMs enabled, giving 16,896 CUDA cores total. The PCIe variant fuses off some SMs to hit a 350W power envelope, landing at 114 SMs. The biggest practical difference is memory bandwidth — 3.35 terabytes per second on SXM with HBM3 versus 2 TB/s on PCIe with HBM2e — which directly impacts inference throughput for memory-bound models.</div>
+  </div>
+</section>
+
+<!-- ============ SECTION 04: DEEP-DIVE — Memory Hierarchy ============ -->
+<section id="memory">
+  <div class="wrap">
+    <span class="eyebrow">Section 04 — Deep Dive</span>
+    <h2 class="sec">CUDA Memory Hierarchy: From Registers to HBM</h2>
+    <p class="lead">You demonstrated real shared-memory usage in your kernel examples — that's a strength. Let's make sure you can articulate the full hierarchy with bandwidth numbers at each level.</p>
+
+    <div class="tbl-scroll">
+    <table class="tbl">
+      <thead><tr><th>Level</th><th>Scope</th><th>Size (H100 SM)</th><th>Latency</th><th>Bandwidth</th></tr></thead>
+      <tbody>
+        <tr><td>Registers</td><td>Per thread</td><td>255 regs (32-bit)</td><td>0 cycles (operand)</td><td>Highest (in-datapath)</td></tr>
+        <tr><td>Shared Memory</td><td>Per block (SM)</td><td>Up to 228 KB</td><td>~20-30 cycles</td><td>~19 TB/s per SM</td></tr>
+        <tr><td>L1 Cache</td><td>Per SM</td><td>256 KB combined w/ shared</td><td>~30 cycles</td><td>~19 TB/s per SM</td></tr>
+        <tr><td>L2 Cache</td><td>Global (all SMs)</td><td>50 MB</td><td>~200 cycles</td><td>~12 TB/s aggregate</td></tr>
+        <tr><td>HBM3 (Global)</td><td>Global</td><td>80 GB</td><td>~400-600 cycles</td><td>3.35 TB/s</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <h3>Shared Memory Best Practices</h3>
+        <p><strong>Bank conflicts:</strong> Shared memory is divided into 32 banks (one per warp lane). Accessing the same bank from multiple threads in a warp serializes — design your access patterns to hit different banks.</p>
+        <p><strong>Async copy:</strong> Hopper's TMA can load directly from global to shared memory without going through registers, freeing up compute threads. Use <code>cp.async</code> or the TMA descriptor API.</p>
+      </div>
+      <div class="card">
+        <h3>The Roofline Mental Model</h3>
+        <p>A kernel is either <strong>compute-bound</strong> (limited by FLOPS) or <strong>memory-bound</strong> (limited by bandwidth). The crossover point is the <strong>arithmetic intensity</strong> = FLOPs / Bytes loaded.</p>
+        <p>For H100 SXM: the ridge point is ~67 TFLOPS / 3.35 TB/s ≈ <strong>20 FLOPs/byte</strong>. Kernels below this ratio are memory-bound — which is most LLM inference.</p>
+      </div>
+    </div>
+
+    <div class="callout said"><div class="h">🔄 Reframe what you already said</div>You described using shared memory to tile a matrix multiply — that's exactly right. Next time, add the "why": "I tile into shared memory because HBM latency is 400+ cycles while shared memory is under 30 cycles, and I can get 19 TB/s of bandwidth from it versus 3.35 TB/s from HBM. The tile size is chosen to avoid bank conflicts across the 32 shared memory banks."</div>
+  </div>
+</section>
+
+<!-- ============ SECTION 05: DEEP-DIVE — Interconnect ============ -->
+<section id="interconnect">
+  <div class="wrap">
+    <span class="eyebrow">Section 05 — Deep Dive</span>
+    <h2 class="sec">NVLink &amp; Interconnect: The Multi-GPU Story</h2>
+    <p class="lead">You mentioned NVLink correctly in context but couldn't provide bandwidth numbers. Here's the full picture — from a single link to a full DGX node.</p>
+
+    <div class="grid two">
+      <div class="card">
+        <h3>NVLink 4.0 (Hopper)</h3>
+        <p><strong>Per link:</strong> 50 GB/s bidirectional (25 GB/s each direction)<br>
+        <strong>Links per GPU:</strong> 18 (H100 SXM5)<br>
+        <strong>Total per GPU:</strong> 18 × 50 = <strong>900 GB/s bidirectional</strong><br>
+        <strong>Comparison:</strong> PCIe Gen5 x16 = ~128 GB/s bidirectional</p>
+        <p>NVLink 4.0 is <strong>7× faster</strong> than PCIe Gen5 for GPU-to-GPU communication.</p>
+      </div>
+      <div class="card">
+        <h3>NVSwitch (3rd gen)</h3>
+        <p>In a DGX H100 (8 GPUs), four NVSwitch chips create a <strong>fully-connected topology</strong> — every GPU can talk to every other GPU at the full 900 GB/s without routing through intermediaries.</p>
+        <p><strong>Total bisection bandwidth:</strong> 3.6 TB/s across the node. This enables all-reduce operations for distributed training to complete in microseconds rather than milliseconds.</p>
+      </div>
+    </div>
+
+    <h3>Why This Matters for Training</h3>
+    <p>In data-parallel training, gradients must be synchronized across GPUs every iteration. With 8 GPUs doing all-reduce over NVLink at 900 GB/s each, a 1 GB gradient tensor synchronizes in roughly <strong>1.1 ms</strong>. Over PCIe Gen5 at 128 GB/s, the same operation takes <strong>~7.8 ms</strong> — a 7× slowdown that directly reduces training throughput.</p>
+
+    <div class="chip-row">
+      <span class="chip">GPU ↔ NVLink 4.0 ↔ NVSwitch</span>
+      <span class="chip">900 GB/s per GPU</span>
+      <span class="chip">3.6 TB/s bisection</span>
+      <span class="chip">7× PCIe Gen5</span>
+    </div>
+
+    <div class="callout tip"><div class="h">🎤 The model answer</div>NVLink 4.0 on H100 provides 900 gigabytes per second of bidirectional bandwidth per GPU through 18 links at 50 GB/s each. In a DGX H100, four third-gen NVSwitch chips connect all eight GPUs in a full-mesh topology with 3.6 TB/s total bisection bandwidth. That's seven times PCIe Gen5, which is why multi-GPU training scales almost linearly within a node — the communication overhead for all-reduce is under 2 milliseconds even for large gradient tensors.</div>
+  </div>
+</section>
+
+<!-- ============ SECTION 06: QUIZ ============ -->
+<section id="quiz">
+  <div class="wrap">
+    <span class="eyebrow">Section 06 — Prove It To Yourself</span>
+    <h2 class="sec">Rapid-Fire Quiz</h2>
+    <p class="lead">Test yourself on the exact facts that tripped you up. One distractor in each question is the mistake from your interview — don't pick it again.</p>
+
+    <div class="quiz" data-correct="2">
+      <div class="q">Q1: How many CUDA cores does the H100 SXM5 have?</div>
+      <button class="opt">50,000</button>
+      <button class="opt">14,592</button>
+      <button class="opt">16,896</button>
+      <button class="opt">18,432</button>
+      <div class="explain">✅ The H100 SXM5 has 132 SMs × 128 FP32 cores = 16,896 CUDA cores. 14,592 is the PCIe variant (114 SMs). 50,000 was the incorrect answer from the interview.</div>
+    </div>
+
+    <div class="quiz" data-correct="0">
+      <div class="q">Q2: What is the warp size on all NVIDIA GPUs?</div>
+      <button class="opt">32 threads</button>
+      <button class="opt">64 threads</button>
+      <button class="opt">16 threads</button>
+      <button class="opt">128 threads</button>
+      <div class="explain">✅ NVIDIA warp size has been 32 threads since the original Tesla architecture in 2006. AMD uses 64-thread wavefronts on GCN/CDNA (and 32 on RDNA).</div>
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="q">Q3: What operation does a single 4th-gen Tensor Core perform per clock?</div>
+      <button class="opt">One FP32 multiply-add (same as a CUDA core, just faster)</button>
+      <button class="opt">A 16×8×16 matrix multiply-accumulate in FP16/BF16/TF32/FP8</button>
+      <button class="opt">A 4×4 matrix multiply in FP32 only</button>
+      <button class="opt">Batch normalization of a 256-element vector</button>
+      <div class="explain">✅ 4th-gen Tensor Cores execute a full MMA (matrix multiply-accumulate) of shape m16n8k16 per clock. They are NOT faster CUDA cores — they are separate hardware with a different instruction set (wgmma/mma.sync).</div>
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="q">Q4: What is the total NVLink bandwidth per GPU on H100 SXM5?</div>
+      <button class="opt">128 GB/s (same as PCIe Gen5)</button>
+      <button class="opt">600 GB/s</button>
+      <button class="opt">900 GB/s bidirectional</button>
+      <button class="opt">3.35 TB/s</button>
+      <div class="explain">✅ H100 SXM5 has 18 NVLink 4.0 links × 50 GB/s each = 900 GB/s bidirectional per GPU. 3.35 TB/s is the HBM3 memory bandwidth, not the interconnect bandwidth. 600 GB/s was the A100's NVLink total.</div>
+    </div>
+
+    <div class="quiz" data-correct="3">
+      <div class="q">Q5: How many Tensor Cores does the H100 SXM5 have in total?</div>
+      <button class="opt">132 (one per SM)</button>
+      <button class="opt">16,896 (same as CUDA cores)</button>
+      <button class="opt">256</button>
+      <button class="opt">528</button>
+      <div class="explain">✅ Each SM has 4 Tensor Cores. With 132 SMs: 132 × 4 = 528 Tensor Cores total. They are far fewer than CUDA cores but each does massively more work per clock on matrix operations.</div>
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="q">Q6: What is the shared memory bank count in NVIDIA GPUs?</div>
+      <button class="opt">16 banks</button>
+      <button class="opt">32 banks</button>
+      <button class="opt">64 banks</button>
+      <button class="opt">128 banks</button>
+      <div class="explain">✅ Shared memory has 32 banks (matching the warp size of 32). Successive 4-byte words map to successive banks. Bank conflicts occur when multiple threads in a warp access different addresses in the same bank.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 07: FLASHCARDS ============ -->
+<section id="flash">
+  <div class="wrap">
+    <span class="eyebrow">Section 07 — Spaced Repetition</span>
+    <h2 class="sec">Flashcards: Tap to Flip</h2>
+    <p class="lead">Twelve terms you need to recall instantly. Flip each card, then come back tomorrow and do it again.</p>
+    <div class="flip-grid">
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Warp<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">A group of 32 threads that execute the same instruction in lockstep (SIMT). The fundamental scheduling unit on NVIDIA GPUs.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">SM (Streaming Multiprocessor)<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">The core compute unit. H100 SXM has 132 SMs, each with 128 FP32 cores, 4 Tensor Cores, 256 KB L1/shared memory, and a warp scheduler.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Tensor Core<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Dedicated matrix multiply-accumulate hardware. 4th gen (Hopper) does m16n8k16 MMA per clock in FP8/FP16/BF16/TF32. Separate from CUDA cores.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Occupancy<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Ratio of active warps to maximum warps per SM (64 on Hopper). Higher occupancy helps hide memory latency but isn't always necessary for peak performance.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">NVLink 4.0<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">GPU-to-GPU interconnect. 50 GB/s per link bidirectional. H100 SXM has 18 links = 900 GB/s total. 7× faster than PCIe Gen5.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">HBM3<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">High Bandwidth Memory, 3rd gen. Used in H100 SXM. 80 GB capacity, 3.35 TB/s bandwidth. Stacked DRAM dies connected via silicon interposer.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">TMA (Tensor Memory Accelerator)<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">New in Hopper. Hardware unit that loads multi-dimensional tiles from global to shared memory without using compute threads. Enables async data movement.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Bank Conflict<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">When multiple threads in a warp access different addresses in the same shared memory bank (32 banks total), accesses serialize. Avoid by padding or swizzling.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Arithmetic Intensity<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">FLOPs per byte loaded from memory. Determines if a kernel is compute-bound or memory-bound. H100 ridge point: ~20 FLOPs/byte.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Thread Block<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">A group of threads (max 1,024) that execute on one SM and share its shared memory. Also called a CTA (Cooperative Thread Array).</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">NVSwitch<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">A switch chip that creates full-mesh NVLink connectivity. DGX H100 has 4 NVSwitch chips connecting 8 GPUs with 3.6 TB/s bisection bandwidth.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">FP8 (E4M3 / E5M2)<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">8-bit floating point formats new in Hopper. E4M3 for forward pass (more precision), E5M2 for gradients (more range). Doubles throughput vs FP16.</div>
+      </div></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 08: MOCK INTERVIEW ============ -->
+<section id="mock">
+  <div class="wrap">
+    <span class="eyebrow">Section 08 — Dress Rehearsal</span>
+    <h2 class="sec">Mock Interview: Model Answers</h2>
+    <p class="lead">Read each answer aloud. Fluency comes from the mouth, not the eyes. Practice until these feel natural — then riff on them in your own style.</p>
+
+    <div class="mock"><div class="qq">Walk me through the H100 architecture at a high level. <span class="tw">+</span></div>
+      <div class="aa"><p>The H100 is built on the Hopper architecture using TSMC's 4N process with 80 billion transistors. The SXM5 variant has 132 Streaming Multiprocessors, each containing 128 FP32 CUDA cores and 4 fourth-generation Tensor Cores — that's 16,896 CUDA cores and 528 Tensor Cores total. It pairs with 80 GB of HBM3 at 3.35 TB/s bandwidth and connects to other GPUs via 18 NVLink 4.0 links at 900 GB/s aggregate. The key Hopper innovations are FP8 Tensor Cores for doubled AI throughput, the Tensor Memory Accelerator for async data movement, and the DPX instructions for dynamic programming workloads.</p></div></div>
+
+    <div class="mock"><div class="qq">What's the difference between a CUDA core and a Tensor Core? <span class="tw">+</span></div>
+      <div class="aa"><p>A CUDA core is a scalar FP32 processing unit — it does one fused multiply-add per clock per thread. A Tensor Core is a dedicated matrix engine that performs a full 16-by-8-by-16 matrix multiply-accumulate in a single clock cycle across multiple precisions including FP8, FP16, BF16, and TF32. They're physically separate hardware on the die with different instruction sets — you invoke Tensor Cores through wgmma or mma.sync PTX instructions, or implicitly through cuBLAS and cuDNN. The H100 has 16,896 CUDA cores but only 528 Tensor Cores, yet those 528 Tensor Cores deliver 30 times more FLOPS for matrix workloads.</p></div></div>
+
+    <div class="mock"><div class="qq">Explain the CUDA memory hierarchy and how you'd optimize a kernel for it. <span class="tw">+</span></div>
+      <div class="aa"><p>The hierarchy goes registers, shared memory, L1 cache, L2 cache, then HBM global memory — each level trading capacity for latency. Registers are free but limited to 255 per thread. Shared memory gives you 228 KB per SM at roughly 20-cycle latency with 19 TB/s bandwidth, but you need to manage bank conflicts across its 32 banks. L2 is 50 MB shared across all SMs. HBM3 gives you 80 GB at 3.35 TB/s but 400-plus cycle latency. My optimization approach is: first, tile data into shared memory to exploit reuse; second, ensure coalesced global memory accesses aligned to 128-byte cache lines; third, use async copy or TMA to overlap data movement with compute; and fourth, tune occupancy so the warp scheduler always has ready warps to hide that HBM latency.</p></div></div>
+
+    <div class="mock"><div class="qq">How does NVLink compare to PCIe for multi-GPU training? <span class="tw">+</span></div>
+      <div class="aa"><p>NVLink 4.0 on H100 provides 900 GB/s bidirectional bandwidth per GPU — that's seven times PCIe Gen5's 128 GB/s. In a DGX H100, four NVSwitch chips create a full-mesh topology so all eight GPUs communicate at that full rate simultaneously, giving 3.6 TB/s bisection bandwidth. For data-parallel training, this means all-reduce on a 1 GB gradient tensor takes about 1 millisecond over NVLink versus 8 milliseconds over PCIe. That difference compounds every iteration, so NVLink-connected systems achieve near-linear scaling for distributed training within a node.</p></div></div>
+
+    <div class="mock"><div class="qq">What is a warp and why does warp size matter for performance? <span class="tw">+</span></div>
+      <div class="aa"><p>A warp is 32 threads that execute in SIMT lockstep — same instruction, same cycle. Warp size matters because it's the granularity of everything: memory coalescing happens at warp level, so you want 32 consecutive threads accessing consecutive addresses for a single 128-byte transaction. Branch divergence serializes at warp level — if threads in a warp take different paths, both paths execute sequentially. And warp-level primitives like shuffle let threads exchange data without going through shared memory, which is critical for reductions. The 32-thread warp has been constant since NVIDIA's first CUDA GPU, so it's a safe architectural assumption for any CUDA code.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ SECTION 09: CHEAT SHEET ============ -->
+<section id="cheat">
+  <div class="wrap">
+    <span class="eyebrow">Section 09 — Print This</span>
+    <h2 class="sec">The Cheat Sheet</h2>
+    <p class="lead">Condensed facts for a 10-minute review before your next interview. One card per theme — scan, don't read.</p>
+    <div class="grid two">
+      <div class="card">
+        <h3>H100 SXM5 — Key Numbers</h3>
+        <p><code>132 SMs</code> · <code>16,896 CUDA cores</code> · <code>528 Tensor Cores</code><br>
+        <code>80 GB HBM3</code> · <code>3.35 TB/s</code> memory BW<br>
+        <code>67 TFLOPS</code> FP32 · <code>1,979 TFLOPS</code> FP16 Tensor<br>
+        <code>700 W TDP</code> · <code>80B transistors</code> · TSMC 4N</p>
+      </div>
+      <div class="card">
+        <h3>CUDA Execution Model</h3>
+        <p><code>Warp = 32 threads</code> (always)<br>
+        <code>Max threads/block = 1,024</code><br>
+        <code>Max warps/SM = 64</code> (2,048 threads)<br>
+        <code>Max blocks/SM = 32</code> (Hopper)<br>
+        <code>Max shared mem/SM = 228 KB</code> (configurable)</p>
+      </div>
+      <div class="card">
+        <h3>Memory Hierarchy</h3>
+        <p><code>Registers</code>: 255/thread, 0-cycle<br>
+        <code>Shared/L1</code>: 256 KB/SM, ~20-30 cycles<br>
+        <code>L2</code>: 50 MB global, ~200 cycles<br>
+        <code>HBM3</code>: 80 GB, ~400-600 cycles, 3.35 TB/s<br>
+        <code>32 shared memory banks</code> (match warp size)</p>
+      </div>
+      <div class="card">
+        <h3>Interconnect</h3>
+        <p><code>NVLink 4.0</code>: 50 GB/s/link × 18 links = 900 GB/s<br>
+        <code>PCIe Gen5 x16</code>: ~128 GB/s bidirectional<br>
+        <code>NVLink / PCIe ratio</code>: 7×<br>
+        <code>NVSwitch</code>: full-mesh, 3.6 TB/s bisection<br>
+        <code>DGX H100</code>: 8 GPUs, 4 NVSwitch chips</p>
+      </div>
+      <div class="card">
+        <h3>Tensor Core Quick Facts</h3>
+        <p><code>4 per SM</code> · <code>528 total</code> (SXM5)<br>
+        <code>Precisions</code>: FP8, FP16, BF16, TF32, FP64<br>
+        <code>Shape</code>: m16n8k16 MMA per clock<br>
+        <code>Instructions</code>: wgmma, mma.sync (PTX)<br>
+        <code>Libraries</code>: cuBLAS, cuDNN auto-dispatch</p>
+      </div>
+      <div class="card">
+        <h3>Common Traps to Avoid</h3>
+        <p>❌ "50,000 CUDA cores" → <strong>16,896</strong><br>
+        ❌ "Warp is 64 threads" → <strong>32 threads</strong><br>
+        ❌ "Tensor Cores = fast CUDA cores" → <strong>separate HW</strong><br>
+        ❌ "NVLink is like faster PCIe" → <strong>different topology</strong><br>
+        ❌ Confusing HBM BW with NVLink BW</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="big">You've Got This. 🚀</div>
+    <p>Three wrong numbers don't define you — your real-world GPU experience does. Now you have the right numbers, the right mental models, and practiced spoken answers. Go get that offer.</p>
+    <p style="margin-top:22px;font-family:var(--mono);font-size:12px;color:var(--muted)">Sources: NVIDIA H100 Datasheet (2023), NVIDIA Hopper Architecture Whitepaper, CUDA C++ Programming Guide v12.x, NVIDIA NVLink documentation, TechPowerUp GPU Database. All figures verified against official NVIDIA specifications as of 2024.</p>
+  </div>
+</footer>
+
+<script>
+// progress bar
+const prog=document.getElementById('progress');
+addEventListener('scroll',()=>{const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;prog.style.width=p+'%';});
+// quiz
+document.querySelectorAll('.quiz').forEach(q=>{
+  const correct=+q.dataset.correct;const opts=[...q.querySelectorAll('.opt')];const exp=q.querySelector('.explain');
+  opts.forEach((o,i)=>o.addEventListener('click',()=>{
+    if(q.dataset.done)return;q.dataset.done=1;
+    opts[correct].classList.add('correct');
+    if(i!==correct)o.classList.add('wrong');
+    exp.classList.add('show');
+  }));
+});
+// flashcards
+document.querySelectorAll('.flip').forEach(f=>f.addEventListener('click',()=>f.classList.toggle('flipped')));
+// mock accordions
+document.querySelectorAll('.mock .qq').forEach(q=>q.addEventListener('click',()=>{q.classList.toggle('open');q.nextElementSibling.classList.toggle('open');}));
+// active nav highlight
+const secs=[...document.querySelectorAll('section[id]')];const navlinks=[...document.querySelectorAll('nav .links a')];
+addEventListener('scroll',()=>{let cur='';secs.forEach(s=>{if(scrollY>=s.offsetTop-120)cur=s.id;});
+  navlinks.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+cur?'#e8edf7':'';a.style.background=a.getAttribute('href')==='#'+cur?'var(--panel2)':'';});});
+</script>
+</body>
+</html>
