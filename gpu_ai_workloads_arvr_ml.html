@@ -644,6 +644,92 @@
             .scenario-body { display: block !important; }
             .filter-bar { display: none; }
         }
+    
+        /* Quiz & Q&A Components */
+        .quiz { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .quiz .q { font-weight: 600; font-size: 1.1rem; margin-bottom: 16px; color: var(--text-primary); }
+        .quiz .difficulty { font-size: 0.8rem; padding: 2px 8px; border-radius: 12px; margin-bottom: 10px; display: inline-block; font-weight: bold; }
+        .quiz .difficulty.easy { background: rgba(63, 185, 80, 0.2); color: var(--accent-green); }
+        .quiz .difficulty.medium { background: rgba(210, 153, 34, 0.2); color: var(--accent-orange); }
+        .quiz .difficulty.hard { background: rgba(248, 81, 73, 0.2); color: var(--accent-red); }
+        .opt { display: block; width: 100%; text-align: left; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 12px 16px; border-radius: 6px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
+        .opt:hover { border-color: var(--accent-blue); background: var(--bg-tertiary); }
+        .opt.correct { border-color: var(--accent-green); background: rgba(63, 185, 80, 0.15); color: #fff; }
+        .opt.wrong { border-color: var(--accent-red); background: rgba(248, 81, 73, 0.15); color: #fff; }
+        .explain { display: none; margin-top: 12px; padding: 14px; border-radius: 6px; background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.3); font-size: 0.9rem; line-height: 1.5; }
+        .explain.show { display: block; animation: fade 0.3s ease; }
+        @keyframes fade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+        
+        .mock { border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 16px; overflow: hidden; background: var(--bg-secondary); }
+        .mock .qq { padding: 14px 18px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--text-primary); }
+        .mock .qq:hover { background: var(--bg-tertiary); }
+        .mock .aa { padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease; color: var(--text-secondary); line-height: 1.6; }
+        .mock .aa.open { max-height: 800px; padding: 16px 18px; border-top: 1px solid var(--border-color); background: var(--bg-card); }
+        .mock .qq .tw { color: var(--accent-blue); font-family: monospace; font-size: 18px; transition: transform 0.3s; }
+        .mock .qq.open .tw { transform: rotate(45deg); }
+        
+        .interview-tips { border-left: 4px solid var(--accent-purple); background: rgba(188, 140, 255, 0.1); padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 20px; }
+        .interview-tips h4 { color: var(--accent-purple); margin-top: 0; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .interview-tips ul { margin-bottom: 0; padding-left: 20px; }
+        .interview-tips li { margin-bottom: 6px; }
+        
+        .section-divider { height: 1px; background: var(--border-color); margin: 30px 0; }
+        .learning-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .learning-header h3 { margin: 0; color: var(--text-primary); }
+        .learning-icon { background: var(--accent-blue); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        /* ===== Quiz & Q&A Components ===== */
+        .quiz { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .quiz .q { font-weight: 600; font-size: 1.05rem; margin-bottom: 16px; color: var(--text-primary); line-height: 1.5; }
+        .quiz .difficulty { font-size: 0.75rem; padding: 3px 10px; border-radius: 12px; margin-bottom: 12px; display: inline-block; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .quiz .difficulty.easy { background: rgba(63, 185, 80, 0.15); color: var(--accent-green); border: 1px solid rgba(63, 185, 80, 0.3); }
+        .quiz .difficulty.medium { background: rgba(210, 153, 34, 0.15); color: var(--accent-orange); border: 1px solid rgba(210, 153, 34, 0.3); }
+        .quiz .difficulty.hard { background: rgba(248, 81, 73, 0.15); color: var(--accent-red); border: 1px solid rgba(248, 81, 73, 0.3); }
+        .opt { display: block; width: 100%; text-align: left; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 12px 16px; border-radius: 6px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; font-size: 0.9rem; font-family: inherit; line-height: 1.4; }
+        .opt:hover { border-color: var(--accent-blue); background: var(--bg-tertiary); }
+        .opt.correct { border-color: var(--accent-green); background: rgba(63, 185, 80, 0.15); color: #fff; pointer-events: none; }
+        .opt.wrong { border-color: var(--accent-red); background: rgba(248, 81, 73, 0.15); color: #fff; pointer-events: none; }
+        .explain { display: none; margin-top: 14px; padding: 14px 16px; border-radius: 6px; background: rgba(88, 166, 255, 0.08); border: 1px solid rgba(88, 166, 255, 0.25); font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); }
+        .explain.show { display: block; animation: fadeIn 0.3s ease; }
+        .explain strong { color: var(--accent-green); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+        
+        .mock { border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 14px; overflow: hidden; background: var(--bg-secondary); }
+        .mock .qq { padding: 14px 18px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--text-primary); font-size: 0.92rem; line-height: 1.4; }
+        .mock .qq:hover { background: var(--bg-tertiary); }
+        .mock .aa { padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; color: var(--text-secondary); line-height: 1.7; font-size: 0.9rem; }
+        .mock .aa.open { max-height: 1200px; padding: 16px 18px 20px; border-top: 1px solid var(--border-color); background: var(--bg-card); }
+        .mock .qq .tw { color: var(--accent-blue); font-family: monospace; font-size: 18px; transition: transform 0.3s; flex-shrink: 0; margin-left: 12px; }
+        .mock .qq.open .tw { transform: rotate(45deg); }
+        
+        .interview-tips { border-left: 4px solid var(--accent-purple); background: rgba(188, 140, 255, 0.06); padding: 18px 20px; border-radius: 0 8px 8px 0; margin-bottom: 20px; }
+        .interview-tips h4 { color: var(--accent-purple); margin-top: 0; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-size: 1rem; }
+        .interview-tips ul { margin-bottom: 0; padding-left: 20px; }
+        .interview-tips li { margin-bottom: 8px; line-height: 1.5; color: var(--text-secondary); font-size: 0.9rem; }
+        .interview-tips li strong { color: var(--text-primary); }
+        .interview-tips li em { color: var(--accent-orange); font-style: normal; font-weight: 600; }
+        
+        .gotcha-box { border: 1px solid rgba(248, 81, 73, 0.3); background: rgba(248, 81, 73, 0.05); border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; }
+        .gotcha-box h4 { color: var(--accent-red); margin: 0 0 10px 0; font-size: 0.95rem; }
+        .gotcha-box p { margin: 0; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; }
+        
+        .better-answer { border: 1px solid rgba(63, 185, 80, 0.3); background: rgba(63, 185, 80, 0.05); border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; }
+        .better-answer h4 { color: var(--accent-green); margin: 0 0 10px 0; font-size: 0.95rem; }
+        .better-answer p { margin: 0; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; }
+        
+        .section-divider { height: 1px; background: var(--border-color); margin: 30px 0; }
+        .learning-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .learning-header h3 { margin: 0; color: var(--text-primary); font-size: 1.1rem; }
+        .learning-icon { background: var(--accent-blue); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem; flex-shrink: 0; }
+        .learning-icon.warn { background: var(--accent-orange); }
+        .learning-icon.tip { background: var(--accent-green); }
+        
+        .score-tracker { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .score-tracker .score-label { font-size: 0.85rem; color: var(--text-muted); }
+        .score-tracker .score-value { font-size: 1.4rem; font-weight: 700; color: var(--accent-green); }
+        .score-tracker .score-bar { flex: 1; min-width: 200px; height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; }
+        .score-tracker .score-fill { height: 100%; background: var(--accent-green); border-radius: 4px; transition: width 0.5s ease; }
+
     </style>
 </head>
 <body>
@@ -667,6 +753,7 @@
                 <a href="#scenario-moe" class="nav-link">Mixture-of-Experts Training</a>
                 <a href="#scenario-multimodal" class="nav-link">Multimodal Foundation Models</a>
                 <a href="#scenario-reasoning" class="nav-link">Reasoning Models</a>
+                    <a href="#learning-ml" class="nav-link" style="color:var(--accent-purple)">ML Quiz & Prep</a>
             </div>
             <div class="nav-section">
                 <div class="nav-section-title">AR/VR &amp; Spatial</div>
@@ -676,6 +763,7 @@
                 <a href="#scenario-slam" class="nav-link">Neural SLAM &amp; Mapping</a>
                 <a href="#scenario-world-gen" class="nav-link">World Generation (Genie 3)</a>
                 <a href="#scenario-passthrough" class="nav-link">AI-Enhanced Passthrough</a>
+                    <a href="#learning-arvr" class="nav-link" style="color:var(--accent-purple)">AR/VR Quiz & Prep</a>
             </div>
             <div class="nav-section">
                 <div class="nav-section-title">Embodied AI</div>
@@ -683,11 +771,13 @@
                 <a href="#scenario-autonomous" class="nav-link">Autonomous Driving</a>
                 <a href="#scenario-digital-twin" class="nav-link">Industrial Digital Twins</a>
                 <a href="#scenario-world-models" class="nav-link">World Model Training</a>
+                    <a href="#learning-embodied" class="nav-link" style="color:var(--accent-purple)">Embodied AI Quiz & Prep</a>
             </div>
             <div class="nav-section">
                 <div class="nav-section-title">Scientific AI</div>
                 <a href="#scenario-protein" class="nav-link">Protein Folding &amp; Drug Discovery</a>
                 <a href="#scenario-climate" class="nav-link">Climate &amp; Weather Modeling</a>
+                    <a href="#learning-scientific" class="nav-link" style="color:var(--accent-purple)">Scientific AI Quiz & Prep</a>
             </div>
         </nav>
 
@@ -1398,6 +1488,176 @@
                 </div>
             </section>
 
+
+                <!-- ===== ML KNOWLEDGE CHECK & INTERVIEW PREP ===== -->
+                <div class="scenario-card" data-domain="ml" data-type="training inference" id="learning-ml">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-ml">KNOWLEDGE CHECK</span>
+                            <h3>Quiz & Interview Prep: Machine Learning GPU Workloads</h3>
+                            <p class="scenario-brief">Test your understanding with progressive quizzes, then master the interview gotchas and model answers.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail full-width">
+                                <div class="score-tracker">
+                                    <div><div class="score-label">Your Score</div><div class="score-value">0/0</div></div>
+                                    <div class="score-bar"><div class="score-fill" style="width:0%"></div></div>
+                                </div>
+                                
+                                <div class="learning-header"><div class="learning-icon">Q</div><h3>Easy Questions</h3></div>
+                                
+                                <div class="quiz" data-correct="2">
+                                    <span class="difficulty easy">Easy</span>
+                                    <div class="q">Which technique reduces LLM inference memory footprint while maintaining >99% accuracy?</div>
+                                    <button class="opt">A) Increasing batch size to amortize overhead</button>
+                                    <button class="opt">B) Using FP64 for maximum precision</button>
+                                    <button class="opt">C) Quantization (e.g., FP8 weights with INT4 KV-cache)</button>
+                                    <button class="opt">D) Pipeline parallelism across 8 nodes</button>
+                                    <div class="explain"><strong>Correct: C.</strong> Quantization reduces memory by 60-75% while maintaining >99.2% accuracy vs FP16 baseline. This is the single most impactful optimization for inference memory constraints. Pipeline parallelism helps throughput but doesn't reduce per-GPU memory for the model itself.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="0">
+                                    <span class="difficulty easy">Easy</span>
+                                    <div class="q">What is "Continuous Batching" in the context of LLM serving?</div>
+                                    <button class="opt">A) Dynamically adding/removing requests from a batch as they complete, rather than waiting for all to finish</button>
+                                    <button class="opt">B) Running inference 24/7 without any downtime</button>
+                                    <button class="opt">C) Batching training data into continuous streams</button>
+                                    <button class="opt">D) Using continuous (floating point) rather than discrete values</button>
+                                    <div class="explain"><strong>Correct: A.</strong> Traditional static batching wastes GPU cycles waiting for the longest sequence. Continuous (or "in-flight") batching inserts new requests into available slots as soon as earlier ones finish, boosting GPU utilization from ~35% to ~87%.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="3">
+                                    <span class="difficulty easy">Easy</span>
+                                    <div class="q">What is the primary advantage of the NVIDIA B200 over the H100 for LLM workloads?</div>
+                                    <button class="opt">A) It uses less power (lower TDP)</button>
+                                    <button class="opt">B) It has more CUDA cores for gaming</button>
+                                    <button class="opt">C) It supports newer PCIe standards</button>
+                                    <button class="opt">D) 192GB HBM3e with 8 TB/s bandwidth and 4,500 FP8 TFLOPS (2.3x compute, 2.4x memory vs H100)</button>
+                                    <div class="explain"><strong>Correct: D.</strong> The B200 offers 192GB HBM3e (vs 80GB on H100), 8 TB/s memory bandwidth (vs 3.35 TB/s), and 4,500 FP8 TFLOPS (vs 1,979). This means it can hold larger models and serve them faster. Note: TDP actually increases from 700W to 1,000W.</div>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon warn">Q</div><h3>Medium Questions</h3></div>
+                                
+                                <div class="quiz" data-correct="1">
+                                    <span class="difficulty medium">Medium</span>
+                                    <div class="q">In a 32,000-GPU MoE training cluster, what is the primary infrastructure bottleneck?</div>
+                                    <button class="opt">A) Single-GPU FP8 compute throughput</button>
+                                    <button class="opt">B) East-West network bandwidth for all-to-all expert routing</button>
+                                    <button class="opt">C) CPU pre-processing and tokenization speed</button>
+                                    <button class="opt">D) Storage I/O for model checkpointing</button>
+                                    <div class="explain"><strong>Correct: B.</strong> MoE models route different tokens to different expert subnetworks, creating massive all-to-all communication patterns. Unlike dense models (which use predictable AllReduce), MoE traffic is irregular and stresses the network fabric. This is why clusters use non-blocking fat-tree topologies with 400Gbps+ InfiniBand or Spectrum-X.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="2">
+                                    <span class="difficulty medium">Medium</span>
+                                    <div class="q">Why is "Speculative Decoding" particularly effective for reasoning models?</div>
+                                    <button class="opt">A) It allows the model to skip difficult tokens</button>
+                                    <button class="opt">B) It reduces the model size by 50%</button>
+                                    <button class="opt">C) A small draft model proposes multiple tokens that the large model verifies in parallel, amortizing the memory-bandwidth cost</button>
+                                    <button class="opt">D) It speculates on user intent to pre-cache responses</button>
+                                    <div class="explain"><strong>Correct: C.</strong> LLM inference is memory-bandwidth bound (not compute-bound) because each token generation requires reading the entire model weights. Speculative decoding uses a small, fast model to propose N tokens, then the large model verifies all N in a single forward pass. This achieves 2-3x speedup because verification is compute-bound (parallel) rather than bandwidth-bound (sequential).</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="0">
+                                    <span class="difficulty medium">Medium</span>
+                                    <div class="q">In Federated Learning for medical imaging, why can't you simply aggregate model weights with a simple average?</div>
+                                    <button class="opt">A) Because hospitals have non-IID (non-identically distributed) data, causing weight divergence that simple averaging cannot resolve</button>
+                                    <button class="opt">B) Because averaging is too computationally expensive</button>
+                                    <button class="opt">C) Because model weights are encrypted and cannot be decrypted</button>
+                                    <button class="opt">D) Because each hospital uses a different GPU architecture</button>
+                                    <div class="explain"><strong>Correct: A.</strong> Hospital data is highly non-IID—one hospital may see mostly pediatric cases while another sees geriatric. Simple FedAvg causes "client drift" where local models diverge. Advanced algorithms like FedProx, SCAFFOLD, or personalized FL are needed. This is a key nuance interviewers test.</div>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon" style="background:var(--accent-red)">Q</div><h3>Hard Questions</h3></div>
+                                
+                                <div class="quiz" data-correct="3">
+                                    <span class="difficulty hard">Hard</span>
+                                    <div class="q">Why do Chain-of-Thought reasoning models fundamentally blur the training/inference boundary?</div>
+                                    <button class="opt">A) They require backpropagation during inference</button>
+                                    <button class="opt">B) They are trained exclusively on inference logs</button>
+                                    <button class="opt">C) They only work on training hardware, not inference GPUs</button>
+                                    <button class="opt">D) Their extended token generation (10-90s per query) consumes compute resembling mini-training runs, requiring training-class infrastructure for serving</button>
+                                    <div class="explain"><strong>Correct: D.</strong> A reasoning model like DeepSeek R1 generates thousands of "thinking" tokens before answering, consuming up to 150x more compute than a standard inference call. This means inference clusters need training-class GPU density, memory, and cooling. The economic model shifts from "cheap inference" to "expensive inference that replaces human reasoning time."</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="1">
+                                    <span class="difficulty hard">Hard</span>
+                                    <div class="q">When serving a 70B model on 4x B200 GPUs with Tensor Parallelism, what determines whether you are compute-bound or memory-bandwidth-bound?</div>
+                                    <button class="opt">A) The total VRAM capacity across all GPUs</button>
+                                    <button class="opt">B) The arithmetic intensity of the workload: prefill (high batch, compute-bound) vs decode (low batch, bandwidth-bound)</button>
+                                    <button class="opt">C) The PCIe generation connecting the GPUs</button>
+                                    <button class="opt">D) The operating system scheduler</button>
+                                    <div class="explain"><strong>Correct: B.</strong> This is a critical nuance. The prefill phase (processing the input prompt) has high arithmetic intensity and is compute-bound. The decode phase (generating tokens one-by-one) has low arithmetic intensity and is memory-bandwidth-bound. Optimal serving requires different strategies for each phase—some systems even disaggregate prefill and decode onto different hardware.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="2">
+                                    <span class="difficulty hard">Hard</span>
+                                    <div class="q">A video generation model produces 4K@24fps clips. Why does this workload stress GPUs differently than image generation?</div>
+                                    <button class="opt">A) Video uses different color spaces that GPUs don't support natively</button>
+                                    <button class="opt">B) Video files are larger and require more storage I/O</button>
+                                    <button class="opt">C) Temporal consistency requires 3D attention across frames, causing VRAM to scale quadratically with clip length, and requiring cross-frame diffusion steps</button>
+                                    <button class="opt">D) Video generation only works on AMD GPUs</button>
+                                    <div class="explain"><strong>Correct: C.</strong> Unlike images (single 2D frame), video generation must maintain temporal coherence. This requires 3D attention mechanisms spanning multiple frames, causing attention memory to grow quadratically. A 10-second 4K clip at 24fps = 240 frames, each with millions of tokens. This is why video generation requires 8+ GPUs with NVLink even for inference, and training requires thousands.</div>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon warn">!</div><h3>Interview Gotchas & Nuances</h3></div>
+                                
+                                <div class="interview-tips">
+                                    <h4>Common Traps Interviewers Set</h4>
+                                    <ul>
+                                        <li><strong>"Just Add More GPUs" Fallacy:</strong> Scaling is NOT linear. <em>Nuance:</em> Always mention Amdahl's Law, communication overhead, and bubble time in pipeline parallelism. For MoE, doubling GPUs may only give 1.6x speedup due to all-to-all bottlenecks.</li>
+                                        <li><strong>Confusing Inference vs Training Bottlenecks:</strong> <em>Nuance:</em> Training is compute-bound (FLOPS matter). Inference decode is memory-bandwidth-bound (GB/s matters). Prefill is compute-bound. Never say "inference needs more FLOPS."</li>
+                                        <li><strong>Forgetting KV-Cache:</strong> When calculating memory for a 70B model, don't just say "70B × 2 bytes = 140GB." <em>Nuance:</em> Add KV-cache: for batch=32, seq_len=4096, it can add 50-100GB. This is often the actual constraint.</li>
+                                        <li><strong>Ignoring the Prefill/Decode Split:</strong> <em>Nuance:</em> Modern systems disaggregate these phases. Prefill nodes are GPU-dense (compute). Decode nodes are memory-dense (bandwidth). Mention this to show depth.</li>
+                                        <li><strong>"FP8 is Always Better" Myth:</strong> <em>Nuance:</em> FP8 training requires loss scaling and can diverge on certain architectures. For inference, INT4 with group quantization often beats FP8 for throughput. Know when each precision is appropriate.</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon tip">A</div><h3>Model Answers: How to Sound Senior</h3></div>
+                                
+                                <div class="mock">
+                                    <div class="qq">"Design the infrastructure for serving 10,000 LLM requests/second with p99 latency under 200ms." <span class="tw">+</span></div>
+                                    <div class="aa">
+                                        <p><strong>Model Answer:</strong> "First, I'd characterize the workload: what's the input/output token ratio? For a typical 500-in/200-out pattern, the bottleneck is decode-phase memory bandwidth. I'd use B200s with 8 TB/s HBM3e bandwidth, applying FP8 quantization with INT4 KV-cache to fit the model in fewer GPUs. For 10K RPS, I'd estimate needing ~16 B200 nodes with Tensor Parallelism=4 each, using Continuous Batching and PagedAttention. I'd disaggregate prefill from decode—prefill on compute-optimized nodes, decode on bandwidth-optimized nodes. For the p99 SLA, I'd implement request-level priority queuing and speculative decoding for the decode phase, which gives ~2.3x throughput improvement. Finally, I'd add auto-scaling with a 30-second warm-up buffer."</p>
+                                        <p style="margin-top:12px;color:var(--accent-green);font-size:0.85rem"><strong>Why this works:</strong> It shows you understand the prefill/decode split, can do back-of-envelope capacity planning, know specific optimizations, and think about tail latency—not just average.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mock">
+                                    <div class="qq">"What makes training a 2T-parameter MoE model different from a 2T dense model?" <span class="tw">+</span></div>
+                                    <div class="aa">
+                                        <p><strong>Model Answer:</strong> "The key difference is the communication pattern. A dense 2T model uses AllReduce for gradient synchronization—predictable, bandwidth-efficient, and well-optimized by NCCL. An MoE 2T model uses all-to-all communication for token routing, which is irregular, latency-sensitive, and creates hotspots when experts have imbalanced load. This means: (1) the network topology matters more—you need non-blocking fabrics, not just high bandwidth; (2) you need expert-level load balancing (auxiliary losses or capacity factors); (3) the effective compute per token is much lower (only ~8 experts active out of 128), so you get more intelligence per FLOP but the infrastructure cost shifts from compute to networking."</p>
+                                        <p style="margin-top:12px;color:var(--accent-green);font-size:0.85rem"><strong>Why this works:</strong> It contrasts AllReduce vs all-to-all (shows systems knowledge), mentions load balancing (shows ML knowledge), and frames the cost tradeoff (shows business awareness).</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mock">
+                                    <div class="qq">"A customer wants to deploy a 70B model on-premises for GDPR compliance. Walk me through the hardware selection." <span class="tw">+</span></div>
+                                    <div class="aa">
+                                        <p><strong>Model Answer:</strong> "For a 70B model on-prem, I'd first determine the precision: FP8 gives us ~70GB for weights, plus KV-cache overhead. Option 1: 4x NVIDIA B200 (192GB each, 768GB total) with NVLink for Tensor Parallelism—this gives headroom for large batch sizes and long contexts. Option 2: 8x AMD MI300X (192GB each) if budget is tighter—competitive performance at lower cost per GB. I'd use TensorRT-LLM or vLLM for the serving stack, with Continuous Batching enabled. For GDPR specifically, I'd ensure the inference server has no telemetry, implement request-level encryption at rest, and set up audit logging. The total power budget would be ~4kW for the GPU node, requiring dedicated cooling. ROI breakeven vs cloud is typically 8-14 months at this scale."</p>
+                                        <p style="margin-top:12px;color:var(--accent-green);font-size:0.85rem"><strong>Why this works:</strong> It shows concrete hardware knowledge (specific GPU models and specs), considers alternatives, addresses the actual business requirement (GDPR), and includes practical concerns (power, cooling, ROI).</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mock">
+                                    <div class="qq">"How would you handle a scenario where your video generation model produces temporally inconsistent outputs?" <span class="tw">+</span></div>
+                                    <div class="aa">
+                                        <p><strong>Model Answer:</strong> "Temporal inconsistency—flickering, object morphing between frames—is the core challenge in video diffusion. I'd approach it at three levels: (1) Architecture: ensure the model uses 3D attention (spatial + temporal) rather than frame-independent 2D attention, so each frame conditions on its neighbors. (2) Training: use temporal discriminators and optical-flow-based consistency losses during training. (3) Inference: implement temporal super-resolution as a post-processing step—generate keyframes first, then interpolate with a dedicated temporal model. The GPU implication is that 3D attention scales quadratically with clip length, so for longer clips I'd use sliding-window temporal attention with overlap, trading some global consistency for tractable VRAM usage."</p>
+                                        <p style="margin-top:12px;color:var(--accent-green);font-size:0.85rem"><strong>Why this works:</strong> It diagnoses the root cause, proposes solutions at multiple levels (architecture, training, inference), and connects back to GPU resource implications.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             <!-- ===== AR/VR SCENARIOS ===== -->
             <section class="section" id="arvr-scenarios">
                 <div class="section-header">
@@ -1875,6 +2135,144 @@
                 </div>
             </section>
 
+
+                <!-- ===== AR/VR KNOWLEDGE CHECK & INTERVIEW PREP ===== -->
+                <div class="scenario-card" data-domain="arvr" data-type="inference" id="learning-arvr">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-arvr">KNOWLEDGE CHECK</span>
+                            <h3>Quiz & Interview Prep: AR/VR & Spatial AI Workloads</h3>
+                            <p class="scenario-brief">Test your understanding of foveated rendering, Gaussian splatting, SLAM, and real-time constraints.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail full-width">
+                                
+                                <div class="learning-header"><div class="learning-icon">Q</div><h3>Easy Questions</h3></div>
+                                
+                                <div class="quiz" data-correct="1">
+                                    <span class="difficulty easy">Easy</span>
+                                    <div class="q">What is the maximum acceptable "motion-to-photon" latency in VR before users experience nausea?</div>
+                                    <button class="opt">A) 100ms</button>
+                                    <button class="opt">B) 20ms</button>
+                                    <button class="opt">C) 50ms</button>
+                                    <button class="opt">D) 200ms</button>
+                                    <div class="explain"><strong>Correct: B.</strong> The motion-to-photon latency (time from head movement to updated pixels reaching the eye) must be under 20ms to prevent VR sickness. At 90Hz, each frame budget is 11.1ms. This is why cloud rendering is unsuitable for the final frame—network latency alone exceeds the budget.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="2">
+                                    <span class="difficulty easy">Easy</span>
+                                    <div class="q">What does "foveated rendering" exploit about human vision?</div>
+                                    <button class="opt">A) Humans can only see in black and white in the periphery</button>
+                                    <button class="opt">B) Humans blink every 4 seconds, allowing frame skipping</button>
+                                    <button class="opt">C) Human visual acuity drops dramatically outside the foveal region (central ~5 degrees), so peripheral areas can be rendered at lower resolution</button>
+                                    <button class="opt">D) Humans cannot perceive motion above 30fps</button>
+                                    <div class="explain"><strong>Correct: C.</strong> The fovea covers only ~2-5 degrees of visual angle but contains the highest density of cone cells. Outside this region, acuity drops rapidly. AI-driven foveated rendering uses eye-tracking to predict gaze direction and renders only the foveal region at full resolution, saving up to 70% of GPU rendering work.</div>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon warn">Q</div><h3>Medium Questions</h3></div>
+                                
+                                <div class="quiz" data-correct="2">
+                                    <span class="difficulty medium">Medium</span>
+                                    <div class="q">What is the primary GPU bottleneck for real-time 3D Gaussian Splatting at 90fps in VR?</div>
+                                    <button class="opt">A) Tensor Core FP8 throughput</button>
+                                    <button class="opt">B) CPU-GPU data transfer over PCIe</button>
+                                    <button class="opt">C) GPU rasterization bandwidth and VRAM throughput for sorting/blending millions of semi-transparent splats per frame</button>
+                                    <button class="opt">D) Ray tracing core availability</button>
+                                    <div class="explain"><strong>Correct: C.</strong> Unlike NeRFs (which use neural network inference), Gaussian Splatting is a rasterization workload. Each frame requires depth-sorting and alpha-blending millions of Gaussian primitives. This stresses traditional CUDA cores and memory bandwidth rather than Tensor Cores or RT cores. The RTX 5090's high memory bandwidth (1.8 TB/s) makes it ideal for this.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="3">
+                                    <span class="difficulty medium">Medium</span>
+                                    <div class="q">Why must Neural SLAM on AR glasses use on-device processing rather than cloud offloading?</div>
+                                    <button class="opt">A) Because SLAM algorithms are too simple for cloud GPUs</button>
+                                    <button class="opt">B) Because cloud providers don't support SLAM APIs</button>
+                                    <button class="opt">C) Because SLAM data is too large to transmit wirelessly</button>
+                                    <button class="opt">D) Because SLAM requires <16ms updates for stable tracking, and any network latency would cause visible drift between the virtual overlay and the real world</button>
+                                    <div class="explain"><strong>Correct: D.</strong> AR overlays must be spatially anchored to the real world. If SLAM updates lag by even 30-50ms (typical network round-trip), virtual objects will visibly drift during head movement, breaking the illusion. This forces all SLAM computation onto the device's SoC within a 5-10W power budget.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="1">
+                                    <span class="difficulty medium">Medium</span>
+                                    <div class="q">How does AI-enhanced passthrough in mixed reality headsets differ from simple camera feed display?</div>
+                                    <button class="opt">A) It adds a slight delay to improve image quality</button>
+                                    <button class="opt">B) It uses neural networks to correct distortion, fill in occluded regions, enhance resolution, and reduce latency through frame prediction</button>
+                                    <button class="opt">C) It converts the camera feed to grayscale for better contrast</button>
+                                    <button class="opt">D) It simply increases the camera resolution hardware</button>
+                                    <div class="explain"><strong>Correct: B.</strong> Neural passthrough does far more than display raw camera feeds. It corrects lens distortion, performs stereo depth estimation, fills in regions occluded by the headset's nose bridge, upscales resolution via neural super-resolution, and even predicts future frames to compensate for processing latency—all within an 8ms budget on a mobile SoC.</div>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon" style="background:var(--accent-red)">Q</div><h3>Hard Questions</h3></div>
+                                
+                                <div class="quiz" data-correct="0">
+                                    <span class="difficulty hard">Hard</span>
+                                    <div class="q">A "World Generation" system (like Genie 3) creates navigable 3D environments from text. Why does this require fundamentally different GPU resources than text-to-image generation?</div>
+                                    <button class="opt">A) It must maintain 3D spatial consistency, generate persistent geometry, handle physics interactions, and produce frames at real-time rates—requiring both generative AI compute AND traditional rendering pipelines simultaneously</button>
+                                    <button class="opt">B) It uses a completely different type of GPU (only AMD works)</button>
+                                    <button class="opt">C) It requires quantum computing co-processors</button>
+                                    <button class="opt">D) It only works with pre-rendered assets, not AI generation</button>
+                                    <div class="explain"><strong>Correct: A.</strong> World generation combines the challenges of: (1) generative AI (diffusion/autoregressive models for content creation), (2) 3D consistency (maintaining coherent geometry as the user moves), (3) real-time rendering (24+ fps output), and (4) physics simulation (objects must behave realistically). This hybrid workload stresses Tensor Cores, CUDA cores, RT cores, AND memory simultaneously—unlike pure text-to-image which only needs Tensor Cores for a few seconds.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="2">
+                                    <span class="difficulty hard">Hard</span>
+                                    <div class="q">Why is gaze prediction (predicting where the user will look 20-40ms in the future) essential for foveated rendering, and what makes it an AI problem?</div>
+                                    <button class="opt">A) Because eye trackers are too slow to detect current gaze position</button>
+                                    <button class="opt">B) Because users always look at the center of the screen</button>
+                                    <button class="opt">C) Because the rendering pipeline has inherent latency (frame queuing, GPU processing), so by the time a foveated frame reaches the display, the eye has already moved—requiring predictive models trained on saccade patterns</button>
+                                    <button class="opt">D) Because gaze prediction reduces the need for eye-tracking hardware</button>
+                                    <div class="explain"><strong>Correct: C.</strong> Even with perfect eye tracking, there's a 20-40ms delay between detecting gaze and displaying the rendered frame. During a saccade (rapid eye movement), the eye can move 30+ degrees in 50ms. Without prediction, the high-resolution foveal region would lag behind actual gaze. Neural networks trained on eye movement patterns predict the gaze target before the saccade completes, allowing pre-rendering of the correct region.</div>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon warn">!</div><h3>Interview Gotchas & Nuances</h3></div>
+                                
+                                <div class="interview-tips">
+                                    <h4>Critical Mistakes to Avoid</h4>
+                                    <ul>
+                                        <li><strong>Suggesting Cloud Rendering for VR:</strong> Never propose cloud-based final frame rendering for VR/AR. <em>Nuance:</em> The 20ms motion-to-photon budget makes network round-trips impossible. Cloud can assist with asset generation, world building, or AI model updates—but the final render must be local.</li>
+                                        <li><strong>Confusing NeRF and Gaussian Splatting:</strong> <em>Nuance:</em> NeRFs use neural networks (Tensor Cores, slow per-pixel) for novel view synthesis. Gaussian Splatting uses explicit 3D primitives (rasterization, fast per-frame). They solve similar problems but have completely different GPU profiles. Know which to recommend for real-time vs offline.</li>
+                                        <li><strong>Ignoring Thermal Constraints:</strong> <em>Nuance:</em> A standalone VR headset has ~8-12W total power budget. You cannot run a 700W data center GPU. Always mention quantization (INT8/INT4), model distillation, and NPU offloading when discussing on-device AI.</li>
+                                        <li><strong>Forgetting Stereo Rendering:</strong> <em>Nuance:</em> VR renders TWO eyes, not one. This doubles the pixel count (or requires multi-view rendering tricks). When calculating GPU requirements, always account for stereo. A "4K per eye" headset is rendering 8K total.</li>
+                                        <li><strong>Underestimating SLAM Complexity:</strong> <em>Nuance:</em> Neural SLAM isn't just "running a CNN on camera frames." It involves loop closure detection, map optimization, semantic labeling, and persistent storage—all within 16ms on a mobile chip. The memory management alone is a significant engineering challenge.</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon tip">A</div><h3>Model Answers for AR/VR Interviews</h3></div>
+                                
+                                <div class="mock">
+                                    <div class="qq">"How would you architect the AI pipeline for a next-gen standalone AR headset?" <span class="tw">+</span></div>
+                                    <div class="aa">
+                                        <p><strong>Model Answer:</strong> "I'd design a tiered processing architecture. On-device (Snapdragon XR chip, ~10W): Neural SLAM for 6DoF tracking at 1kHz, eye/hand tracking CNNs, foveated rendering control, and neural passthrough enhancement—all running on the dedicated NPU and GPU cores. Edge/companion device (phone or local PC with discrete GPU): heavier AI tasks like avatar rendering, world understanding, and generative content creation. Cloud (async): world model updates, social features, and training data collection. The key design principle is that anything in the critical rendering path must be on-device, while anything that can tolerate 50ms+ latency can be offloaded. I'd use INT4 quantized models on-device with knowledge distillation from larger cloud models."</p>
+                                        <p style="margin-top:12px;color:var(--accent-green);font-size:0.85rem"><strong>Why this works:</strong> It shows understanding of the latency hierarchy, names specific hardware, and demonstrates the on-device/edge/cloud tradeoff thinking that AR/VR companies value.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mock">
+                                    <div class="qq">"Compare NeRF and Gaussian Splatting for a VR telepresence application. Which would you choose and why?" <span class="tw">+</span></div>
+                                    <div class="aa">
+                                        <p><strong>Model Answer:</strong> "For real-time VR telepresence at 90fps, I'd choose 3D Gaussian Splatting. Here's why: NeRFs require a full neural network forward pass per pixel per frame—at 4K stereo (8M+ pixels), that's computationally prohibitive for real-time. Gaussian Splatting represents the scene as millions of explicit 3D Gaussians that are rasterized directly, achieving 90+ fps on a single RTX 5090. The tradeoff: Gaussians use more memory (storing millions of explicit primitives) and can have artifacts in under-observed regions, while NeRFs are more memory-efficient and handle novel views better. For telepresence specifically, Gaussians win because: (1) real-time is non-negotiable, (2) the capture setup can ensure good coverage, and (3) dynamic scene updates (people moving) are easier with explicit representations."</p>
+                                        <p style="margin-top:12px;color:var(--accent-green);font-size:0.85rem"><strong>Why this works:</strong> It makes a clear recommendation with reasoning, acknowledges tradeoffs, and connects the technical choice to the specific use case requirements.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mock">
+                                    <div class="qq">"A user reports 'virtual objects are drifting' in our AR app. Walk me through the debugging process from a GPU/AI perspective." <span class="tw">+</span></div>
+                                    <div class="aa">
+                                        <p><strong>Model Answer:</strong> "Object drift in AR means the SLAM system is losing tracking accuracy. I'd investigate in this order: (1) Check if the GPU/NPU is thermal throttling—if the chip overheats, SLAM inference slows below 60Hz, causing tracking lag that manifests as drift. (2) Check the visual-inertial fusion—if the IMU and camera disagree (poor calibration or motion blur), the pose estimate diverges. (3) Check for loop closure failures—if the system doesn't recognize previously visited areas, accumulated error causes global drift. (4) Check memory pressure—if the semantic map grows too large and forces garbage collection, there can be frame drops during which tracking is lost. From a GPU perspective, the fix might be: reducing the SLAM model complexity (smaller backbone), implementing adaptive quality (lower resolution during fast motion), or offloading non-critical semantic labeling to a background thread."</p>
+                                        <p style="margin-top:12px;color:var(--accent-green);font-size:0.85rem"><strong>Why this works:</strong> It shows systematic debugging thinking, connects software symptoms to hardware causes, and proposes GPU-aware solutions rather than just algorithmic fixes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             <!-- ===== EMBODIED AI SCENARIOS ===== -->
             <section class="section" id="embodied-scenarios">
                 <div class="section-header">
@@ -2206,6 +2604,134 @@
                 </div>
             </section>
 
+
+                <!-- ===== EMBODIED AI KNOWLEDGE CHECK & INTERVIEW PREP ===== -->
+                <div class="scenario-card" data-domain="embodied" data-type="training inference" id="learning-embodied">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-embodied">KNOWLEDGE CHECK</span>
+                            <h3>Quiz & Interview Prep: Embodied AI & Autonomous Systems</h3>
+                            <p class="scenario-brief">Test your understanding of Sim-to-Real, World Models, digital twins, and autonomous driving GPU workloads.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail full-width">
+                                
+                                <div class="learning-header"><div class="learning-icon">Q</div><h3>Easy Questions</h3></div>
+                                
+                                <div class="quiz" data-correct="1">
+                                    <span class="difficulty easy">Easy</span>
+                                    <div class="q">What is "Domain Randomization" in the context of Sim-to-Real robotics training?</div>
+                                    <button class="opt">A) Randomly selecting which robot to train</button>
+                                    <button class="opt">B) Varying physical parameters (friction, mass, lighting, textures) across thousands of parallel simulations to make the policy robust to real-world variation</button>
+                                    <button class="opt">C) Randomizing the network architecture during training</button>
+                                    <button class="opt">D) Using random internet domains for data collection</button>
+                                    <div class="explain"><strong>Correct: B.</strong> Domain Randomization trains the AI in thousands of slightly different simulated environments simultaneously. By experiencing varied physics, lighting, and textures, the policy learns to be robust to the "sim-to-real gap"—the difference between simulation and reality. This requires massive parallel GPU compute for physics simulation and rendering.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="0">
+                                    <span class="difficulty easy">Easy</span>
+                                    <div class="q">Why do autonomous driving systems require specialized edge GPUs rather than data center GPUs?</div>
+                                    <button class="opt">A) They need deterministic, low-latency inference within strict power and thermal budgets (50-150W) while operating in harsh environments</button>
+                                    <button class="opt">B) Data center GPUs are too fast for driving applications</button>
+                                    <button class="opt">C) Autonomous vehicles don't use neural networks</button>
+                                    <button class="opt">D) Edge GPUs have more VRAM than data center GPUs</button>
+                                    <div class="explain"><strong>Correct: A.</strong> A car's compute module must: (1) fit in a small form factor, (2) operate in -40°C to +85°C, (3) consume <150W (vs 1000W for a B200), (4) provide deterministic latency (no variable batching), and (5) meet automotive safety standards (ASIL-D). This is why NVIDIA DRIVE Thor and similar automotive SoCs exist as distinct product lines.</div>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon warn">Q</div><h3>Medium Questions</h3></div>
+                                
+                                <div class="quiz" data-correct="2">
+                                    <span class="difficulty medium">Medium</span>
+                                    <div class="q">Why do World Models (like NVIDIA Cosmos) require 10,000+ GPUs for training—far more than even large language models?</div>
+                                    <button class="opt">A) Because they use inefficient training algorithms</button>
+                                    <button class="opt">B) Because they must be trained on proprietary NVIDIA hardware only</button>
+                                    <button class="opt">C) Because they process dense, high-dimensional video data (20M+ hours) and must learn implicit physical laws, making the token density orders of magnitude higher than text</button>
+                                    <button class="opt">D) Because they require human verification at each training step</button>
+                                    <div class="explain"><strong>Correct: C.</strong> A single second of 720p video contains ~1.5M pixels × 30 frames = 45M "tokens" of visual information, vs ~15 text tokens per second of speech. Training on 20M hours of video at this density requires astronomical compute. Additionally, learning physics (gravity, collisions, fluid dynamics) from observation alone requires seeing millions of diverse interactions.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="3">
+                                    <span class="difficulty medium">Medium</span>
+                                    <div class="q">In an Industrial Digital Twin, why does the GPU workload combine both AI inference AND traditional rendering?</div>
+                                    <button class="opt">A) Because digital twins are just video games with AI characters</button>
+                                    <button class="opt">B) Because regulations require both approaches</button>
+                                    <button class="opt">C) Because AI alone cannot produce any visual output</button>
+                                    <button class="opt">D) Because the twin must simultaneously: run physics simulations (compute), render photorealistic visuals (RT cores), and execute AI models for anomaly detection and optimization (Tensor Cores)</button>
+                                    <div class="explain"><strong>Correct: D.</strong> A factory digital twin is a hybrid workload: NVIDIA Omniverse handles physics simulation and ray-traced rendering (using CUDA and RT cores), while AI models run concurrently for predictive maintenance, process optimization, and anomaly detection (using Tensor Cores). This is why L40S GPUs are popular—they balance all three capabilities.</div>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon" style="background:var(--accent-red)">Q</div><h3>Hard Questions</h3></div>
+                                
+                                <div class="quiz" data-correct="1">
+                                    <span class="difficulty hard">Hard</span>
+                                    <div class="q">What is the fundamental challenge of "sim-to-real transfer" that Domain Randomization alone cannot fully solve?</div>
+                                    <button class="opt">A) Simulations run too slowly on GPUs</button>
+                                    <button class="opt">B) The "reality gap" in contact dynamics—simulators cannot perfectly model deformable objects, friction at micro-scale, or fluid interactions, creating systematic biases that randomization cannot eliminate</button>
+                                    <button class="opt">C) Real robots are more expensive than simulated ones</button>
+                                    <button class="opt">D) Domain Randomization requires too much VRAM</button>
+                                    <div class="explain"><strong>Correct: B.</strong> While Domain Randomization helps with visual and gross-physical variations, it cannot fix systematic simulator biases. Real-world contact dynamics (grasping deformable objects, walking on varied terrain) involve micro-scale physics that simulators approximate poorly. This is why state-of-the-art approaches combine sim training with real-world fine-tuning, system identification, and learned residual physics models.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="0">
+                                    <span class="difficulty hard">Hard</span>
+                                    <div class="q">Why can't autonomous driving systems use standard inference batching, and what does this imply for GPU utilization?</div>
+                                    <button class="opt">A) Each sensor frame must be processed immediately with deterministic latency (batch=1), resulting in low GPU utilization (~30-40%) but guaranteed response times—a fundamental safety-vs-efficiency tradeoff</button>
+                                    <button class="opt">B) Because batching would make the car drive faster</button>
+                                    <button class="opt">C) Because automotive GPUs don't support batching</button>
+                                    <button class="opt">D) Because batching would increase accuracy too much</button>
+                                    <div class="explain"><strong>Correct: A.</strong> In safety-critical systems, you cannot wait to accumulate a batch—each sensor frame must be processed immediately. This means the GPU often runs at batch=1, which is highly inefficient (low arithmetic intensity, poor utilization). Automotive SoCs compensate by running multiple models concurrently (perception, prediction, planning) to fill the GPU, and by using model architectures optimized for batch=1 throughput rather than batch=32 throughput.</div>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon warn">!</div><h3>Interview Gotchas & Nuances</h3></div>
+                                
+                                <div class="interview-tips">
+                                    <h4>Traps in Embodied AI Interviews</h4>
+                                    <ul>
+                                        <li><strong>"Simulation is Solved" Myth:</strong> <em>Nuance:</em> Simulators are approximations. Always discuss the sim-to-real gap, especially for contact-rich tasks. Mention that real-world fine-tuning data (even small amounts) is still essential.</li>
+                                        <li><strong>Proposing Batching for Safety-Critical Systems:</strong> <em>Nuance:</em> Never suggest increasing batch size for autonomous driving inference. Latency is the constraint, not throughput. The correct answer involves model optimization (pruning, quantization) and hardware selection (dedicated NPUs).</li>
+                                        <li><strong>Ignoring Safety Certification:</strong> <em>Nuance:</em> Autonomous systems require ASIL-D or equivalent safety certification. This means deterministic execution, redundancy, and formal verification—constraints that affect GPU architecture choices (e.g., ECC memory, lockstep cores).</li>
+                                        <li><strong>Confusing Digital Twin Fidelity Levels:</strong> <em>Nuance:</em> Not all digital twins need photorealistic rendering. A process optimization twin might only need physics simulation (no RT cores). A training-data-generation twin needs photorealism (heavy RT cores). Match the GPU to the fidelity requirement.</li>
+                                        <li><strong>Underestimating World Model Scale:</strong> <em>Nuance:</em> World models are NOT just "video prediction." They learn causal physics, object permanence, and counterfactual reasoning. This requires training data and compute that rivals or exceeds the largest LLMs. Don't compare them to simple video generators.</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon tip">A</div><h3>Model Answers for Embodied AI Interviews</h3></div>
+                                
+                                <div class="mock">
+                                    <div class="qq">"Describe the GPU infrastructure needed to train a humanoid robot foundation model." <span class="tw">+</span></div>
+                                    <div class="aa">
+                                        <p><strong>Model Answer:</strong> "Training a humanoid foundation model requires a hybrid infrastructure with two distinct GPU clusters working in tandem. First, a simulation cluster: NVIDIA OVX servers running Isaac Sim, with L40S GPUs for physics simulation and ray-traced rendering. This generates training data by running thousands of parallel robot instances with Domain Randomization—varying terrain, object properties, and lighting. Second, a model training cluster: DGX systems with H200 or B200 GPUs connected via NVLink and InfiniBand, processing the multimodal data streams (proprioception, vision, force/torque) through a large transformer architecture. The key infrastructure challenge is the data pipeline between clusters—simulation generates terabytes per hour that must flow to training with minimal latency. I'd use a high-bandwidth shared storage layer (like NVIDIA Magnum IO) to bridge them."</p>
+                                        <p style="margin-top:12px;color:var(--accent-green);font-size:0.85rem"><strong>Why this works:</strong> It identifies the two-cluster architecture (simulation + training), names specific hardware for each role, and highlights the often-overlooked data pipeline challenge.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mock">
+                                    <div class="qq">"How would you reduce the compute cost of an autonomous driving perception stack by 50% without sacrificing safety?" <span class="tw">+</span></div>
+                                    <div class="aa">
+                                        <p><strong>Model Answer:</strong> "I'd approach this systematically: (1) Model architecture: replace the backbone with an efficient architecture like EfficientNet or MobileViT, trading some accuracy for 3x inference speed. (2) Precision: quantize to INT8 with calibration on driving-specific data—this typically gives 2x speedup with <1% accuracy loss for perception tasks. (3) Temporal redundancy: not every sensor frame needs full processing. Use a lightweight change-detection model to identify 'interesting' frames that get full inference, while others use tracked predictions from previous frames. (4) Sensor fusion optimization: fuse LiDAR and camera features early (BEV fusion) rather than running separate full pipelines. For safety: maintain a lightweight redundant pathway at full rate that can trigger emergency braking independently of the optimized main pipeline. This dual-path approach satisfies ASIL-D requirements while allowing the primary path to be optimized."</p>
+                                        <p style="margin-top:12px;color:var(--accent-green);font-size:0.85rem"><strong>Why this works:</strong> It provides concrete techniques with quantified improvements, addresses the safety constraint explicitly (redundant pathway), and shows awareness of automotive safety standards.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mock">
+                                    <div class="qq">"What's the difference between NVIDIA Omniverse for digital twins and just using a game engine like Unreal?" <span class="tw">+</span></div>
+                                    <div class="aa">
+                                        <p><strong>Model Answer:</strong> "While both can render photorealistic scenes, Omniverse is purpose-built for industrial digital twins with three key differentiators: (1) Physics fidelity: Omniverse uses PhysX 5 and Flow for accurate rigid body, fluid, and particle simulation—validated against real-world measurements, unlike game engines which prioritize visual plausibility over physical accuracy. (2) USD (Universal Scene Description): a standardized scene format that enables multi-tool collaboration and version control for massive industrial scenes with millions of parts. (3) AI integration: native support for running Isaac Sim (robotics), DRIVE Sim (vehicles), and custom AI models within the simulation loop, with GPU-accelerated synthetic data generation including perfect ground-truth labels. A game engine could approximate some of this, but you'd spend months building the physics validation, data pipeline, and AI integration that Omniverse provides out of the box."</p>
+                                        <p style="margin-top:12px;color:var(--accent-green);font-size:0.85rem"><strong>Why this works:</strong> It shows you understand the specific technical differentiators rather than giving a generic "it's more professional" answer, and frames the comparison in terms of engineering time saved.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             <!-- ===== SCIENTIFIC AI SCENARIOS ===== -->
             <section class="section" id="scientific-scenarios">
                 <div class="section-header">
@@ -2389,6 +2915,115 @@
                 </div>
             </section>
 
+
+                <!-- ===== SCIENTIFIC AI KNOWLEDGE CHECK & INTERVIEW PREP ===== -->
+                <div class="scenario-card" data-domain="scientific" data-type="training inference" id="learning-scientific">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-scientific">KNOWLEDGE CHECK</span>
+                            <h3>Quiz & Interview Prep: Scientific AI & HPC Workloads</h3>
+                            <p class="scenario-brief">Test your understanding of protein folding, drug discovery, climate modeling, and scientific GPU computing.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail full-width">
+                                
+                                <div class="learning-header"><div class="learning-icon">Q</div><h3>Easy Questions</h3></div>
+                                
+                                <div class="quiz" data-correct="3">
+                                    <span class="difficulty easy">Easy</span>
+                                    <div class="q">Why are AI weather models (like GraphCast) 10,000x more energy-efficient than traditional numerical weather prediction?</div>
+                                    <button class="opt">A) They use smaller datasets</button>
+                                    <button class="opt">B) They run on cheaper hardware</button>
+                                    <button class="opt">C) They predict less accurately, saving compute</button>
+                                    <button class="opt">D) They learn weather patterns from historical data and produce forecasts via neural network inference (seconds on 1 GPU) rather than solving fluid dynamics equations from first principles (hours on supercomputers)</button>
+                                    <div class="explain"><strong>Correct: D.</strong> Traditional NWP solves the Navier-Stokes equations on a 3D grid—computationally massive. AI weather models learn the mapping from current atmospheric state to future state directly from ERA5 reanalysis data, producing a 10-day forecast in ~90 seconds on a single GPU vs hours on a supercomputer. The energy difference is ~1 kWh vs ~10 MWh.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="1">
+                                    <span class="difficulty easy">Easy</span>
+                                    <div class="q">What type of GPU precision is most critical for molecular dynamics simulations in drug discovery?</div>
+                                    <button class="opt">A) INT4 (lowest precision for maximum speed)</button>
+                                    <button class="opt">B) FP64 (double precision) for accurate force calculations at atomic scale</button>
+                                    <button class="opt">C) FP8 (same as LLM training)</button>
+                                    <button class="opt">D) Binary (1-bit) for energy efficiency</button>
+                                    <div class="explain"><strong>Correct: B.</strong> Molecular dynamics simulates atomic interactions where tiny force errors accumulate over millions of timesteps. FP64 (double precision) is essential for numerical stability in these simulations. This is why scientific HPC GPUs (H100/H200 with strong FP64) are preferred over inference-optimized chips that sacrifice FP64 for INT8/FP8 throughput.</div>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon warn">Q</div><h3>Medium Questions</h3></div>
+                                
+                                <div class="quiz" data-correct="0">
+                                    <span class="difficulty medium">Medium</span>
+                                    <div class="q">How does AlphaFold3 differ from AlphaFold2 in terms of GPU workload characteristics?</div>
+                                    <button class="opt">A) AlphaFold3 uses a diffusion model for structure generation (requiring iterative denoising steps on GPU) rather than AlphaFold2's single-pass prediction, and can predict protein-ligand complexes, not just proteins alone</button>
+                                    <button class="opt">B) AlphaFold3 runs only on CPUs, not GPUs</button>
+                                    <button class="opt">C) AlphaFold3 is smaller and faster than AlphaFold2</button>
+                                    <button class="opt">D) AlphaFold3 only works for RNA, not proteins</button>
+                                    <div class="explain"><strong>Correct: A.</strong> AlphaFold3's shift to a diffusion-based architecture means each prediction requires multiple denoising iterations (like image generation), increasing GPU compute per structure. However, it gains the ability to predict complexes (protein + DNA + ligand + ions), making it far more useful for drug discovery where binding interactions matter.</div>
+                                </div>
+                                
+                                <div class="quiz" data-correct="2">
+                                    <span class="difficulty medium">Medium</span>
+                                    <div class="q">Why can AI climate models simulate 1,000 years of climate in 12 hours, when traditional models take months for the same period?</div>
+                                    <button class="opt">A) AI models skip most of the time steps</button>
+                                    <button class="opt">B) AI models use lower resolution grids</button>
+                                    <button class="opt">C) AI models learn to predict climate state transitions directly (large time steps) rather than solving differential equations at tiny time increments, and run on GPU-optimized architectures</button>
+                                    <button class="opt">D) AI models only simulate temperature, not the full climate system</button>
+                                    <div class="explain"><strong>Correct: C.</strong> Traditional climate models solve coupled differential equations (atmosphere, ocean, ice, land) at time steps of minutes, requiring billions of sequential calculations. AI climate models learn the state-to-state transition function and can take much larger effective time steps (hours or days), parallelized on GPUs. The University of Washington demonstrated this with their "Climate in a Bottle" approach.</div>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon" style="background:var(--accent-red)">Q</div><h3>Hard Questions</h3></div>
+                                
+                                <div class="quiz" data-correct="3">
+                                    <span class="difficulty hard">Hard</span>
+                                    <div class="q">What is the key limitation of AI weather models that prevents them from fully replacing traditional NWP systems?</div>
+                                    <button class="opt">A) They cannot run on standard GPUs</button>
+                                    <button class="opt">B) They are less accurate than traditional models at all lead times</button>
+                                    <button class="opt">C) They require internet connectivity to function</button>
+                                    <button class="opt">D) They struggle with extreme/rare events (hurricanes, heat waves) that are underrepresented in training data, and cannot easily incorporate new physics (e.g., volcanic eruptions) without retraining</button>
+                                    <div class="explain"><strong>Correct: D.</strong> AI weather models are trained on historical data (ERA5, ~40 years). Extreme events are rare in this dataset, causing the models to "regress to the mean" for unusual situations. Additionally, unprecedented events (new volcanic eruption, novel climate regime) have no training signal. Traditional physics-based models handle these better because they solve fundamental equations that generalize to unseen conditions. This is why operational weather services run both in parallel.</div>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon warn">!</div><h3>Interview Gotchas & Nuances</h3></div>
+                                
+                                <div class="interview-tips">
+                                    <h4>Scientific AI Interview Traps</h4>
+                                    <ul>
+                                        <li><strong>"AI Replaces Physics" Myth:</strong> <em>Nuance:</em> AI models complement, not replace, physics-based simulation. For drug discovery, AI identifies candidates but MD simulation validates them. For weather, AI provides fast forecasts but physics models handle extreme events. Always frame AI as accelerating the pipeline, not eliminating physics.</li>
+                                        <li><strong>Precision Requirements:</strong> <em>Nuance:</em> Scientific computing often needs FP64, unlike ML which uses FP8/FP16. Don't recommend inference-optimized GPUs (which sacrifice FP64) for MD simulations. The H200 and MI300A have strong FP64; the B200's FP64 ratio is lower.</li>
+                                        <li><strong>Validation vs Accuracy:</strong> <em>Nuance:</em> In drug discovery, a model that's 95% accurate on average but misses 5% of toxic compounds is dangerous. Always discuss validation methodology, not just accuracy metrics. Mention ensemble approaches and uncertainty quantification.</li>
+                                        <li><strong>Data Scarcity in Science:</strong> <em>Nuance:</em> Unlike internet-scale text/image data, scientific datasets are small and expensive to generate. A drug discovery dataset might have only 10,000 compounds with measured binding affinities. This fundamentally changes the ML approach (few-shot learning, physics-informed priors, active learning).</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="section-divider"></div>
+                                <div class="learning-header"><div class="learning-icon tip">A</div><h3>Model Answers for Scientific AI Interviews</h3></div>
+                                
+                                <div class="mock">
+                                    <div class="qq">"How would you design a GPU-accelerated drug discovery pipeline from target identification to lead optimization?" <span class="tw">+</span></div>
+                                    <div class="aa">
+                                        <p><strong>Model Answer:</strong> "I'd design a five-stage GPU pipeline: (1) Target identification: use genomics AI models on L40S GPUs to identify disease-relevant protein targets from patient data. (2) Structure prediction: run AlphaFold3 on B200 GPUs to predict the 3D structure of the target protein and its binding sites—this uses diffusion-based inference requiring multiple denoising steps. (3) Virtual screening: screen 10 billion compounds against the predicted binding site using GPU-accelerated docking (AutoDock-GPU) on a cluster of L40S GPUs—this is embarrassingly parallel and throughput-optimized. (4) MD simulation: for the top 1,000 hits, run molecular dynamics on H200 GPUs (FP64 required) to validate binding affinity and assess off-target effects. (5) Generative optimization: use a generative chemistry model to propose novel molecules optimized for the binding pocket, ADMET properties, and synthesizability. Total time: ~6 months vs 3+ years traditionally. The key GPU insight is that each stage has different precision and compute requirements—you can't use one GPU type for everything."</p>
+                                        <p style="margin-top:12px;color:var(--accent-green);font-size:0.85rem"><strong>Why this works:</strong> It shows end-to-end pipeline thinking, matches specific GPUs to each stage's requirements, and quantifies the speedup vs traditional approaches.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mock">
+                                    <div class="qq">"Should a national weather service replace their supercomputer with GPU-based AI weather models?" <span class="tw">+</span></div>
+                                    <div class="aa">
+                                        <p><strong>Model Answer:</strong> "Not replace—augment. I'd recommend a hybrid strategy: (1) Deploy AI weather models (GraphCast/Pangu-Weather) on a small GPU cluster (64x B200) for rapid ensemble forecasting—producing 50-member ensembles in 75 minutes vs 50+ hours traditionally. This enables much more frequent forecast updates (every 15 minutes vs every 6 hours). (2) Maintain the traditional NWP system for: extreme event forecasting where AI models underperform due to training data scarcity, providing ground truth for AI model validation, and handling novel atmospheric conditions (volcanic eruptions, unprecedented climate states). (3) Use AI for downscaling: take the coarse NWP output and use a super-resolution model to produce 5km local forecasts. The economic case is compelling: the GPU cluster costs ~$2M vs $100M+ for a new supercomputer, while providing 100x faster forecasts for routine weather. But the physics-based system remains essential for safety-critical severe weather warnings."</p>
+                                        <p style="margin-top:12px;color:var(--accent-green);font-size:0.85rem"><strong>Why this works:</strong> It avoids the binary "replace vs keep" trap, proposes a nuanced hybrid strategy, quantifies the economics, and identifies where each approach excels—showing mature engineering judgment.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             <!-- ===== CROSS-CUTTING ANALYSIS ===== -->
             <section class="section" id="analysis">
                 <div class="section-header">
@@ -2563,6 +3198,76 @@
             const firstCard = document.querySelector('.scenario-card');
             if (firstCard) firstCard.classList.add('open');
         });
+    
+        // Quiz logic
+        document.querySelectorAll('.quiz').forEach(q => {
+            const correct = parseInt(q.dataset.correct);
+            const opts = [...q.querySelectorAll('.opt')];
+            const exp = q.querySelector('.explain');
+            
+            opts.forEach((o, i) => o.addEventListener('click', () => {
+                if (q.dataset.done) return;
+                q.dataset.done = 1;
+                
+                opts[correct].classList.add('correct');
+                if (i !== correct) o.classList.add('wrong');
+                
+                exp.classList.add('show');
+            }));
+        });
+        
+        // Mock Q&A Accordion logic
+        document.querySelectorAll('.mock .qq').forEach(q => {
+            q.addEventListener('click', () => {
+                q.classList.toggle('open');
+                q.nextElementSibling.classList.toggle('open');
+            });
+        });
+
+        // ===== Quiz Grading =====
+        document.querySelectorAll('.quiz').forEach(q => {
+            const correct = parseInt(q.dataset.correct);
+            const opts = [...q.querySelectorAll('.opt')];
+            const exp = q.querySelector('.explain');
+            opts.forEach((o, i) => o.addEventListener('click', () => {
+                if (q.dataset.done) return;
+                q.dataset.done = '1';
+                opts[correct].classList.add('correct');
+                if (i !== correct) o.classList.add('wrong');
+                if (exp) exp.classList.add('show');
+                // Update score
+                updateScores();
+            }));
+        });
+        
+        // ===== Mock Q&A Accordions =====
+        document.querySelectorAll('.mock .qq').forEach(q => {
+            q.addEventListener('click', () => {
+                q.classList.toggle('open');
+                q.nextElementSibling.classList.toggle('open');
+            });
+        });
+        
+        // ===== Score Tracking =====
+        function updateScores() {
+            const allQuizzes = document.querySelectorAll('.quiz');
+            const answered = document.querySelectorAll('.quiz[data-done]');
+            let correctCount = 0;
+            answered.forEach(q => {
+                const correctIdx = parseInt(q.dataset.correct);
+                const opts = [...q.querySelectorAll('.opt')];
+                if (opts[correctIdx] && opts[correctIdx].classList.contains('correct') && !q.querySelector('.opt.wrong')) {
+                    correctCount++;
+                }
+            });
+            document.querySelectorAll('.score-value').forEach(el => {
+                el.textContent = correctCount + '/' + allQuizzes.length;
+            });
+            document.querySelectorAll('.score-fill').forEach(el => {
+                el.style.width = (allQuizzes.length > 0 ? (correctCount / allQuizzes.length * 100) : 0) + '%';
+            });
+        }
+
     </script>
 </body>
 </html>
