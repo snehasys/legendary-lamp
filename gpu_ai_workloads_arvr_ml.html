@@ -1,0 +1,2568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-2024 GPU AI Workloads: AR/VR & Machine Learning Scenarios</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-card: #1c2128;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-purple: #bc8cff;
+            --accent-orange: #d29922;
+            --accent-red: #f85149;
+            --accent-cyan: #39d353;
+            --border-color: #30363d;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* Layout */
+        .layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 14px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-header p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .nav-section {
+            padding: 8px 12px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 8px 4px;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 6px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            margin: 2px 0;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--accent-blue);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 48px 64px;
+            max-width: 1100px;
+        }
+
+        /* Hero */
+        .hero {
+            margin-bottom: 64px;
+            padding: 48px;
+            background: linear-gradient(135deg, rgba(88,166,255,0.08) 0%, rgba(188,140,255,0.08) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+        }
+
+        .hero h1 {
+            font-size: 2.4em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #58a6ff, #bc8cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-size: 1.1em;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 24px;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .stat-card .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .filter-btn.active {
+            background: rgba(88, 166, 255, 0.15);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 64px;
+        }
+
+        .section-header {
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-header h2 {
+            font-size: 1.6em;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+
+        .domain-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .badge-ml { background: rgba(88,166,255,0.15); color: var(--accent-blue); }
+        .badge-arvr { background: rgba(188,140,255,0.15); color: var(--accent-purple); }
+        .badge-embodied { background: rgba(63,185,80,0.15); color: var(--accent-green); }
+        .badge-scientific { background: rgba(210,153,34,0.15); color: var(--accent-orange); }
+
+        /* Scenario Cards */
+        .scenario-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .scenario-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 4px 24px rgba(88,166,255,0.1);
+        }
+
+        .scenario-header {
+            padding: 24px 28px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .scenario-header h3 {
+            font-size: 1.15em;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .scenario-header .scenario-brief {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .scenario-toggle {
+            font-size: 20px;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .scenario-card.open .scenario-toggle {
+            transform: rotate(180deg);
+        }
+
+        .scenario-body {
+            display: none;
+            padding: 0 28px 28px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .scenario-card.open .scenario-body {
+            display: block;
+        }
+
+        /* Scenario Content */
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .scenario-detail {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .scenario-detail h4 {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .scenario-detail p, .scenario-detail ul {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        .scenario-detail ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .scenario-detail ul li {
+            padding: 3px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .scenario-detail ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-blue);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.85em;
+        }
+
+        .data-table th {
+            background: var(--bg-tertiary);
+            padding: 10px 14px;
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .data-table tr:hover td {
+            background: rgba(88,166,255,0.03);
+        }
+
+        /* Metric Badges */
+        .metric {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            color: var(--accent-cyan);
+        }
+
+        /* Architecture Diagrams */
+        .architecture-diagram {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .arch-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .arch-node {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 18px;
+            font-size: 12px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .arch-node.highlight {
+            border-color: var(--accent-blue);
+            background: rgba(88,166,255,0.08);
+        }
+
+        .arch-node .node-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .arch-node .node-detail {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .arch-arrow {
+            color: var(--accent-blue);
+            font-size: 18px;
+        }
+
+        /* GPU Comparison */
+        .gpu-comparison {
+            margin: 32px 0;
+        }
+
+        .gpu-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .gpu-tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .gpu-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .gpu-tab.active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+        }
+
+        .gpu-content {
+            display: none;
+        }
+
+        .gpu-content.active {
+            display: block;
+        }
+
+        /* Workload Intensity Bars */
+        .intensity-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px 0;
+        }
+
+        .intensity-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            min-width: 80px;
+        }
+
+        .intensity-track {
+            flex: 1;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .intensity-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .intensity-fill.high { background: var(--accent-red); }
+        .intensity-fill.medium { background: var(--accent-orange); }
+        .intensity-fill.low { background: var(--accent-green); }
+
+        .intensity-value {
+            font-size: 11px;
+            color: var(--text-secondary);
+            min-width: 35px;
+            text-align: right;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+            margin: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 12px 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -21px;
+            top: 18px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            border: 2px solid var(--bg-primary);
+        }
+
+        .timeline-item .year {
+            font-size: 11px;
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .timeline-item .event {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Code blocks */
+        .code-block {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            color: var(--text-secondary);
+            margin: 12px 0;
+        }
+
+        .code-block .comment { color: var(--text-muted); }
+        .code-block .keyword { color: var(--accent-purple); }
+        .code-block .string { color: var(--accent-green); }
+        .code-block .number { color: var(--accent-orange); }
+
+        /* Callout */
+        .callout {
+            background: rgba(88,166,255,0.05);
+            border-left: 3px solid var(--accent-blue);
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin: 16px 0;
+        }
+
+        .callout.warning {
+            background: rgba(210,153,34,0.05);
+            border-left-color: var(--accent-orange);
+        }
+
+        .callout.success {
+            background: rgba(63,185,80,0.05);
+            border-left-color: var(--accent-green);
+        }
+
+        .callout-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            color: var(--accent-blue);
+        }
+
+        .callout.warning .callout-title { color: var(--accent-orange); }
+        .callout.success .callout-title { color: var(--accent-green); }
+
+        .callout p {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                padding: 32px 24px;
+            }
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .scenario-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .sidebar { display: none; }
+            .layout { grid-template-columns: 1fr; }
+            .scenario-body { display: block !important; }
+            .filter-bar { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>GPU AI Workloads</h2>
+                <p>Post-2024 Scenarios &amp; Analysis</p>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="#introduction" class="nav-link active">Introduction</a>
+                <a href="#gpu-hardware" class="nav-link">GPU Hardware Landscape</a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Machine Learning</div>
+                <a href="#scenario-llm-inference" class="nav-link">LLM Inference at Scale</a>
+                <a href="#scenario-video-gen" class="nav-link">Video Generation</a>
+                <a href="#scenario-federated" class="nav-link">Federated Learning</a>
+                <a href="#scenario-moe" class="nav-link">Mixture-of-Experts Training</a>
+                <a href="#scenario-multimodal" class="nav-link">Multimodal Foundation Models</a>
+                <a href="#scenario-reasoning" class="nav-link">Reasoning Models</a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">AR/VR &amp; Spatial</div>
+                <a href="#scenario-gaussian" class="nav-link">3D Gaussian Splatting</a>
+                <a href="#scenario-foveated" class="nav-link">Foveated Neural Rendering</a>
+                <a href="#scenario-avatars" class="nav-link">Real-time AI Avatars</a>
+                <a href="#scenario-slam" class="nav-link">Neural SLAM &amp; Mapping</a>
+                <a href="#scenario-world-gen" class="nav-link">World Generation (Genie 3)</a>
+                <a href="#scenario-passthrough" class="nav-link">AI-Enhanced Passthrough</a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Embodied AI</div>
+                <a href="#scenario-sim2real" class="nav-link">Sim-to-Real Robotics</a>
+                <a href="#scenario-autonomous" class="nav-link">Autonomous Driving</a>
+                <a href="#scenario-digital-twin" class="nav-link">Industrial Digital Twins</a>
+                <a href="#scenario-world-models" class="nav-link">World Model Training</a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Scientific AI</div>
+                <a href="#scenario-protein" class="nav-link">Protein Folding &amp; Drug Discovery</a>
+                <a href="#scenario-climate" class="nav-link">Climate &amp; Weather Modeling</a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero" id="introduction">
+                <h1>Post-2024 GPU AI Workloads in AR/VR &amp; Machine Learning</h1>
+                <p class="subtitle">A comprehensive reference of realistic hypothetical scenarios covering every major class of AI workload running on GPUs in the AR/VR and machine learning domains, reflecting the state of the art from 2025 onward.</p>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <div class="number">18</div>
+                        <div class="label">Scenarios Covered</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">65%</div>
+                        <div class="label">AI Compute for Inference by 2029</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">$255B</div>
+                        <div class="label">Inference Market by 2030</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">192GB</div>
+                        <div class="label">B200 HBM3e VRAM</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterScenarios('all')">All Scenarios</button>
+                <button class="filter-btn" onclick="filterScenarios('ml')">Machine Learning</button>
+                <button class="filter-btn" onclick="filterScenarios('arvr')">AR/VR &amp; Spatial</button>
+                <button class="filter-btn" onclick="filterScenarios('embodied')">Embodied AI</button>
+                <button class="filter-btn" onclick="filterScenarios('scientific')">Scientific AI</button>
+                <button class="filter-btn" onclick="filterScenarios('training')">Training Workloads</button>
+                <button class="filter-btn" onclick="filterScenarios('inference')">Inference Workloads</button>
+            </div>
+
+            <!-- GPU Hardware Landscape -->
+            <section class="section" id="gpu-hardware">
+                <div class="section-header">
+                    <h2>GPU Hardware Landscape (2025&ndash;2026)</h2>
+                    <p>The accelerator ecosystem powering post-2024 AI workloads spans from edge deployment chips to massive data center clusters.</p>
+                </div>
+
+                <div class="gpu-comparison">
+                    <div class="gpu-tabs">
+                        <button class="gpu-tab active" onclick="switchGPUTab('nvidia')">NVIDIA Data Center</button>
+                        <button class="gpu-tab" onclick="switchGPUTab('amd')">AMD Instinct</button>
+                        <button class="gpu-tab" onclick="switchGPUTab('edge')">Edge &amp; Consumer</button>
+                    </div>
+
+                    <div class="gpu-content active" id="gpu-nvidia">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>GPU</th>
+                                    <th>VRAM</th>
+                                    <th>Memory BW</th>
+                                    <th>FP8 TFLOPS</th>
+                                    <th>TDP</th>
+                                    <th>Primary Use</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>H100 SXM</strong></td>
+                                    <td>80 GB HBM3</td>
+                                    <td>3.35 TB/s</td>
+                                    <td>1,979</td>
+                                    <td>700W</td>
+                                    <td>Training &amp; Inference</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>H200 SXM</strong></td>
+                                    <td>141 GB HBM3e</td>
+                                    <td>4.8 TB/s</td>
+                                    <td>1,979</td>
+                                    <td>700W</td>
+                                    <td>Large Model Inference</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>B200</strong></td>
+                                    <td>192 GB HBM3e</td>
+                                    <td>8 TB/s</td>
+                                    <td>4,500</td>
+                                    <td>1,000W</td>
+                                    <td>Training &amp; Inference</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>B300</strong></td>
+                                    <td>288 GB HBM3e</td>
+                                    <td>8+ TB/s</td>
+                                    <td>~5,000</td>
+                                    <td>1,200W</td>
+                                    <td>Frontier Training</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>L40S</strong></td>
+                                    <td>48 GB GDDR6X</td>
+                                    <td>864 GB/s</td>
+                                    <td>733</td>
+                                    <td>350W</td>
+                                    <td>Simulation &amp; Rendering</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="gpu-content" id="gpu-amd">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>GPU</th>
+                                    <th>VRAM</th>
+                                    <th>Memory BW</th>
+                                    <th>FP8 TFLOPS</th>
+                                    <th>TDP</th>
+                                    <th>Primary Use</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>MI300X</strong></td>
+                                    <td>192 GB HBM3</td>
+                                    <td>5.3 TB/s</td>
+                                    <td>2,615</td>
+                                    <td>750W</td>
+                                    <td>LLM Inference &amp; Training</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>MI350X</strong></td>
+                                    <td>256 GB HBM3e</td>
+                                    <td>6.0 TB/s</td>
+                                    <td>~2,615</td>
+                                    <td>750W</td>
+                                    <td>Inference-Optimized</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>MI300A (APU)</strong></td>
+                                    <td>128 GB HBM3</td>
+                                    <td>5.3 TB/s</td>
+                                    <td>~1,900</td>
+                                    <td>550W</td>
+                                    <td>HPC + AI Converged</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="gpu-content" id="gpu-edge">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Platform</th>
+                                    <th>Memory</th>
+                                    <th>AI Performance</th>
+                                    <th>TDP</th>
+                                    <th>Target</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>NVIDIA Jetson Orin</strong></td>
+                                    <td>64 GB Unified</td>
+                                    <td>275 TOPS (INT8)</td>
+                                    <td>60W</td>
+                                    <td>Robotics Edge</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>RTX PRO 6000 (Blackwell)</strong></td>
+                                    <td>96 GB GDDR7</td>
+                                    <td>~1,500 TFLOPS FP8</td>
+                                    <td>350W</td>
+                                    <td>Workstation AI/Viz</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>RTX 5090</strong></td>
+                                    <td>32 GB GDDR7</td>
+                                    <td>~900 TFLOPS FP8</td>
+                                    <td>575W</td>
+                                    <td>Consumer AI/Gaming</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>AMD Ryzen AI MAX</strong></td>
+                                    <td>128 GB Unified</td>
+                                    <td>50 TOPS NPU</td>
+                                    <td>120W</td>
+                                    <td>AI PC / Edge</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Qualcomm Snapdragon XR</strong></td>
+                                    <td>12 GB LPDDR5X</td>
+                                    <td>45 TOPS</td>
+                                    <td>8W</td>
+                                    <td>AR/VR Headsets</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">Key Trend: The Inference Shift</div>
+                    <p>By 2026, inference accounts for roughly two-thirds of all AI compute (up from one-third in 2023). Reasoning models like DeepSeek R1 consume 150x more compute than traditional inference, blurring the training/inference boundary. Organizations must plan for both workload types from inception.</p>
+                </div>
+            </section>
+
+            <!-- ===== MACHINE LEARNING SCENARIOS ===== -->
+            <section class="section" id="ml-scenarios">
+                <div class="section-header">
+                    <h2>Machine Learning &amp; Generative AI Scenarios</h2>
+                    <p>Core ML workloads that define the post-2024 GPU compute landscape, from trillion-parameter training to cost-optimized inference.</p>
+                </div>
+
+                <!-- Scenario 1: LLM Inference at Scale -->
+                <div class="scenario-card" data-domain="ml" data-type="inference" id="scenario-llm-inference">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-ml">Machine Learning</span>
+                            <h3>Scenario 1: Enterprise LLM Inference at the Edge</h3>
+                            <p class="scenario-brief">A financial services firm deploys a 70B-parameter reasoning model on-premises for real-time fraud detection, eliminating cloud latency and data sovereignty concerns.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>In 2026, the shift from cloud-only to hybrid on-prem/edge inference accelerates. A major European bank needs to process 50,000 transactions per second through an AI fraud detection model while complying with GDPR data residency requirements. Cloud round-trip latency of 40-80ms is unacceptable for real-time decisioning.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>4x NVIDIA B200 GPUs (192GB HBM3e each)</li>
+                                    <li>NVLink interconnect for tensor parallelism</li>
+                                    <li>768 GB total VRAM for full model in FP8</li>
+                                    <li>Inference server: NVIDIA Triton + TensorRT-LLM</li>
+                                    <li>Fallback: 8x AMD MI300X (192GB each) for cost savings</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:85%"></div></div>
+                                    <span class="intensity-value">85%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill medium" style="width:70%"></div></div>
+                                    <span class="intensity-value">70%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Bandwidth</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:92%"></div></div>
+                                    <span class="intensity-value">92%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Latency Sens.</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:95%"></div></div>
+                                    <span class="intensity-value">95%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Target latency: &lt;5ms per inference (p99)</li>
+                                    <li>Throughput: 50,000 req/s sustained</li>
+                                    <li>Cost: $0.04/million tokens (vs $0.07 cloud)</li>
+                                    <li>Model precision: FP8 with INT4 KV-cache</li>
+                                    <li>Power budget: 4,000W for GPU cluster</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Architecture</h4>
+                                <div class="architecture-diagram">
+                                    <div class="arch-flow">
+                                        <div class="arch-node">
+                                            <div class="node-title">Transaction Stream</div>
+                                            <div class="node-detail">50K TPS Kafka</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node">
+                                            <div class="node-title">Tokenizer</div>
+                                            <div class="node-detail">CPU Pre-processing</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node highlight">
+                                            <div class="node-title">4x B200 Cluster</div>
+                                            <div class="node-detail">Tensor Parallel Inference</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node">
+                                            <div class="node-title">Decision Engine</div>
+                                            <div class="node-detail">Approve / Flag / Block</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node">
+                                            <div class="node-title">Action Layer</div>
+                                            <div class="node-detail">Real-time Response</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Optimization Techniques Applied</h4>
+                                <p><strong>Quantization:</strong> FP8 weights with INT4 KV-cache reduces memory footprint by 60% while maintaining 99.2% accuracy vs FP16 baseline. <strong>Continuous Batching:</strong> Dynamic request grouping maximizes GPU utilization from 35% to 87%. <strong>Speculative Decoding:</strong> Small draft model proposes tokens verified by the main model, achieving 2.3x throughput improvement. <strong>PagedAttention:</strong> Efficient memory management for variable-length sequences eliminates fragmentation waste.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 2: Video Generation -->
+                <div class="scenario-card" data-domain="ml" data-type="training inference" id="scenario-video-gen">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-ml">Machine Learning</span>
+                            <h3>Scenario 2: Real-time AI Video Generation Pipeline</h3>
+                            <p class="scenario-brief">A media company operates a text-to-video generation service producing broadcast-quality 4K video at 24fps using diffusion transformers distributed across a GPU cluster.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>Post-2024, video generation models (successors to Sora, Runway Gen-3, Kling) have reached broadcast quality. A streaming platform wants to generate personalized video content on-demand. The diffusion transformer architecture requires context parallelization across multiple GPUs to achieve real-time generation at 24fps for 1080p output, with 4K requiring near-real-time batch processing.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>Training: 512x H200 GPUs (72TB total VRAM)</li>
+                                    <li>Inference: 8x B200 per generation instance</li>
+                                    <li>Context parallelism across GPU pairs</li>
+                                    <li>NVLink + InfiniBand for cross-node comms</li>
+                                    <li>Total cluster: 2,048 GPUs for training phase</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:98%"></div></div>
+                                    <span class="intensity-value">98%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:96%"></div></div>
+                                    <span class="intensity-value">96%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Bandwidth</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:90%"></div></div>
+                                    <span class="intensity-value">90%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Latency Sens.</span>
+                                    <div class="intensity-track"><div class="intensity-fill medium" style="width:60%"></div></div>
+                                    <span class="intensity-value">60%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Training: 3 weeks on 2,048 H200 GPUs</li>
+                                    <li>Inference: 8 seconds per 10s clip (1080p)</li>
+                                    <li>Model size: ~30B parameters (DiT architecture)</li>
+                                    <li>Temporal consistency: 95% frame coherence</li>
+                                    <li>Cost: ~$0.12 per generated second of video</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Technical Deep Dive: Context Parallelism for Video Diffusion</h4>
+                                <p>Video diffusion models process temporal sequences that exceed single-GPU memory. Context parallelism splits the temporal dimension across GPUs: each GPU handles a subset of frames while maintaining cross-attention to the full sequence via ring-attention communication patterns. The denoising process runs for 50 steps, with each step requiring all-reduce operations across the temporal partition. FP4 precision (native on Blackwell) reduces memory per frame by 4x compared to FP16, enabling longer video generation without proportional GPU scaling.</p>
+                                <div class="code-block">
+<span class="comment"># Hypothetical video generation workload configuration</span>
+<span class="keyword">model</span>: VideoTransformer-30B
+<span class="keyword">precision</span>: FP4 (weights) + FP8 (activations)
+<span class="keyword">temporal_frames</span>: <span class="number">240</span> (10s @ 24fps)
+<span class="keyword">spatial_resolution</span>: <span class="number">1920x1080</span>
+<span class="keyword">context_parallel_degree</span>: <span class="number">8</span> (GPUs per instance)
+<span class="keyword">denoising_steps</span>: <span class="number">50</span>
+<span class="keyword">latent_channels</span>: <span class="number">16</span>
+<span class="keyword">vram_per_gpu</span>: <span class="number">~170GB</span> (of 192GB available)
+<span class="keyword">inter_gpu_bandwidth_needed</span>: <span class="number">400 GB/s</span> (NVLink)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 3: Federated Learning -->
+                <div class="scenario-card" data-domain="ml" data-type="training" id="scenario-federated">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-ml">Machine Learning</span>
+                            <h3>Scenario 3: Cross-Hospital Federated Learning for Medical Imaging</h3>
+                            <p class="scenario-brief">A consortium of 50 hospitals trains a unified radiology AI model using federated learning, keeping patient data local while aggregating model updates on a central GPU cluster.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>Healthcare institutions hold vast imaging datasets but cannot share raw patient data due to HIPAA/GDPR regulations. NVIDIA FLARE (Federated Learning Application Runtime Environment) enables collaborative model training where each hospital trains locally on their GPU infrastructure and only shares encrypted gradient updates. The 2025-2026 federated learning market reached $0.1B and projects to $1.6B by 2035.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>Edge (per hospital): 2x L40S (48GB each)</li>
+                                    <li>Central aggregator: 4x H100 SXM (80GB each)</li>
+                                    <li>Total distributed: 100x L40S + 4x H100</li>
+                                    <li>Communication: Secure gRPC over WAN</li>
+                                    <li>Framework: NVIDIA FLARE 2.5+</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill medium" style="width:55%"></div></div>
+                                    <span class="intensity-value">55%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill medium" style="width:65%"></div></div>
+                                    <span class="intensity-value">65%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Network</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:80%"></div></div>
+                                    <span class="intensity-value">80%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Privacy Req.</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:99%"></div></div>
+                                    <span class="intensity-value">99%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Model: Vision Transformer (ViT-L) for CT/MRI</li>
+                                    <li>Local training: 2 epochs per round per site</li>
+                                    <li>Communication rounds: 200 for convergence</li>
+                                    <li>Accuracy: 94.7% (vs 96.1% centralized)</li>
+                                    <li>Training time: 6 weeks (vs 2 weeks centralized)</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Architecture: Federated Learning Pipeline</h4>
+                                <div class="architecture-diagram">
+                                    <div class="arch-flow">
+                                        <div class="arch-node">
+                                            <div class="node-title">Hospital A</div>
+                                            <div class="node-detail">2x L40S, Local CT Data</div>
+                                        </div>
+                                        <span class="arch-arrow">↗</span>
+                                        <div class="arch-node highlight">
+                                            <div class="node-title">Central Aggregator</div>
+                                            <div class="node-detail">4x H100, FedAvg/FedProx</div>
+                                        </div>
+                                        <span class="arch-arrow">↘</span>
+                                        <div class="arch-node">
+                                            <div class="node-title">Hospital B</div>
+                                            <div class="node-detail">2x L40S, Local MRI Data</div>
+                                        </div>
+                                    </div>
+                                    <p style="margin-top:12px;font-size:11px;color:var(--text-muted)">Only encrypted gradient updates traverse the network. Raw patient data never leaves the hospital.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 4: MoE Training -->
+                <div class="scenario-card" data-domain="ml" data-type="training" id="scenario-moe">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-ml">Machine Learning</span>
+                            <h3>Scenario 4: Trillion-Parameter Mixture-of-Experts Training</h3>
+                            <p class="scenario-brief">An AI research lab trains a 2-trillion parameter MoE model (288B active) on 32,000 GPUs over 90 days, targeting state-of-the-art reasoning capabilities.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>Following Meta's Llama 4 architecture (2T parameters, 288B active), frontier labs in 2025-2026 pursue ever-larger MoE models. The sparse architecture activates only a subset of experts per token, making inference efficient while maintaining the capacity of a much larger dense model. Training requires expert parallelism across thousands of GPUs with sophisticated load balancing to prevent expert collapse.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>32,000x NVIDIA B200 GPUs</li>
+                                    <li>4,000 DGX nodes (8 GPUs each)</li>
+                                    <li>NVLink + NVSwitch intra-node</li>
+                                    <li>InfiniBand NDR (400 Gb/s) inter-node</li>
+                                    <li>Total VRAM: 6.1 PB</li>
+                                    <li>Power: 32 MW sustained</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:95%"></div></div>
+                                    <span class="intensity-value">95%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:99%"></div></div>
+                                    <span class="intensity-value">99%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Network</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:88%"></div></div>
+                                    <span class="intensity-value">88%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Reliability</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:99%"></div></div>
+                                    <span class="intensity-value">99%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Training tokens: 15 trillion</li>
+                                    <li>Duration: ~90 days continuous</li>
+                                    <li>MFU (Model FLOPS Utilization): 42%</li>
+                                    <li>Checkpoint frequency: every 1,000 steps</li>
+                                    <li>GPU failure rate: ~3 GPUs/day (handled by redundancy)</li>
+                                    <li>Estimated cost: $400M-$600M</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Parallelism Strategy</h4>
+                                <p><strong>Expert Parallelism:</strong> 128 experts distributed across GPU groups; each GPU hosts a subset of experts. <strong>Tensor Parallelism (TP=8):</strong> Within each DGX node, attention layers split across 8 GPUs via NVLink. <strong>Pipeline Parallelism (PP=16):</strong> Model layers partitioned into 16 stages across nodes. <strong>Data Parallelism (DP=250):</strong> Remaining parallelism dimension for gradient averaging. <strong>Sequence Parallelism:</strong> Long context (128K tokens) split across the TP dimension. Total: TP×PP×DP = 8×16×250 = 32,000 GPUs.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 5: Multimodal Foundation Models -->
+                <div class="scenario-card" data-domain="ml" data-type="training inference" id="scenario-multimodal">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-ml">Machine Learning</span>
+                            <h3>Scenario 5: Multimodal Foundation Model (Vision + Language + Audio)</h3>
+                            <p class="scenario-brief">A tech company trains a unified multimodal model processing images, video, text, and audio simultaneously for a next-generation AI assistant deployed across devices.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>Multimodal models are the fastest-growing segment at 17.26% CAGR through 2026-2031. Unlike text-only LLMs, these models must encode visual, auditory, and textual information into a shared representation space. The compute intensity increases dramatically: processing a single video frame requires 100x more tokens than equivalent text. The model must handle real-time video understanding for AR glasses while maintaining conversational abilities.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>Training: 4,096x H200 (576 TB total VRAM)</li>
+                                    <li>Vision encoder pre-training: 512x H200</li>
+                                    <li>Audio encoder: 128x H200</li>
+                                    <li>Cross-modal alignment: 4,096x H200</li>
+                                    <li>Edge inference: Qualcomm Snapdragon XR + cloud B200</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:92%"></div></div>
+                                    <span class="intensity-value">92%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:94%"></div></div>
+                                    <span class="intensity-value">94%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Data I/O</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:88%"></div></div>
+                                    <span class="intensity-value">88%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Heterogeneity</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:95%"></div></div>
+                                    <span class="intensity-value">95%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Total parameters: 400B (dense)</li>
+                                    <li>Vision tokens: 576 per image, 14K per video clip</li>
+                                    <li>Training data: 5T text + 2B images + 100M videos</li>
+                                    <li>Training duration: 4 months</li>
+                                    <li>Inference on AR glasses: 200ms end-to-end</li>
+                                    <li>Split inference: 30% on-device, 70% cloud</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Hybrid Edge-Cloud Inference for AR Glasses</h4>
+                                <div class="architecture-diagram">
+                                    <div class="arch-flow">
+                                        <div class="arch-node">
+                                            <div class="node-title">AR Glasses</div>
+                                            <div class="node-detail">Snapdragon XR, 45 TOPS</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node">
+                                            <div class="node-title">On-Device Encoder</div>
+                                            <div class="node-detail">Vision + Audio tokenization</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node highlight">
+                                            <div class="node-title">Cloud B200</div>
+                                            <div class="node-detail">Heavy reasoning + generation</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node">
+                                            <div class="node-title">Response Render</div>
+                                            <div class="node-detail">On-device AR overlay</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 6: Reasoning Models -->
+                <div class="scenario-card" data-domain="ml" data-type="inference" id="scenario-reasoning">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-ml">Machine Learning</span>
+                            <h3>Scenario 6: Chain-of-Thought Reasoning Model Serving</h3>
+                            <p class="scenario-brief">Deploying a reasoning model (like DeepSeek R1 successors) that generates 20x more tokens and consumes 150x more compute than traditional models for complex problem-solving.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>Reasoning models represent a paradigm shift in inference economics. Unlike traditional models that produce concise answers, reasoning models generate extensive internal chain-of-thought before arriving at solutions. NVIDIA demonstrated at GTC that DeepSeek R1 answers with 20x more tokens using 150x more compute than traditional models for complex problems. This blurs the training/inference boundary and demands training-class infrastructure for what is technically inference.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>Serving cluster: 64x B200 GPUs</li>
+                                    <li>8 inference instances (8 GPUs each)</li>
+                                    <li>Model: 671B MoE (37B active per token)</li>
+                                    <li>KV-cache: Up to 128K context window</li>
+                                    <li>Speculative decoding with 7B draft model</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:90%"></div></div>
+                                    <span class="intensity-value">90%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:85%"></div></div>
+                                    <span class="intensity-value">85%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Token Gen.</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:95%"></div></div>
+                                    <span class="intensity-value">95%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Cost/Query</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:88%"></div></div>
+                                    <span class="intensity-value">88%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Avg tokens per response: 8,000-15,000</li>
+                                    <li>Time-to-first-token: 2.1 seconds</li>
+                                    <li>Total generation time: 45-90 seconds</li>
+                                    <li>Cost per complex query: $0.08-$0.25</li>
+                                    <li>Concurrent users per instance: 4-8</li>
+                                    <li>GPU utilization: 78% average</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>The Reasoning Compute Explosion</h4>
+                                <div class="callout warning">
+                                    <div class="callout-title">Infrastructure Implication</div>
+                                    <p>Reasoning models fundamentally change capacity planning. A service handling 1,000 concurrent users with a traditional model needs ~8 GPUs. The same service with a reasoning model needs ~128 GPUs due to the 150x compute multiplier per query. Organizations must decide whether to offer reasoning capabilities selectively or invest in dramatically larger inference infrastructure.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== AR/VR SCENARIOS ===== -->
+            <section class="section" id="arvr-scenarios">
+                <div class="section-header">
+                    <h2>AR/VR &amp; Spatial Computing Scenarios</h2>
+                    <p>GPU workloads powering immersive experiences, from neural rendering to real-time world understanding on head-mounted displays.</p>
+                </div>
+
+                <!-- Scenario 7: 3D Gaussian Splatting -->
+                <div class="scenario-card" data-domain="arvr" data-type="inference" id="scenario-gaussian">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-arvr">AR/VR</span>
+                            <h3>Scenario 7: Real-time 3D Gaussian Splatting for VR Telepresence</h3>
+                            <p class="scenario-brief">A VR telepresence system captures a room with 12 cameras, reconstructs it as 3D Gaussians in real-time, and streams the scene to remote participants at 90fps.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>3D Gaussian Splatting has emerged as the dominant real-time neural scene representation for VR/AR. Unlike NeRFs that require expensive ray-marching, Gaussian Splatting uses differentiable rasterization of millions of 3D Gaussians, achieving 60-120fps on consumer GPUs. For telepresence, the challenge is real-time capture, reconstruction, and streaming. The Gaussian Blending Unit (GBU) architecture enables edge GPU plug-in modules specifically designed for this workload.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>Capture side: RTX 5090 (32GB GDDR7)</li>
+                                    <li>Reconstruction: Real-time Gaussian fitting</li>
+                                    <li>Rendering side: RTX 4080+ per headset</li>
+                                    <li>Foveated rasterizer: Single GPU launch</li>
+                                    <li>Streaming: 50-100 Mbps compressed splats</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill medium" style="width:65%"></div></div>
+                                    <span class="intensity-value">65%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:85%"></div></div>
+                                    <span class="intensity-value">85%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Bandwidth</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:90%"></div></div>
+                                    <span class="intensity-value">90%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Latency Sens.</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:99%"></div></div>
+                                    <span class="intensity-value">99%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Gaussians per scene: 2-5 million</li>
+                                    <li>Rendering: 90fps stereo (per-eye)</li>
+                                    <li>Motion-to-photon latency: &lt;20ms</li>
+                                    <li>Reconstruction rate: 30 updates/sec</li>
+                                    <li>Memory per Gaussian: 62 bytes (compressed)</li>
+                                    <li>Total scene memory: ~310 MB</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>VRSplat Foveated Rendering Pipeline</h4>
+                                <p>The foveated Gaussian rasterizer assigns smaller tiles with higher resolution to central vision and larger tiles with lower resolution to peripheral vision, blending seamlessly at boundaries. This single-GPU-launch approach avoids redundant computations by processing focus and peripheral areas together. Combined with eye-tracking data from the headset, the system achieves 40% compute savings while maintaining perceptual quality. The efficient rasterizer handles 5M Gaussians at 90fps on an RTX 4080-class GPU.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 8: Foveated Neural Rendering -->
+                <div class="scenario-card" data-domain="arvr" data-type="inference" id="scenario-foveated">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-arvr">AR/VR</span>
+                            <h3>Scenario 8: AI-Driven Foveated Rendering with Gaze Prediction</h3>
+                            <p class="scenario-brief">A next-gen VR headset uses neural networks to predict gaze direction 50ms ahead, enabling aggressive foveated rendering that reduces GPU load by 70% while maintaining perceived visual quality.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>Human eyes only perceive high detail in the foveal region (~2° of visual field). FovealNet and similar architectures leverage real-time eye-tracking to focus rendering resources where the user looks. The AI component predicts gaze 50ms into the future (to account for rendering pipeline latency) and dynamically adjusts quality across the field of view. This enables 8K-per-eye rendering on hardware that could normally only handle 2K uniformly.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>Headset SoC: Qualcomm XR chip (gaze inference)</li>
+                                    <li>Rendering GPU: RTX 5080 (tethered) or cloud</li>
+                                    <li>Gaze prediction model: 2M params, INT8</li>
+                                    <li>Scene renderer: Variable-rate shading</li>
+                                    <li>Neural super-resolution for periphery</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill low" style="width:40%"></div></div>
+                                    <span class="intensity-value">40%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill medium" style="width:55%"></div></div>
+                                    <span class="intensity-value">55%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Latency Sens.</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:99%"></div></div>
+                                    <span class="intensity-value">99%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Precision Req.</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:92%"></div></div>
+                                    <span class="intensity-value">92%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Gaze prediction accuracy: 1.2° error @ 50ms</li>
+                                    <li>Foveal region: Full 8K rendering (60 PPD)</li>
+                                    <li>Peripheral: 2K + neural upscaling</li>
+                                    <li>GPU savings: 65-70% vs uniform rendering</li>
+                                    <li>Frame rate: 120fps sustained</li>
+                                    <li>Gaze inference latency: &lt;2ms on-device</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Multi-Resolution Rendering Zones</h4>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr><th>Zone</th><th>Angular Size</th><th>Resolution</th><th>Rendering Method</th><th>GPU Budget</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Foveal</td><td>5°</td><td>60 PPD (8K equiv)</td><td>Full ray-tracing</td><td>35%</td></tr>
+                                        <tr><td>Para-foveal</td><td>15°</td><td>30 PPD (4K equiv)</td><td>Hybrid raster+RT</td><td>30%</td></tr>
+                                        <tr><td>Near-peripheral</td><td>40°</td><td>15 PPD (2K equiv)</td><td>Rasterization</td><td>20%</td></tr>
+                                        <tr><td>Far-peripheral</td><td>100°+</td><td>8 PPD (1K equiv)</td><td>Neural upscale from 540p</td><td>15%</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 9: AI Avatars -->
+                <div class="scenario-card" data-domain="arvr" data-type="inference" id="scenario-avatars">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-arvr">AR/VR</span>
+                            <h3>Scenario 9: Real-time Photorealistic AI Avatar for Virtual Meetings</h3>
+                            <p class="scenario-brief">An enterprise platform renders photorealistic digital humans in real-time, driven by voice input, with full facial animation, lip-sync, and emotional expression, running on a single workstation GPU.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>The AI Avatar market is projected to grow from $0.80B in 2025 to $5.93B by 2032 (33.1% CAGR). NVIDIA's Omniverse Avatar and Tokkio platforms enable real-time digital humans for customer service, virtual meetings, and training. The GPU workload combines multiple AI models running simultaneously: speech recognition, LLM reasoning, text-to-speech synthesis, facial animation generation, and real-time neural rendering of the avatar's appearance.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>Rendering: RTX PRO 6000 (96GB GDDR7)</li>
+                                    <li>Or cloud: 1x L40S per avatar instance</li>
+                                    <li>Audio pipeline: Shared GPU with rendering</li>
+                                    <li>LLM backbone: Separate B200 (shared pool)</li>
+                                    <li>Total per-avatar GPU budget: ~45 TFLOPS</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill medium" style="width:60%"></div></div>
+                                    <span class="intensity-value">60%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill medium" style="width:72%"></div></div>
+                                    <span class="intensity-value">72%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Concurrency</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:85%"></div></div>
+                                    <span class="intensity-value">85%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Latency Sens.</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:90%"></div></div>
+                                    <span class="intensity-value">90%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Audio-to-lip-sync latency: &lt;100ms</li>
+                                    <li>Avatar rendering: 60fps @ 1080p</li>
+                                    <li>Facial blend shapes: 52 FACS parameters</li>
+                                    <li>Emotion detection accuracy: 89%</li>
+                                    <li>Concurrent avatars per L40S: 4-6</li>
+                                    <li>Voice clone fidelity: MOS 4.2/5.0</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Multi-Model Pipeline (Single GPU)</h4>
+                                <div class="architecture-diagram">
+                                    <div class="arch-flow">
+                                        <div class="arch-node">
+                                            <div class="node-title">Audio Input</div>
+                                            <div class="node-detail">Whisper v4 (STT)</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node">
+                                            <div class="node-title">LLM Reasoning</div>
+                                            <div class="node-detail">8B model, INT4</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node">
+                                            <div class="node-title">TTS Synthesis</div>
+                                            <div class="node-detail">Neural voice clone</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node highlight">
+                                            <div class="node-title">Face Animation</div>
+                                            <div class="node-detail">Audio2Face model</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node">
+                                            <div class="node-title">Neural Render</div>
+                                            <div class="node-detail">Gaussian avatar</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 10: Neural SLAM -->
+                <div class="scenario-card" data-domain="arvr" data-type="inference" id="scenario-slam">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-arvr">AR/VR</span>
+                            <h3>Scenario 10: Neural SLAM &amp; Semantic Scene Understanding for AR Glasses</h3>
+                            <p class="scenario-brief">AR glasses build a persistent 3D semantic map of the environment in real-time using neural SLAM, enabling contextual AI assistance that understands objects, surfaces, and spatial relationships.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>Traditional SLAM (Simultaneous Localization and Mapping) creates geometric maps. Neural SLAM adds semantic understanding: the system knows not just that there's a surface at coordinates (x,y,z), but that it's a "kitchen counter with a coffee mug." This enables AR assistants to provide contextual help ("The recipe says to add flour—it's in the cabinet to your left"). Niantic's third-generation AI-powered maps for AR glasses exemplify this trend.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>On-device: Qualcomm Snapdragon XR (45 TOPS)</li>
+                                    <li>Visual-inertial odometry: On-chip DSP</li>
+                                    <li>Semantic segmentation: On-device NPU</li>
+                                    <li>Cloud map fusion: L40S cluster</li>
+                                    <li>Map storage: 3D feature volumes in cloud</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">On-device</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:85%"></div></div>
+                                    <span class="intensity-value">85%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Power</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:95%"></div></div>
+                                    <span class="intensity-value">95%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Real-time</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:99%"></div></div>
+                                    <span class="intensity-value">99%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Accuracy</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:88%"></div></div>
+                                    <span class="intensity-value">88%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Tracking rate: 60Hz (16.6ms budget)</li>
+                                    <li>Mapping rate: 10Hz (semantic updates)</li>
+                                    <li>Localization accuracy: &lt;1cm drift/minute</li>
+                                    <li>Semantic classes: 200+ object categories</li>
+                                    <li>Power budget: 3W total for SLAM pipeline</li>
+                                    <li>Map density: 1M points per room</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>On-Device vs Cloud Workload Split</h4>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr><th>Task</th><th>Location</th><th>Latency Budget</th><th>Model Size</th><th>Precision</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Visual-Inertial Odometry</td><td>On-device DSP</td><td>5ms</td><td>500K params</td><td>INT8</td></tr>
+                                        <tr><td>Depth Estimation</td><td>On-device NPU</td><td>10ms</td><td>5M params</td><td>INT8</td></tr>
+                                        <tr><td>Semantic Segmentation</td><td>On-device NPU</td><td>16ms</td><td>12M params</td><td>INT8</td></tr>
+                                        <tr><td>Object Detection</td><td>On-device NPU</td><td>16ms</td><td>8M params</td><td>INT8</td></tr>
+                                        <tr><td>3D Map Fusion</td><td>Cloud GPU</td><td>200ms</td><td>50M params</td><td>FP16</td></tr>
+                                        <tr><td>Scene Graph Reasoning</td><td>Cloud GPU</td><td>500ms</td><td>1B params</td><td>FP8</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 11: World Generation -->
+                <div class="scenario-card" data-domain="arvr" data-type="training inference" id="scenario-world-gen">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-arvr">AR/VR</span>
+                            <h3>Scenario 11: Interactive World Generation for VR (Genie 3-class)</h3>
+                            <p class="scenario-brief">A VR platform generates persistent, navigable 3D worlds from text prompts at 24fps in real-time, with self-learned physics and minute-long temporal consistency, using auto-regressive world models.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>DeepMind's Genie 3 (August 2025) demonstrated the first real-time interactive general-purpose world model generating persistent 3D environments at 24fps. World Labs' Marble product makes this commercially available. For VR, this means infinite procedural worlds generated on-the-fly as users explore, with physics emerging from training rather than hard-coded engines. The GPU workload is auto-regressive frame generation with cross-attention to minute-long visual memory.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>Generation: 4x B200 per world instance</li>
+                                    <li>Resolution: 720p per frame (upscaled to 4K)</li>
+                                    <li>Frame rate: 24 generated, interpolated to 90</li>
+                                    <li>Memory: 192GB per GPU for context window</li>
+                                    <li>Neural upscaler: Dedicated tensor cores</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:96%"></div></div>
+                                    <span class="intensity-value">96%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:98%"></div></div>
+                                    <span class="intensity-value">98%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Temporal</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:90%"></div></div>
+                                    <span class="intensity-value">90%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Creativity</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:95%"></div></div>
+                                    <span class="intensity-value">95%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Generation: 24fps native, 90fps interpolated</li>
+                                    <li>Consistency: Several minutes of coherent world</li>
+                                    <li>Memory horizon: 1-minute lookback</li>
+                                    <li>Physics: Self-learned (gravity, collisions)</li>
+                                    <li>Prompt-to-world: &lt;3 seconds initial generation</li>
+                                    <li>Cost per hour of exploration: ~$2.40</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Auto-Regressive World Generation Pipeline</h4>
+                                <p>The world model generates one frame at a time, conditioning on: (1) the user's action input (movement, interaction), (2) the previous N frames as visual context, and (3) the text prompt defining the world's properties. Each frame requires a full forward pass through a ~20B parameter video transformer. At 24fps, this means 24 forward passes per second with cross-attention spanning up to 1,440 previous frames (1 minute at 24fps). The KV-cache for this context window consumes ~600GB, requiring distribution across 4 GPUs. Frame interpolation from 24 to 90fps uses a lightweight temporal super-resolution network running on dedicated GPU resources.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 12: AI-Enhanced Passthrough -->
+                <div class="scenario-card" data-domain="arvr" data-type="inference" id="scenario-passthrough">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-arvr">AR/VR</span>
+                            <h3>Scenario 12: Neural Passthrough Enhancement &amp; Scene Editing</h3>
+                            <p class="scenario-brief">A mixed-reality headset uses AI to enhance camera passthrough in real-time: correcting distortion, filling occluded regions, relighting scenes, and inserting photorealistic virtual objects with correct lighting and shadows.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>Modern MR headsets (Quest 3, Vision Pro successors) use camera passthrough to show the real world. Raw camera feeds suffer from distortion, latency, limited dynamic range, and inability to render virtual objects with correct lighting. NVIDIA's AI-Mediated Reality research addresses this with neural networks that reconstruct, enhance, and augment the passthrough feed in real-time. The GPU must process stereo video at 90fps with &lt;10ms added latency.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>On-headset SoC: Next-gen XR chip (100+ TOPS)</li>
+                                    <li>Neural enhancement: Dedicated ML accelerator</li>
+                                    <li>Lighting estimation: 3M param network</li>
+                                    <li>Inpainting (occlusion fill): 8M param network</li>
+                                    <li>Virtual object compositing: Hardware RT cores</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:88%"></div></div>
+                                    <span class="intensity-value">88%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Latency</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:99%"></div></div>
+                                    <span class="intensity-value">99%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Power</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:92%"></div></div>
+                                    <span class="intensity-value">92%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Quality</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:90%"></div></div>
+                                    <span class="intensity-value">90%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Processing latency: &lt;8ms added to passthrough</li>
+                                    <li>Resolution: 2160x2160 per eye</li>
+                                    <li>HDR reconstruction: 14 stops dynamic range</li>
+                                    <li>Lighting estimation: 30fps environment map</li>
+                                    <li>Power budget: 5W for neural enhancement</li>
+                                    <li>Virtual object realism: 92% user preference</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Neural Enhancement Stack</h4>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr><th>Layer</th><th>Function</th><th>Latency</th><th>Compute</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Distortion Correction</td><td>Undistort wide-angle cameras</td><td>1ms</td><td>2 TOPS</td></tr>
+                                        <tr><td>Temporal Stabilization</td><td>Remove jitter, predict motion</td><td>1ms</td><td>3 TOPS</td></tr>
+                                        <tr><td>HDR Reconstruction</td><td>Expand dynamic range from LDR</td><td>2ms</td><td>5 TOPS</td></tr>
+                                        <tr><td>Depth Estimation</td><td>Dense depth for occlusion</td><td>2ms</td><td>8 TOPS</td></tr>
+                                        <tr><td>Lighting Estimation</td><td>Environment map for virtual objects</td><td>3ms</td><td>6 TOPS</td></tr>
+                                        <tr><td>Neural Compositing</td><td>Blend virtual + real with shadows</td><td>2ms</td><td>10 TOPS</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== EMBODIED AI SCENARIOS ===== -->
+            <section class="section" id="embodied-scenarios">
+                <div class="section-header">
+                    <h2>Embodied AI &amp; Robotics Scenarios</h2>
+                    <p>Physical AI workloads spanning simulation, training, and deployment for robots, autonomous vehicles, and industrial systems.</p>
+                </div>
+
+                <!-- Scenario 13: Sim-to-Real -->
+                <div class="scenario-card" data-domain="embodied" data-type="training" id="scenario-sim2real">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-embodied">Embodied AI</span>
+                            <h3>Scenario 13: Massive-Scale Sim-to-Real Transfer for Humanoid Robots</h3>
+                            <p class="scenario-brief">A robotics company trains humanoid locomotion and manipulation policies in NVIDIA Isaac Sim, running 10,000 parallel environments on GPU clusters, then deploys zero-shot to physical robots.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>Companies like Figure AI, 1X, and Agility are training humanoid robots using massive simulation. NVIDIA Isaac Lab combines GPU-accelerated PhysX physics, photorealistic RTX rendering, and modular RL environments. The key insight: running 10,000+ parallel robot instances on GPUs generates years of experience in hours. Zero-shot sim-to-real transfer has been demonstrated for gear assembly, locomotion, and manipulation tasks.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration (Three-Computer Architecture)</h4>
+                                <ul>
+                                    <li><strong>DGX (Training):</strong> 8x B200 per node, 64 nodes</li>
+                                    <li><strong>OVX (Simulation):</strong> 32x L40S for rendering</li>
+                                    <li><strong>AGX (Deployment):</strong> Jetson Orin per robot</li>
+                                    <li>Physics: GPU-accelerated PhysX 5</li>
+                                    <li>Parallel envs: 10,000 simultaneous</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Simulation</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:92%"></div></div>
+                                    <span class="intensity-value">92%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">RL Training</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:88%"></div></div>
+                                    <span class="intensity-value">88%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Rendering</span>
+                                    <div class="intensity-track"><div class="intensity-fill medium" style="width:70%"></div></div>
+                                    <span class="intensity-value">70%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Data Volume</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:95%"></div></div>
+                                    <span class="intensity-value">95%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Parallel environments: 10,000 on 8x L40S</li>
+                                    <li>Simulation speed: 100x real-time</li>
+                                    <li>Training time: 48 hours for locomotion</li>
+                                    <li>Sim-to-real gap: &lt;5% performance drop</li>
+                                    <li>Control frequency: 100Hz on Jetson Orin</li>
+                                    <li>Domain randomization: 50+ parameters</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Domain Randomization Parameters</h4>
+                                <p>To bridge the sim-to-real gap, the simulation randomizes physical properties during training. The robot must learn policies robust to all variations:</p>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr><th>Parameter</th><th>Range</th><th>Purpose</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Surface friction</td><td>0.2 - 1.5</td><td>Different floor materials</td></tr>
+                                        <tr><td>Joint damping</td><td>±30% nominal</td><td>Actuator variation</td></tr>
+                                        <tr><td>Object mass</td><td>0.1 - 5.0 kg</td><td>Manipulation robustness</td></tr>
+                                        <tr><td>Lighting intensity</td><td>50 - 2000 lux</td><td>Vision robustness</td></tr>
+                                        <tr><td>Sensor noise</td><td>Gaussian σ=0.01-0.05</td><td>Real sensor characteristics</td></tr>
+                                        <tr><td>Communication delay</td><td>0 - 20ms</td><td>Network latency tolerance</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 14: Autonomous Driving -->
+                <div class="scenario-card" data-domain="embodied" data-type="training inference" id="scenario-autonomous">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-embodied">Embodied AI</span>
+                            <h3>Scenario 14: End-to-End Autonomous Driving with Neural Reconstruction</h3>
+                            <p class="scenario-brief">An autonomous vehicle company uses neural reconstruction to create interactive simulations from real sensor data, trains end-to-end driving policies, and deploys on vehicle-grade GPU hardware.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>NVIDIA's Cosmos platform and Alpamayo system (announced CES 2026) represent the shift to end-to-end learned driving. Neural reconstruction creates interactive simulations from real-world sensor data, enabling testing of rare scenarios without physical driving. World models predict future states, enabling the vehicle to "imagine" outcomes before acting. The GPU workload spans training (cloud), simulation (cloud), and real-time inference (vehicle edge).</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li><strong>Training:</strong> 2,048x B200 (NVIDIA Cosmos)</li>
+                                    <li><strong>Simulation:</strong> 512x L40S (neural reconstruction)</li>
+                                    <li><strong>Vehicle:</strong> NVIDIA DRIVE Thor (2,000 TOPS)</li>
+                                    <li>Sensor fusion: 12 cameras + 5 LiDAR + radar</li>
+                                    <li>World model: Cosmos-Predict for scenario gen</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Training</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:96%"></div></div>
+                                    <span class="intensity-value">96%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Simulation</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:85%"></div></div>
+                                    <span class="intensity-value">85%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Edge Inference</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:90%"></div></div>
+                                    <span class="intensity-value">90%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Safety Crit.</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:99%"></div></div>
+                                    <span class="intensity-value">99%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Training data: 20M hours of driving video</li>
+                                    <li>Synthetic scenarios: 1B generated via Cosmos</li>
+                                    <li>Inference latency: &lt;50ms sensor-to-action</li>
+                                    <li>Vehicle power budget: 800W for compute</li>
+                                    <li>Redundancy: Dual-compute with voting</li>
+                                    <li>Target: Level 4 autonomy (geofenced)</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Three-Stage Development Pipeline</h4>
+                                <div class="timeline">
+                                    <div class="timeline-item">
+                                        <div class="year">Stage 1: Data Collection &amp; Reconstruction</div>
+                                        <div class="event">Fleet of 10,000 vehicles collects sensor data. Neural reconstruction (3D Gaussian Splatting) converts real drives into editable simulations. GPU workload: 512x L40S processing 1PB/day of sensor data into 3D scenes.</div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="year">Stage 2: World Model Training &amp; Scenario Generation</div>
+                                        <div class="event">NVIDIA Cosmos-Predict trained on reconstructed scenes to generate novel scenarios (pedestrian darting out, construction zones, adverse weather). GPU workload: 2,048x B200 for 6 weeks training the world model on 9,000 trillion tokens.</div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="year">Stage 3: Policy Training &amp; Deployment</div>
+                                        <div class="event">End-to-end driving policy trained via reinforcement learning in world-model-generated scenarios. Deployed to DRIVE Thor with 2,000 TOPS. GPU workload: 1,024x B200 for policy training, then 800W edge inference per vehicle.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 15: Digital Twins -->
+                <div class="scenario-card" data-domain="embodied" data-type="training inference" id="scenario-digital-twin">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-embodied">Embodied AI</span>
+                            <h3>Scenario 15: AI-Optimized Industrial Digital Twin Factory</h3>
+                            <p class="scenario-brief">A German automotive manufacturer operates a full digital twin of their factory with 200 robots, using AI to optimize production scheduling, predict maintenance, and test new configurations before physical deployment.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>A planned industrial AI factory in Germany will feature 10,000 DGX B200 and RTX PRO servers, enabling European industrial leaders to accelerate manufacturing applications. The digital twin runs in NVIDIA Omniverse, simulating every robot, conveyor, and process in real-time. AI agents optimize scheduling, while predictive maintenance models prevent downtime. Siemens' Industrial Copilot runs on-premises with RTX PRO 6000 Blackwell GPUs.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li><strong>Digital Twin Rendering:</strong> 16x L40S (Omniverse)</li>
+                                    <li><strong>Physics Simulation:</strong> 8x L40S (PhysX)</li>
+                                    <li><strong>AI Optimization:</strong> 4x B200 (scheduling RL)</li>
+                                    <li><strong>Predictive Maintenance:</strong> 2x RTX PRO 6000</li>
+                                    <li><strong>Edge (per robot):</strong> Jetson Orin modules</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Rendering</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:80%"></div></div>
+                                    <span class="intensity-value">80%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Physics</span>
+                                    <div class="intensity-track"><div class="intensity-fill medium" style="width:65%"></div></div>
+                                    <span class="intensity-value">65%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">AI/ML</span>
+                                    <div class="intensity-track"><div class="intensity-fill medium" style="width:70%"></div></div>
+                                    <span class="intensity-value">70%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Data Ingest</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:85%"></div></div>
+                                    <span class="intensity-value">85%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Simulated entities: 200 robots + 50K parts</li>
+                                    <li>Sync frequency: Real-time (IoT → twin)</li>
+                                    <li>Prediction horizon: 72 hours ahead</li>
+                                    <li>Maintenance prediction accuracy: 94%</li>
+                                    <li>Throughput optimization: +12% vs manual</li>
+                                    <li>ROI: 18 months payback on GPU investment</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Digital Twin AI Workload Breakdown</h4>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr><th>AI Task</th><th>Model Type</th><th>GPU</th><th>Update Freq</th><th>Business Impact</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Production Scheduling</td><td>RL Agent (PPO)</td><td>B200</td><td>Every 15 min</td><td>+12% throughput</td></tr>
+                                        <tr><td>Predictive Maintenance</td><td>Transformer (time-series)</td><td>RTX PRO 6000</td><td>Every 1 min</td><td>-35% downtime</td></tr>
+                                        <tr><td>Quality Inspection</td><td>Vision Transformer</td><td>L40S</td><td>Real-time</td><td>99.7% defect detection</td></tr>
+                                        <tr><td>Energy Optimization</td><td>GNN + RL</td><td>RTX PRO 6000</td><td>Every 5 min</td><td>-18% energy cost</td></tr>
+                                        <tr><td>Layout Optimization</td><td>Generative Design</td><td>B200</td><td>Weekly</td><td>-8% floor space</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 16: World Models -->
+                <div class="scenario-card" data-domain="embodied" data-type="training" id="scenario-world-models">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-embodied">Embodied AI</span>
+                            <h3>Scenario 16: Physics-Aware World Model Training (Cosmos-class)</h3>
+                            <p class="scenario-brief">Training a world foundation model on 20 million hours of real-world video to predict future physical states, enabling robots and autonomous systems to "imagine" consequences of actions before executing them.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>NVIDIA Cosmos was trained on 9,000 trillion tokens from 20 million hours of real-world data. Yann LeCun's AMI Labs raised €500M to build world models that understand physics. The thesis: AI systems need internal models of physical reality to plan, reason about cause-and-effect, and avoid hallucinating physically impossible scenarios. This is the most compute-intensive workload class in AI, requiring understanding of gravity, momentum, material properties, and temporal causality.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li>Training cluster: 10,000+ B200 GPUs</li>
+                                    <li>Data processing: 2,000 H200 GPUs</li>
+                                    <li>Tokenizer training: 512 H200 GPUs</li>
+                                    <li>Total VRAM: ~2 PB across cluster</li>
+                                    <li>Storage: 100+ PB for video dataset</li>
+                                    <li>Network: 400 Gb/s InfiniBand per node</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:97%"></div></div>
+                                    <span class="intensity-value">97%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:99%"></div></div>
+                                    <span class="intensity-value">99%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Data I/O</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:94%"></div></div>
+                                    <span class="intensity-value">94%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Duration</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:99%"></div></div>
+                                    <span class="intensity-value">99%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Training tokens: 9,000 trillion</li>
+                                    <li>Training duration: 4-6 months</li>
+                                    <li>Data sources: Driving, robotics, industrial, human</li>
+                                    <li>Model tiers: Nano (edge), Super (general), Ultra (max)</li>
+                                    <li>Physics accuracy: 87% on benchmark tasks</li>
+                                    <li>Estimated cost: $500M-$1B</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Cosmos Model Architecture Tiers</h4>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr><th>Tier</th><th>Parameters</th><th>Target</th><th>Inference Hardware</th><th>Use Case</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Cosmos-Nano</td><td>~3B</td><td>Real-time, edge</td><td>Jetson Orin / DRIVE Thor</td><td>On-device prediction</td></tr>
+                                        <tr><td>Cosmos-Super</td><td>~30B</td><td>High performance</td><td>1-2x B200</td><td>General development</td></tr>
+                                        <tr><td>Cosmos-Ultra</td><td>~200B</td><td>Maximum fidelity</td><td>8x B200</td><td>Custom model distillation</td></tr>
+                                    </tbody>
+                                </table>
+                                <div class="callout success">
+                                    <div class="callout-title">Industry Adoption</div>
+                                    <p>Cosmos has been downloaded over 2 million times. Adopters include Figure AI (humanoid robots), Agility (bipedal robots), Waabi (autonomous trucking), XPENG (electric vehicles), and Uber (ridesharing autonomous). The platform generates synthetic training data that would be dangerous or impossible to collect in the real world.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== SCIENTIFIC AI SCENARIOS ===== -->
+            <section class="section" id="scientific-scenarios">
+                <div class="section-header">
+                    <h2>Scientific AI &amp; HPC Scenarios</h2>
+                    <p>GPU-accelerated scientific computing workloads that intersect with machine learning for breakthrough discoveries.</p>
+                </div>
+
+                <!-- Scenario 17: Protein Folding -->
+                <div class="scenario-card" data-domain="scientific" data-type="inference training" id="scenario-protein">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-scientific">Scientific AI</span>
+                            <h3>Scenario 17: AI-Accelerated Drug Discovery &amp; Protein Structure Prediction</h3>
+                            <p class="scenario-brief">A pharmaceutical company uses GPU clusters to predict protein structures (AlphaFold3-class), simulate molecular dynamics, and screen billions of drug candidates using AI, compressing years of R&amp;D into months.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>Protein folding sits at the intersection of the most computationally demanding workloads in computational biology. NVIDIA demonstrated 100x acceleration of protein structure inference using RTX PRO 6000 Blackwell GPUs. Modern drug discovery pipelines combine structure prediction, molecular dynamics simulation, and generative chemistry—all GPU-accelerated. Norma achieved 73-fold speedup in quantum AI drug discovery using NVIDIA's CUDA-Q platform.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li><strong>Structure Prediction:</strong> 64x B200 cluster</li>
+                                    <li><strong>Molecular Dynamics:</strong> 256x H200 (GROMACS)</li>
+                                    <li><strong>Virtual Screening:</strong> 128x L40S</li>
+                                    <li><strong>Generative Chemistry:</strong> 32x B200</li>
+                                    <li>Framework: NVIDIA BioNeMo, Clara</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:88%"></div></div>
+                                    <span class="intensity-value">88%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:95%"></div></div>
+                                    <span class="intensity-value">95%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Precision</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:90%"></div></div>
+                                    <span class="intensity-value">90%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Data Volume</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:85%"></div></div>
+                                    <span class="intensity-value">85%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Protein structures predicted: 10,000/day</li>
+                                    <li>MD simulation: 1μs in 4 hours (vs 4 months CPU)</li>
+                                    <li>Virtual screening: 10B compounds/week</li>
+                                    <li>Hit rate improvement: 5x vs traditional methods</li>
+                                    <li>Time to lead compound: 6 months (vs 3 years)</li>
+                                    <li>Cost per drug candidate: -60% vs traditional</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>Drug Discovery GPU Pipeline</h4>
+                                <div class="architecture-diagram">
+                                    <div class="arch-flow">
+                                        <div class="arch-node">
+                                            <div class="node-title">Target ID</div>
+                                            <div class="node-detail">Genomics + AI</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node highlight">
+                                            <div class="node-title">Structure Prediction</div>
+                                            <div class="node-detail">AlphaFold3 on B200</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node">
+                                            <div class="node-title">Virtual Screening</div>
+                                            <div class="node-detail">10B compounds, L40S</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node highlight">
+                                            <div class="node-title">MD Simulation</div>
+                                            <div class="node-detail">Binding affinity, H200</div>
+                                        </div>
+                                        <span class="arch-arrow">→</span>
+                                        <div class="arch-node">
+                                            <div class="node-title">Lead Optimization</div>
+                                            <div class="node-detail">Generative Chemistry</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario 18: Climate Modeling -->
+                <div class="scenario-card" data-domain="scientific" data-type="training inference" id="scenario-climate">
+                    <div class="scenario-header" onclick="toggleScenario(this)">
+                        <div>
+                            <span class="domain-badge badge-scientific">Scientific AI</span>
+                            <h3>Scenario 18: AI-Powered Climate Simulation &amp; Weather Prediction</h3>
+                            <p class="scenario-brief">A national weather service deploys GPU-accelerated AI models that simulate 1,000 years of climate in 12 hours on a single processor, while providing 5km-resolution weather forecasts 10 days ahead in minutes instead of hours.</p>
+                        </div>
+                        <span class="scenario-toggle">&#9662;</span>
+                    </div>
+                    <div class="scenario-body">
+                        <div class="scenario-grid">
+                            <div class="scenario-detail">
+                                <h4>Context &amp; Motivation</h4>
+                                <p>NVIDIA's Earth-2 initiative and "Climate in a Bottle" model demonstrate that AI can simulate 1,000 years of current climate in just 12 hours on a single processor. Traditional numerical weather prediction (NWP) takes hours on supercomputers for a single 10-day forecast. AI weather models (like GraphCast, Pangu-Weather, and NVIDIA FourCastNet) produce comparable accuracy in minutes on a single GPU. The University of Washington demonstrated 1,000-year climate simulations using AI, fundamentally changing climate science.</p>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>GPU Configuration</h4>
+                                <ul>
+                                    <li><strong>Training:</strong> 1,024x H200 (ERA5 reanalysis data)</li>
+                                    <li><strong>Inference (forecast):</strong> 1x B200 per forecast</li>
+                                    <li><strong>Ensemble:</strong> 64x B200 (50-member ensemble)</li>
+                                    <li><strong>Downscaling:</strong> 8x L40S (5km resolution)</li>
+                                    <li>Framework: NVIDIA Earth-2, Modulus</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Workload Characteristics</h4>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">VRAM</span>
+                                    <div class="intensity-track"><div class="intensity-fill medium" style="width:60%"></div></div>
+                                    <span class="intensity-value">60%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Compute</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:82%"></div></div>
+                                    <span class="intensity-value">82%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Throughput</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:90%"></div></div>
+                                    <span class="intensity-value">90%</span>
+                                </div>
+                                <div class="intensity-bar">
+                                    <span class="intensity-label">Accuracy</span>
+                                    <div class="intensity-track"><div class="intensity-fill high" style="width:88%"></div></div>
+                                    <span class="intensity-value">88%</span>
+                                </div>
+                            </div>
+                            <div class="scenario-detail">
+                                <h4>Key Performance Metrics</h4>
+                                <ul>
+                                    <li>Forecast speed: 10-day global in 90 seconds</li>
+                                    <li>Resolution: 0.25° (25km) → downscaled to 5km</li>
+                                    <li>Climate sim: 1,000 years in 12 hours</li>
+                                    <li>Accuracy: Matches ECMWF HRES at day 7</li>
+                                    <li>Energy: 10,000x less than traditional NWP</li>
+                                    <li>Ensemble: 50 members in 75 minutes</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-detail full-width">
+                                <h4>AI vs Traditional Weather Prediction Comparison</h4>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr><th>Metric</th><th>Traditional NWP</th><th>AI Weather Model (GPU)</th><th>Improvement</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>10-day global forecast</td><td>1-4 hours on supercomputer</td><td>90 seconds on 1x B200</td><td>~100x faster</td></tr>
+                                        <tr><td>Energy per forecast</td><td>~10 MWh</td><td>~1 kWh</td><td>10,000x efficient</td></tr>
+                                        <tr><td>Hardware cost</td><td>$100M+ supercomputer</td><td>$30K single GPU</td><td>3,000x cheaper</td></tr>
+                                        <tr><td>Ensemble (50 members)</td><td>50-100 hours</td><td>75 minutes</td><td>~60x faster</td></tr>
+                                        <tr><td>Spatial resolution</td><td>9-25km</td><td>25km (+ AI downscale to 5km)</td><td>Comparable+</td></tr>
+                                        <tr><td>Update frequency</td><td>4x daily</td><td>Every 15 minutes possible</td><td>24x more frequent</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== CROSS-CUTTING ANALYSIS ===== -->
+            <section class="section" id="analysis">
+                <div class="section-header">
+                    <h2>Cross-Cutting Analysis &amp; Workload Taxonomy</h2>
+                    <p>Synthesizing patterns across all scenarios to understand GPU resource allocation, bottlenecks, and optimization strategies.</p>
+                </div>
+
+                <div class="scenario-card open" data-domain="all" data-type="training inference">
+                    <div class="scenario-header">
+                        <div>
+                            <h3>Workload Classification Matrix</h3>
+                            <p class="scenario-brief">All 18 scenarios mapped by compute intensity, memory requirements, latency sensitivity, and primary GPU bottleneck.</p>
+                        </div>
+                    </div>
+                    <div class="scenario-body" style="display:block">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Scenario</th>
+                                    <th>Domain</th>
+                                    <th>Type</th>
+                                    <th>Primary Bottleneck</th>
+                                    <th>GPU Scale</th>
+                                    <th>Latency Req.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1. LLM Inference at Edge</td><td>ML</td><td>Inference</td><td>Memory Bandwidth</td><td>4-8 GPUs</td><td>&lt;5ms</td></tr>
+                                <tr><td>2. Video Generation</td><td>ML</td><td>Both</td><td>VRAM + Compute</td><td>8-2048 GPUs</td><td>Seconds</td></tr>
+                                <tr><td>3. Federated Learning</td><td>ML</td><td>Training</td><td>Network</td><td>100+ distributed</td><td>Minutes</td></tr>
+                                <tr><td>4. MoE Training</td><td>ML</td><td>Training</td><td>All-to-all Comms</td><td>32,000 GPUs</td><td>N/A</td></tr>
+                                <tr><td>5. Multimodal Foundation</td><td>ML</td><td>Both</td><td>Data I/O + VRAM</td><td>4,096 GPUs</td><td>200ms (inf)</td></tr>
+                                <tr><td>6. Reasoning Models</td><td>ML</td><td>Inference</td><td>Token Generation</td><td>64 GPUs</td><td>2-90s</td></tr>
+                                <tr><td>7. Gaussian Splatting VR</td><td>AR/VR</td><td>Inference</td><td>Rasterization BW</td><td>1-2 GPUs</td><td>&lt;11ms</td></tr>
+                                <tr><td>8. Foveated Rendering</td><td>AR/VR</td><td>Inference</td><td>Latency</td><td>1 GPU + SoC</td><td>&lt;8ms</td></tr>
+                                <tr><td>9. AI Avatars</td><td>AR/VR</td><td>Inference</td><td>Pipeline Concurrency</td><td>1 GPU</td><td>&lt;100ms</td></tr>
+                                <tr><td>10. Neural SLAM</td><td>AR/VR</td><td>Inference</td><td>Power Budget</td><td>On-device SoC</td><td>&lt;16ms</td></tr>
+                                <tr><td>11. World Generation</td><td>AR/VR</td><td>Both</td><td>VRAM (context)</td><td>4 GPUs</td><td>41ms/frame</td></tr>
+                                <tr><td>12. Neural Passthrough</td><td>AR/VR</td><td>Inference</td><td>Power + Latency</td><td>On-device SoC</td><td>&lt;8ms</td></tr>
+                                <tr><td>13. Sim-to-Real Robotics</td><td>Embodied</td><td>Training</td><td>Physics Simulation</td><td>64-512 GPUs</td><td>N/A</td></tr>
+                                <tr><td>14. Autonomous Driving</td><td>Embodied</td><td>Both</td><td>Safety + Latency</td><td>2048 (train) / 1 (car)</td><td>&lt;50ms</td></tr>
+                                <tr><td>15. Digital Twin Factory</td><td>Embodied</td><td>Both</td><td>Rendering + Physics</td><td>30+ GPUs</td><td>Real-time</td></tr>
+                                <tr><td>16. World Model Training</td><td>Embodied</td><td>Training</td><td>Everything (frontier)</td><td>10,000+ GPUs</td><td>N/A</td></tr>
+                                <tr><td>17. Drug Discovery</td><td>Scientific</td><td>Both</td><td>FP64 Compute</td><td>64-256 GPUs</td><td>Hours</td></tr>
+                                <tr><td>18. Climate/Weather AI</td><td>Scientific</td><td>Both</td><td>Throughput</td><td>1-1024 GPUs</td><td>Seconds-Hours</td></tr>
+                            </tbody>
+                        </table>
+
+                        <div class="callout" style="margin-top:24px">
+                            <div class="callout-title">Key Insight: The Bimodal GPU Landscape</div>
+                            <p>Post-2024 GPU workloads cluster into two distinct regimes: <strong>(1) Frontier Training</strong> requiring 1,000-32,000+ GPUs running for weeks/months with throughput optimization, and <strong>(2) Edge/Real-time Inference</strong> requiring 1-8 GPUs with sub-10ms latency constraints. The middle ground (10-100 GPUs) is increasingly rare, as workloads either scale to frontier or compress to edge. AR/VR workloads exclusively occupy the edge regime, while ML training pushes ever further into the frontier regime.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GPU Selection Guide -->
+                <div class="scenario-card open" data-domain="all" data-type="training inference">
+                    <div class="scenario-header">
+                        <div>
+                            <h3>GPU Selection Decision Framework</h3>
+                            <p class="scenario-brief">Matching workload characteristics to optimal GPU hardware for post-2024 deployments.</p>
+                        </div>
+                    </div>
+                    <div class="scenario-body" style="display:block">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>If Your Workload Needs...</th>
+                                    <th>Choose</th>
+                                    <th>Why</th>
+                                    <th>Example Scenario</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Maximum VRAM (288GB)</td><td>NVIDIA B300</td><td>Largest single-GPU memory</td><td>World Model Training</td></tr>
+                                <tr><td>Best cost/token for inference</td><td>AMD MI350X</td><td>256GB + competitive pricing</td><td>LLM Inference at Scale</td></tr>
+                                <tr><td>Real-time VR rendering</td><td>RTX 5090 / RTX PRO 6000</td><td>RT cores + high clock speed</td><td>Gaussian Splatting, Foveated</td></tr>
+                                <tr><td>Robotics simulation</td><td>L40S cluster</td><td>Balanced render + compute</td><td>Isaac Sim, Digital Twins</td></tr>
+                                <tr><td>Edge deployment (robot/car)</td><td>Jetson Orin / DRIVE Thor</td><td>Power efficiency + real-time</td><td>Sim-to-Real, Autonomous</td></tr>
+                                <tr><td>On-device AR/VR AI</td><td>Qualcomm Snapdragon XR</td><td>8W power, 45 TOPS</td><td>Neural SLAM, Passthrough</td></tr>
+                                <tr><td>Frontier model training</td><td>B200 in DGX clusters</td><td>4,500 FP8 TFLOPS + NVLink</td><td>MoE Training, Cosmos</td></tr>
+                                <tr><td>Medical/scientific HPC</td><td>H200 or MI300A</td><td>HBM3e + FP64 capability</td><td>Drug Discovery, Climate</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer style="margin-top:64px;padding:32px 0;border-top:1px solid var(--border-color);text-align:center;">
+                <p style="color:var(--text-muted);font-size:13px;">Post-2024 GPU AI Workloads Reference &mdash; AR/VR &amp; Machine Learning Domains</p>
+                <p style="color:var(--text-muted);font-size:11px;margin-top:8px;">Data synthesized from NVIDIA, AMD, DeepMind, Meta, Stanford AI Index, Deloitte, and industry research (2025&ndash;2026). All scenarios are realistic hypothetical projections based on publicly available technology and market data.</p>
+                <p style="color:var(--text-muted);font-size:11px;margin-top:4px;">Generated July 2026</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Toggle scenario cards
+        function toggleScenario(header) {
+            const card = header.closest('.scenario-card');
+            card.classList.toggle('open');
+        }
+
+        // Filter scenarios by domain
+        function filterScenarios(filter) {
+            const cards = document.querySelectorAll('.scenario-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            cards.forEach(card => {
+                const domain = card.dataset.domain;
+                const type = card.dataset.type || '';
+
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                } else if (filter === 'training') {
+                    card.style.display = type.includes('training') ? 'block' : 'none';
+                } else if (filter === 'inference') {
+                    card.style.display = type.includes('inference') ? 'block' : 'none';
+                } else {
+                    card.style.display = domain === filter ? 'block' : 'none';
+                }
+            });
+        }
+
+        // GPU tab switching
+        function switchGPUTab(tab) {
+            const tabs = document.querySelectorAll('.gpu-tab');
+            const contents = document.querySelectorAll('.gpu-content');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById('gpu-' + tab).classList.add('active');
+        }
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Highlight active nav on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+                    });
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('[id]').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Open first scenario by default
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstCard = document.querySelector('.scenario-card');
+            if (firstCard) firstCard.classList.add('open');
+        });
+    </script>
+</body>
+</html>
