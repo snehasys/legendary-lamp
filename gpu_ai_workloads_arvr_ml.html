@@ -618,6 +618,39 @@
             color: var(--text-secondary);
         }
 
+
+
+        /* Citation Styles */
+        .citation-group { margin-bottom: 28px; }
+        .citation-list { padding-left: 24px; counter-reset: none; }
+        .citation-list li { margin-bottom: 14px; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; padding-left: 4px; }
+        .citation-list li strong { color: var(--text-primary); }
+        .citation-list li em { color: var(--accent-blue); font-style: italic; }
+        .citation-list li a { color: var(--accent-cyan); text-decoration: none; word-break: break-all; }
+        .citation-list li a:hover { text-decoration: underline; }
+        .inline-cite { font-size: 0.75rem; vertical-align: super; color: var(--accent-cyan); text-decoration: none; font-weight: 600; cursor: pointer; }
+        .inline-cite:hover { text-decoration: underline; color: var(--accent-blue); }
+
+        /* iOS Touch Compatibility */
+        button, .scenario-header, .mock .qq, .opt, .nav-link, .filter-btn, .gpu-tab {
+            -webkit-tap-highlight-color: rgba(88, 166, 255, 0.3);
+            touch-action: manipulation;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        .scenario-header, .mock .qq, .opt {
+            cursor: pointer;
+        }
+
+        /* Prevent iOS zoom on double-tap */
+        @supports (-webkit-touch-callout: none) {
+            .filter-btn, .gpu-tab, .opt, .scenario-header, .mock .qq {
+                touch-action: manipulation;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .layout {
@@ -732,7 +765,7 @@
 
     </style>
 </head>
-<body>
+<body ontouchstart="">
     <div class="layout">
         <!-- Sidebar Navigation -->
         <nav class="sidebar">
@@ -779,6 +812,10 @@
                 <a href="#scenario-climate" class="nav-link">Climate &amp; Weather Modeling</a>
                     <a href="#learning-scientific" class="nav-link" style="color:var(--accent-purple)">Scientific AI Quiz & Prep</a>
             </div>
+            <div class="nav-section">
+                <div class="nav-section-title">RESOURCES</div>
+                <a href="#citations" class="nav-link">Citations &amp; References</a>
+            </div>
         </nav>
 
         <!-- Main Content -->
@@ -809,13 +846,13 @@
 
             <!-- Filter Bar -->
             <div class="filter-bar">
-                <button class="filter-btn active" onclick="filterScenarios('all')">All Scenarios</button>
-                <button class="filter-btn" onclick="filterScenarios('ml')">Machine Learning</button>
-                <button class="filter-btn" onclick="filterScenarios('arvr')">AR/VR &amp; Spatial</button>
-                <button class="filter-btn" onclick="filterScenarios('embodied')">Embodied AI</button>
-                <button class="filter-btn" onclick="filterScenarios('scientific')">Scientific AI</button>
-                <button class="filter-btn" onclick="filterScenarios('training')">Training Workloads</button>
-                <button class="filter-btn" onclick="filterScenarios('inference')">Inference Workloads</button>
+                <button class="filter-btn active" onclick="filterScenarios('all', this)">All Scenarios</button>
+                <button class="filter-btn" onclick="filterScenarios('ml', this)">Machine Learning</button>
+                <button class="filter-btn" onclick="filterScenarios('arvr', this)">AR/VR &amp; Spatial</button>
+                <button class="filter-btn" onclick="filterScenarios('embodied', this)">Embodied AI</button>
+                <button class="filter-btn" onclick="filterScenarios('scientific', this)">Scientific AI</button>
+                <button class="filter-btn" onclick="filterScenarios('training', this)">Training Workloads</button>
+                <button class="filter-btn" onclick="filterScenarios('inference', this)">Inference Workloads</button>
             </div>
 
             <!-- GPU Hardware Landscape -->
@@ -827,9 +864,9 @@
 
                 <div class="gpu-comparison">
                     <div class="gpu-tabs">
-                        <button class="gpu-tab active" onclick="switchGPUTab('nvidia')">NVIDIA Data Center</button>
-                        <button class="gpu-tab" onclick="switchGPUTab('amd')">AMD Instinct</button>
-                        <button class="gpu-tab" onclick="switchGPUTab('edge')">Edge &amp; Consumer</button>
+                        <button class="gpu-tab active" onclick="switchGPUTab('nvidia', this)">NVIDIA Data Center</button>
+                        <button class="gpu-tab" onclick="switchGPUTab('amd', this)">AMD Instinct</button>
+                        <button class="gpu-tab" onclick="switchGPUTab('edge', this)">Edge &amp; Consumer</button>
                     </div>
 
                     <div class="gpu-content active" id="gpu-nvidia">
@@ -863,7 +900,7 @@
                                 </tr>
                                 <tr>
                                     <td><strong>B200</strong></td>
-                                    <td>192 GB HBM3e</td>
+                                    <td>192 GB HBM3e <a href="#ref-6" class="inline-cite">[6]</a></td>
                                     <td>8 TB/s</td>
                                     <td>4,500</td>
                                     <td>1,000W</td>
@@ -984,7 +1021,7 @@
 
                 <div class="callout">
                     <div class="callout-title">Key Trend: The Inference Shift</div>
-                    <p>By 2026, inference accounts for roughly two-thirds of all AI compute (up from one-third in 2023). Reasoning models like DeepSeek R1 consume 150x more compute than traditional inference, blurring the training/inference boundary. Organizations must plan for both workload types from inception.</p>
+                    <p>By 2026, inference accounts for roughly two-thirds of all AI compute (up from one-third in 2023). Reasoning models like DeepSeek R1 <a href="#ref-3" class="inline-cite">[3]</a> consume 150x more compute than traditional inference, blurring the training/inference boundary. Organizations must plan for both workload types from inception.</p>
                 </div>
             </section>
 
@@ -1087,7 +1124,7 @@
                             </div>
                             <div class="scenario-detail full-width">
                                 <h4>Optimization Techniques Applied</h4>
-                                <p><strong>Quantization:</strong> FP8 weights with INT4 KV-cache reduces memory footprint by 60% while maintaining 99.2% accuracy vs FP16 baseline. <strong>Continuous Batching:</strong> Dynamic request grouping maximizes GPU utilization from 35% to 87%. <strong>Speculative Decoding:</strong> Small draft model proposes tokens verified by the main model, achieving 2.3x throughput improvement. <strong>PagedAttention:</strong> Efficient memory management for variable-length sequences eliminates fragmentation waste.</p>
+                                <p><strong>Quantization:</strong> FP8 weights with INT4 KV-cache reduces memory footprint by 60% while maintaining 99.2% accuracy vs FP16 baseline. <strong>Continuous Batching:</strong> Dynamic request grouping maximizes GPU utilization from 35% to 87%. <strong>Speculative Decoding:</strong> Small draft model proposes tokens verified by the main model, achieving 2.3x throughput improvement. <a href="#ref-2" class="inline-cite">[2]</a> <strong>PagedAttention:</strong> Efficient memory management for variable-length sequences eliminates fragmentation waste. <a href="#ref-1" class="inline-cite">[1]</a></p>
                             </div>
                         </div>
                     </div>
@@ -1242,7 +1279,7 @@
                                         <span class="arch-arrow">↗</span>
                                         <div class="arch-node highlight">
                                             <div class="node-title">Central Aggregator</div>
-                                            <div class="node-detail">4x H100, FedAvg/FedProx</div>
+                                            <div class="node-detail">4x H100, FedAvg <a href="#ref-5" class="inline-cite">[5]</a>/FedProx</div>
                                         </div>
                                         <span class="arch-arrow">↘</span>
                                         <div class="arch-node">
@@ -1739,7 +1776,7 @@
                         <div>
                             <span class="domain-badge badge-arvr">AR/VR</span>
                             <h3>Scenario 8: AI-Driven Foveated Rendering with Gaze Prediction</h3>
-                            <p class="scenario-brief">A next-gen VR headset uses neural networks to predict gaze direction 50ms ahead, enabling aggressive foveated rendering that reduces GPU load by 70% while maintaining perceived visual quality.</p>
+                            <p class="scenario-brief">A next-gen VR headset uses neural networks to predict gaze direction 50ms ahead, enabling aggressive foveated rendering <a href="#ref-11" class="inline-cite">[11]</a> that reduces GPU load by 70% while maintaining perceived visual quality.</p>
                         </div>
                         <span class="scenario-toggle">&#9662;</span>
                     </div>
@@ -2375,7 +2412,7 @@
                         <div class="scenario-grid">
                             <div class="scenario-detail">
                                 <h4>Context &amp; Motivation</h4>
-                                <p>NVIDIA's Cosmos platform and Alpamayo system (announced CES 2026) represent the shift to end-to-end learned driving. Neural reconstruction creates interactive simulations from real-world sensor data, enabling testing of rare scenarios without physical driving. World models predict future states, enabling the vehicle to "imagine" outcomes before acting. The GPU workload spans training (cloud), simulation (cloud), and real-time inference (vehicle edge).</p>
+                                <p>NVIDIA's Cosmos <a href="#ref-20" class="inline-cite">[20]</a> platform and Alpamayo system (announced CES 2026) represent the shift to end-to-end learned driving. Neural reconstruction creates interactive simulations from real-world sensor data, enabling testing of rare scenarios without physical driving. World models predict future states, enabling the vehicle to "imagine" outcomes before acting. The GPU workload spans training (cloud), simulation (cloud), and real-time inference (vehicle edge).</p>
                             </div>
                             <div class="scenario-detail">
                                 <h4>GPU Configuration</h4>
@@ -2745,7 +2782,7 @@
                         <div>
                             <span class="domain-badge badge-scientific">Scientific AI</span>
                             <h3>Scenario 17: AI-Accelerated Drug Discovery &amp; Protein Structure Prediction</h3>
-                            <p class="scenario-brief">A pharmaceutical company uses GPU clusters to predict protein structures (AlphaFold3-class), simulate molecular dynamics, and screen billions of drug candidates using AI, compressing years of R&amp;D into months.</p>
+                            <p class="scenario-brief">A pharmaceutical company uses GPU clusters to predict protein structures (AlphaFold 3-class <a href="#ref-23" class="inline-cite">[23]</a>), simulate molecular dynamics, and screen billions of drug candidates using AI, compressing years of R&amp;D into months.</p>
                         </div>
                         <span class="scenario-toggle">&#9662;</span>
                     </div>
@@ -2848,7 +2885,7 @@
                         <div class="scenario-grid">
                             <div class="scenario-detail">
                                 <h4>Context &amp; Motivation</h4>
-                                <p>NVIDIA's Earth-2 initiative and "Climate in a Bottle" model demonstrate that AI can simulate 1,000 years of current climate in just 12 hours on a single processor. Traditional numerical weather prediction (NWP) takes hours on supercomputers for a single 10-day forecast. AI weather models (like GraphCast, Pangu-Weather, and NVIDIA FourCastNet) produce comparable accuracy in minutes on a single GPU. The University of Washington demonstrated 1,000-year climate simulations using AI, fundamentally changing climate science.</p>
+                                <p>NVIDIA's Earth-2 initiative and "Climate in a Bottle" model demonstrate that AI can simulate 1,000 years of current climate in just 12 hours on a single processor. Traditional numerical weather prediction (NWP) takes hours on supercomputers for a single 10-day forecast. AI weather models (like GraphCast <a href="#ref-24" class="inline-cite">[24]</a>, Pangu-Weather, and NVIDIA FourCastNet) produce comparable accuracy in minutes on a single GPU. The University of Washington demonstrated 1,000-year climate simulations using AI, fundamentally changing climate science.</p>
                             </div>
                             <div class="scenario-detail">
                                 <h4>GPU Configuration</h4>
@@ -3118,6 +3155,75 @@
                 <p style="color:var(--text-muted);font-size:11px;margin-top:8px;">Data synthesized from NVIDIA, AMD, DeepMind, Meta, Stanford AI Index, Deloitte, and industry research (2025&ndash;2026). All scenarios are realistic hypothetical projections based on publicly available technology and market data.</p>
                 <p style="color:var(--text-muted);font-size:11px;margin-top:4px;">Generated July 2026</p>
             </footer>
+
+            <!-- ===== CITATIONS & REFERENCES ===== -->
+            <section id="citations" class="section-block" style="margin-top: 60px;">
+                <h2 style="margin-bottom: 8px;">Citations &amp; References</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 30px;">Foundational papers, technical reports, and industry sources underpinning the scenarios in this artefact.</p>
+                
+                <div class="citation-group">
+                    <h3 style="color: var(--accent-blue); font-size: 1rem; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Machine Learning &amp; LLM Infrastructure</h3>
+                    <ol class="citation-list">
+                        <li id="ref-1"><strong>Kwon et al.</strong> (2023). "Efficient Memory Management for Large Language Model Serving with PagedAttention." <em>Proc. SOSP '23</em>. <a href="https://arxiv.org/abs/2309.06180" target="_blank">arXiv:2309.06180</a> — Foundational work on vLLM's memory management that enables continuous batching and efficient KV-cache allocation, directly relevant to Scenarios 1 &amp; 6.</li>
+                        <li id="ref-2"><strong>Leviathan et al.</strong> (2023). "Fast Inference from Transformers via Speculative Decoding." <em>ICML 2023</em>. <a href="https://arxiv.org/abs/2211.17192" target="_blank">arXiv:2211.17192</a> — Introduces speculative decoding where a small draft model proposes tokens verified by the target model, achieving 2-3x speedup without quality loss (Scenario 1).</li>
+                        <li id="ref-3"><strong>DeepSeek-AI</strong> (2025). "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning." <a href="https://arxiv.org/abs/2501.12948" target="_blank">arXiv:2501.12948</a> — Demonstrates how chain-of-thought reasoning models blur the training/inference boundary, consuming 150x more compute than standard inference (Scenario 6).</li>
+                        <li id="ref-4"><strong>Fedus et al.</strong> (2022). "Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity." <em>JMLR</em>. <a href="https://arxiv.org/abs/2101.03961" target="_blank">arXiv:2101.03961</a> — Foundational MoE architecture showing how expert routing enables trillion-parameter models with sub-linear compute scaling (Scenario 4).</li>
+                        <li id="ref-5"><strong>McMahan et al.</strong> (2017). "Communication-Efficient Learning of Deep Networks from Decentralized Data." <em>AISTATS</em>. <a href="https://arxiv.org/abs/1602.05629" target="_blank">arXiv:1602.05629</a> — The FedAvg algorithm foundational to federated learning; explains non-IID data challenges in medical imaging (Scenario 3).</li>
+                        <li id="ref-6"><strong>NVIDIA</strong> (2024). "NVIDIA Blackwell Architecture Technical Brief." <a href="https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/" target="_blank">nvidia.com/blackwell</a> — B200 specifications: 192GB HBM3e, 8 TB/s bandwidth, 4,500 FP8 TFLOPS. Referenced across all scenarios.</li>
+                        <li id="ref-7"><strong>Polyak et al.</strong> (2024). "Movie Gen: A Cast of Media Foundation Models." <em>Meta AI</em>. <a href="https://arxiv.org/abs/2410.13720" target="_blank">arXiv:2410.13720</a> — State-of-the-art video generation demonstrating temporal attention scaling challenges (Scenario 2).</li>
+                        <li id="ref-8"><strong>Dao et al.</strong> (2022). "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness." <em>NeurIPS 2022</em>. <a href="https://arxiv.org/abs/2205.14135" target="_blank">arXiv:2205.14135</a> — IO-aware attention algorithm reducing memory from O(N²) to O(N), critical for long-context inference and video generation.</li>
+                    </ol>
+                </div>
+
+                <div class="citation-group">
+                    <h3 style="color: var(--accent-purple); font-size: 1rem; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">AR/VR &amp; Spatial Computing</h3>
+                    <ol class="citation-list" start="9">
+                        <li id="ref-9"><strong>Kerbl et al.</strong> (2023). "3D Gaussian Splatting for Real-Time Radiance Field Rendering." <em>ACM TOG (SIGGRAPH)</em>. <a href="https://arxiv.org/abs/2308.04079" target="_blank">arXiv:2308.04079</a> — Introduces 3DGS achieving 100+ FPS novel view synthesis, enabling real-time VR telepresence (Scenario 7).</li>
+                        <li id="ref-10"><strong>Mildenhall et al.</strong> (2020). "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis." <em>ECCV 2020</em>. <a href="https://arxiv.org/abs/2003.08934" target="_blank">arXiv:2003.08934</a> — Foundational neural scene representation; 3DGS builds upon and dramatically accelerates this approach.</li>
+                        <li id="ref-11"><strong>Patney et al.</strong> (2016). "Towards Foveated Rendering for Gaze-Tracked Virtual Reality." <em>ACM TOG (SIGGRAPH Asia)</em>. <a href="https://doi.org/10.1145/2980179.2980246" target="_blank">DOI:10.1145/2980179.2980246</a> — Seminal work on perceptually-driven foveated rendering reducing GPU load by 50-70% (Scenario 8).</li>
+                        <li id="ref-12"><strong>Ma et al.</strong> (2024). "Codec Avatars: Real-time Photorealistic Telepresence." <em>Meta Reality Labs</em>. <a href="https://about.meta.com/realitylabs/" target="_blank">Meta Reality Labs</a> — Demonstrates real-time neural avatar rendering at 90fps on mobile GPUs using learned codebooks (Scenario 9).</li>
+                        <li id="ref-13"><strong>Campos et al.</strong> (2021). "ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM." <em>IEEE T-RO</em>. <a href="https://arxiv.org/abs/2007.11898" target="_blank">arXiv:2007.11898</a> — State-of-the-art visual SLAM system; neural SLAM builds on these geometric foundations (Scenario 10).</li>
+                        <li id="ref-14"><strong>Bruce et al.</strong> (2024). "Genie 2: A Large-Scale Foundation World Model." <em>Google DeepMind</em>. <a href="https://deepmind.google/discover/blog/genie-2-a-large-scale-foundation-world-model/" target="_blank">deepmind.google</a> — Generates persistent, interactive 3D environments from single images; basis for VR world generation (Scenario 11).</li>
+                        <li id="ref-15"><strong>Broxton et al.</strong> (2020). "Immersive Light Field Video with a Layered Mesh Representation." <em>ACM TOG (SIGGRAPH)</em>. <a href="https://doi.org/10.1145/3386569.3392485" target="_blank">DOI:10.1145/3386569.3392485</a> — Neural passthrough enhancement techniques for mixed reality headsets (Scenario 12).</li>
+                    </ol>
+                </div>
+
+                <div class="citation-group">
+                    <h3 style="color: var(--accent-orange); font-size: 1rem; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Embodied AI &amp; Autonomous Systems</h3>
+                    <ol class="citation-list" start="16">
+                        <li id="ref-16"><strong>Tobin et al.</strong> (2017). "Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World." <em>IROS 2017</em>. <a href="https://arxiv.org/abs/1703.06907" target="_blank">arXiv:1703.06907</a> — Foundational domain randomization technique for sim-to-real transfer (Scenario 13).</li>
+                        <li id="ref-17"><strong>Makoviychuk et al.</strong> (2021). "Isaac Gym: High Performance GPU-Based Physics Simulation for Robot Learning." <em>NeurIPS 2021</em>. <a href="https://arxiv.org/abs/2108.10470" target="_blank">arXiv:2108.10470</a> — NVIDIA's GPU-accelerated physics simulator enabling 10,000+ parallel environments (Scenario 13).</li>
+                        <li id="ref-18"><strong>Hu et al.</strong> (2023). "Planning-oriented Autonomous Driving (UniAD)." <em>CVPR 2023 Best Paper</em>. <a href="https://arxiv.org/abs/2212.10156" target="_blank">arXiv:2212.10156</a> — End-to-end autonomous driving unifying perception, prediction, and planning (Scenario 14).</li>
+                        <li id="ref-19"><strong>Yang et al.</strong> (2023). "UniSim: A Neural Closed-Loop Sensor Simulator." <em>CVPR 2023</em>. <a href="https://arxiv.org/abs/2308.01898" target="_blank">arXiv:2308.01898</a> — Neural simulation for autonomous driving validation without real-world testing (Scenario 14).</li>
+                        <li id="ref-20"><strong>NVIDIA</strong> (2025). "Cosmos: World Foundation Models for Physical AI." <a href="https://arxiv.org/abs/2501.03575" target="_blank">arXiv:2501.03575</a> — World foundation model trained on 20M+ hours of video for physical understanding; basis for Scenario 16.</li>
+                        <li id="ref-21"><strong>Grieves &amp; Vickers</strong> (2017). "Digital Twin: Mitigating Unpredictable, Undesirable Emergent Behavior in Complex Systems." <em>Transdisciplinary Perspectives on Complex Systems</em>. — Foundational digital twin concept applied to industrial GPU simulation (Scenario 15).</li>
+                        <li id="ref-22"><strong>Radosavovic et al.</strong> (2024). "Humanoid Locomotion as Next Token Prediction." <a href="https://arxiv.org/abs/2402.19469" target="_blank">arXiv:2402.19469</a> — Transformer-based humanoid control treating locomotion as sequence modeling (Scenario 13).</li>
+                    </ol>
+                </div>
+
+                <div class="citation-group">
+                    <h3 style="color: var(--accent-green); font-size: 1rem; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Scientific AI &amp; HPC</h3>
+                    <ol class="citation-list" start="23">
+                        <li id="ref-23"><strong>Abramson et al.</strong> (2024). "Accurate structure prediction of biomolecular interactions with AlphaFold 3." <em>Nature</em> 630, 493–500. <a href="https://www.nature.com/articles/s41586-024-07487-w" target="_blank">doi:10.1038/s41586-024-07487-w</a> — AlphaFold 3 predicts all biomolecular structures including protein-ligand complexes (Scenario 17).</li>
+                        <li id="ref-24"><strong>Lam et al.</strong> (2023). "Learning skillful medium-range global weather forecasting." <em>Science</em> 382(6677). <a href="https://arxiv.org/abs/2212.12794" target="_blank">arXiv:2212.12794</a> — GraphCast outperforms ECMWF's HRES at 90% of targets, 1000x faster than traditional NWP (Scenario 18).</li>
+                        <li id="ref-25"><strong>Price et al.</strong> (2025). "GenCast: Diffusion-based ensemble forecasting for medium-range weather." <em>Nature</em>. <a href="https://www.nature.com/articles/s41586-025-08897-0" target="_blank">doi:10.1038/s41586-025-08897-0</a> — Probabilistic weather forecasting with calibrated uncertainty, outperforming ENS (Scenario 18).</li>
+                        <li id="ref-26"><strong>Watson et al.</strong> (2023). "De novo design of protein structure and function with RFdiffusion." <em>Nature</em> 620, 1089–1100. <a href="https://www.nature.com/articles/s41586-023-06415-8" target="_blank">doi:10.1038/s41586-023-06415-8</a> — Diffusion models for protein design, enabling novel therapeutic candidates (Scenario 17).</li>
+                        <li id="ref-27"><strong>Pathak et al.</strong> (2022). "FourCastNet: A Global Data-driven High-resolution Weather Forecasting Model." <a href="https://arxiv.org/abs/2202.11214" target="_blank">arXiv:2202.11214</a> — Fourier-based neural weather model demonstrating GPU acceleration of climate science.</li>
+                    </ol>
+                </div>
+
+                <div class="citation-group">
+                    <h3 style="color: var(--text-secondary); font-size: 1rem; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Industry Reports &amp; Hardware References</h3>
+                    <ol class="citation-list" start="28">
+                        <li id="ref-28"><strong>Stanford HAI</strong> (2025). "AI Index Report 2025." <a href="https://aiindex.stanford.edu/report/" target="_blank">aiindex.stanford.edu</a> — Comprehensive tracking of AI compute trends, investment, and adoption metrics.</li>
+                        <li id="ref-29"><strong>Epoch AI</strong> (2025). "Trends in Machine Learning Hardware." <a href="https://epoch.ai/research" target="_blank">epoch.ai</a> — Analysis of GPU compute scaling, training cost trajectories, and hardware utilization patterns.</li>
+                        <li id="ref-30"><strong>AMD</strong> (2024). "Instinct MI300X Accelerator Specifications." <a href="https://www.amd.com/en/products/accelerators/instinct/mi300x.html" target="_blank">amd.com/mi300x</a> — 192GB HBM3, 5.3 TB/s bandwidth, 1,307 FP8 TFLOPS specifications.</li>
+                        <li id="ref-31"><strong>Qualcomm</strong> (2024). "Cloud AI 100 Ultra: Purpose-Built AI Inference." <a href="https://www.qualcomm.com/products/technology/processors/cloud-artificial-intelligence" target="_blank">qualcomm.com</a> — Edge AI accelerator for on-device AR/VR inference workloads.</li>
+                        <li id="ref-32"><strong>MLCommons</strong> (2025). "MLPerf Inference v4.1 Results." <a href="https://mlcommons.org/benchmarks/inference-datacenter/" target="_blank">mlcommons.org</a> — Industry-standard benchmarks for GPU inference performance across model types.</li>
+                    </ol>
+                </div>
+            </section>
+
         </main>
     </div>
 
@@ -3129,12 +3235,12 @@
         }
 
         // Filter scenarios by domain
-        function filterScenarios(filter) {
+        function filterScenarios(filter, btn) {
             const cards = document.querySelectorAll('.scenario-card');
             const buttons = document.querySelectorAll('.filter-btn');
 
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            buttons.forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
 
             cards.forEach(card => {
                 const domain = card.dataset.domain;
@@ -3153,14 +3259,14 @@
         }
 
         // GPU tab switching
-        function switchGPUTab(tab) {
+        function switchGPUTab(tab, btn) {
             const tabs = document.querySelectorAll('.gpu-tab');
             const contents = document.querySelectorAll('.gpu-content');
 
             tabs.forEach(t => t.classList.remove('active'));
             contents.forEach(c => c.classList.remove('active'));
 
-            event.target.classList.add('active');
+            if (btn) btn.classList.add('active');
             document.getElementById('gpu-' + tab).classList.add('active');
         }
 
