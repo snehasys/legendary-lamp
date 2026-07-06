@@ -101,7 +101,7 @@ footer .big{font-size:1.4rem;color:#fff;font-weight:800;margin-bottom:10px}
 .mock .qq{background:var(--panel2);padding:14px 18px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px}
 .mock .qq:hover{background:#1e2942}
 .mock .aa{padding:0 18px;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease}
-.mock .aa.open{max-height:2000px;padding:16px 18px}
+.mock .aa.open{max-height:4000px;padding:16px 18px}
 .mock .qq .tw{color:var(--green);font-family:var(--mono);font-size:20px;transition:transform .3s}
 .mock .qq.open .tw{transform:rotate(45deg)}
 .tabs{display:flex;gap:4px;margin-bottom:22px;flex-wrap:wrap}
@@ -113,6 +113,10 @@ footer .big{font-size:1.4rem;color:#fff;font-weight:800;margin-bottom:10px}
 .timeline .step::before{content:'';position:absolute;left:-30px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--green);border:2px solid var(--bg)}
 .timeline .step h4{font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px}
 .timeline .step p{color:var(--muted);font-size:14px;margin:0}
+.scenario{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:22px}
+.scenario .alert{background:var(--red-soft);border:1px solid rgba(234,67,53,.4);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-family:var(--mono);font-size:13px;color:var(--red)}
+.scenario .diagnosis{border-left:3px solid var(--amber);padding-left:16px;margin:16px 0}
+.scenario .resolution{border-left:3px solid var(--cyan);padding-left:16px;margin:16px 0}
 </style>
 </head>
 <body>
@@ -124,7 +128,10 @@ footer .big{font-size:1.4rem;color:#fff;font-weight:800;margin-bottom:10px}
     <div class="links">
       <a href="#overview">Overview</a>
       <a href="#coding">Coding</a>
+      <a href="#python-adv">Python Advanced</a>
       <a href="#linux">Linux</a>
+      <a href="#linux-deep">Linux Deep</a>
+      <a href="#linux-scenarios">Linux Labs</a>
       <a href="#behavioral">Behavioral</a>
       <a href="#nalsd">NALSD</a>
       <a href="#troubleshoot">Troubleshoot</a>
@@ -138,12 +145,12 @@ footer .big{font-size:1.4rem;color:#fff;font-weight:800;margin-bottom:10px}
 
 <header class="hero">
   <div class="wrap">
-    <span class="tag">Senior SRE (L5) Interview Prep</span>
+    <span class="tag">Senior SRE (L5) Interview Prep — Extended Edition</span>
     <h1>Master the Google<br><span class="grad">Senior SRE Interview</span></h1>
-    <p class="sub">A comprehensive, research-backed study guide covering the scripting/coding round, behavioral (Googleyness & Leadership) round, Linux internals, NALSD system design, and troubleshooting — with interactive quizzes, flashcards, and mock Q&A.</p>
+    <p class="sub">A comprehensive, research-backed study guide with 15+ interactive mock scenarios, deep Linux kernel internals, advanced Python patterns, behavioral coaching, NALSD system design, and 25+ quiz questions — everything you need to ace every round.</p>
     <div class="cta">
       <a class="btn primary" href="#coding">Start with Coding</a>
-      <a class="btn ghost" href="#cheat">Jump to Cheat Sheet</a>
+      <a class="btn ghost" href="#linux-scenarios">Jump to Linux Labs</a>
     </div>
   </div>
 </header>
@@ -164,26 +171,11 @@ footer .big{font-size:1.4rem;color:#fff;font-weight:800;margin-bottom:10px}
       <div class="step"><h4>6. Onsite: Googleyness & Leadership (45 min)</h4><p>Behavioral round: incident leadership, blameless culture, collaboration under pressure, navigating ambiguity.</p></div>
     </div>
 
-    <div class="callout info"><div class="h">Key Insight: SRE vs SWE</div>
-    The SRE interview optimizes for <strong>survivability and mitigation</strong>, not architectural correctness. When given a broken system, stabilize first, then debug. Root-cause obsession before mitigation = instant reject signal.</div>
-
-    <div class="tbl-scroll">
-    <table class="tbl">
-      <thead><tr><th>Dimension</th><th>Google SRE Interview</th><th>Google SWE Interview</th></tr></thead>
-      <tbody>
-        <tr><td>Coding</td><td>Concurrency, streaming, safe parsing, defensive error handling</td><td>Data structures, algorithms, Big-O optimization</td></tr>
-        <tr><td>System Design</td><td>NALSD: constraints, physics, failure modes, capacity math</td><td>Abstract: API design, feature scale, data models</td></tr>
-        <tr><td>Linux/Kernel</td><td>Deep understanding required (scheduling, I/O, memory, eBPF)</td><td>Usually minimal</td></tr>
-        <tr><td>Troubleshooting</td><td>Core focus. "Mitigation-First" mindset evaluated</td><td>Rare</td></tr>
-        <tr><td>Behavioral</td><td>Scored on blamelessness, incident leadership, error budgets</td><td>General teamwork, conflict resolution</td></tr>
-      </tbody>
-    </table>
-    </div>
-
     <div class="stat-row">
       <div class="stat"><div class="n">4-5</div><div class="l">Onsite rounds for L5</div></div>
       <div class="stat"><div class="n">45 min</div><div class="l">Per round (strict)</div></div>
       <div class="stat"><div class="n">~15%</div><div class="l">Onsite pass rate (estimated)</div></div>
+      <div class="stat"><div class="n">6-8 wks</div><div class="l">Typical prep time</div></div>
     </div>
   </div>
 </section>
@@ -195,89 +187,42 @@ footer .big{font-size:1.4rem;color:#fff;font-weight:800;margin-bottom:10px}
     <h2 class="sec">Practical Scripting & Coding</h2>
     <p class="lead">Google SRE coding is NOT LeetCode-hard. It tests automation thinking, production safety, and whether your code can survive a hostile environment. Think: "Would I trust this as a cron job on production?"</p>
 
-    <div class="tabs" id="coding-tabs">
-      <div class="tab active" data-tab="patterns">Core Patterns</div>
-      <div class="tab" data-tab="examples">Example Problems</div>
-      <div class="tab" data-tab="solutions">Solution Templates</div>
-    </div>
-
-    <div class="tab-content active" id="tab-patterns">
-      <h3>The 6 Coding Patterns Google SRE Tests</h3>
-      <div class="grid two">
-        <div class="card">
-          <h3>1. Streaming I/O</h3>
-          <p>Process multi-GB files without exceeding memory limits. Use iterators, generators, and line-by-line processing. <strong>Never</strong> load entire files into memory.</p>
-          <div class="chip-row"><span class="chip">file iterators</span><span class="chip">generators</span><span class="chip">O(1) memory</span></div>
-        </div>
-        <div class="card">
-          <h3>2. Concurrency & Rate Limiting</h3>
-          <p>Hit 100+ endpoints with strict timeouts and rate limits. Use asyncio, thread pools, or goroutines. Enforce backpressure.</p>
-          <div class="chip-row"><span class="chip">asyncio</span><span class="chip">semaphores</span><span class="chip">token bucket</span></div>
-        </div>
-        <div class="card">
-          <h3>3. Log Parsing & Aggregation</h3>
-          <p>Parse structured/unstructured logs. Extract patterns with regex. Aggregate by time windows, status codes, endpoints.</p>
-          <div class="chip-row"><span class="chip">regex</span><span class="chip">Counter</span><span class="chip">defaultdict</span></div>
-        </div>
-        <div class="card">
-          <h3>4. Defensive Error Handling</h3>
-          <p>Handle malformed input, network timeouts, partial failures. Never crash silently. Always have retry logic with exponential backoff.</p>
-          <div class="chip-row"><span class="chip">try/except</span><span class="chip">retries</span><span class="chip">circuit breaker</span></div>
-        </div>
-        <div class="card">
-          <h3>5. Data Structure Selection</h3>
-          <p>Choose the right structure for the job: heaps for top-N, deques for sliding windows, sets for deduplication, tries for prefix matching.</p>
-          <div class="chip-row"><span class="chip">heapq</span><span class="chip">deque</span><span class="chip">bisect</span></div>
-        </div>
-        <div class="card">
-          <h3>6. System Utility Recreation</h3>
-          <p>Implement <code>find</code>, <code>tail</code>, <code>ps</code>, <code>grep</code> from scratch. Shows you understand what these tools do at the OS level.</p>
-          <div class="chip-row"><span class="chip">os.walk</span><span class="chip">file seek</span><span class="chip">/proc</span></div>
-        </div>
+    <h3>The 6 Coding Patterns Google SRE Tests</h3>
+    <div class="grid two">
+      <div class="card">
+        <h3>1. Streaming I/O</h3>
+        <p>Process multi-GB files without exceeding memory limits. Use iterators, generators, and line-by-line processing. <strong>Never</strong> load entire files into memory.</p>
+        <div class="chip-row"><span class="chip">file iterators</span><span class="chip">generators</span><span class="chip">O(1) memory</span></div>
+      </div>
+      <div class="card">
+        <h3>2. Concurrency & Rate Limiting</h3>
+        <p>Hit 100+ endpoints with strict timeouts and rate limits. Use asyncio, thread pools, or goroutines. Enforce backpressure.</p>
+        <div class="chip-row"><span class="chip">asyncio</span><span class="chip">semaphores</span><span class="chip">token bucket</span></div>
+      </div>
+      <div class="card">
+        <h3>3. Log Parsing & Aggregation</h3>
+        <p>Parse structured/unstructured logs. Extract patterns with regex. Aggregate by time windows, status codes, endpoints.</p>
+        <div class="chip-row"><span class="chip">regex</span><span class="chip">Counter</span><span class="chip">defaultdict</span></div>
+      </div>
+      <div class="card">
+        <h3>4. Defensive Error Handling</h3>
+        <p>Handle malformed input, network timeouts, partial failures. Never crash silently. Always have retry logic with exponential backoff.</p>
+        <div class="chip-row"><span class="chip">try/except</span><span class="chip">retries</span><span class="chip">circuit breaker</span></div>
+      </div>
+      <div class="card">
+        <h3>5. Data Structure Selection</h3>
+        <p>Choose the right structure for the job: heaps for top-N, deques for sliding windows, sets for deduplication, tries for prefix matching.</p>
+        <div class="chip-row"><span class="chip">heapq</span><span class="chip">deque</span><span class="chip">bisect</span></div>
+      </div>
+      <div class="card">
+        <h3>6. System Utility Recreation</h3>
+        <p>Implement <code>find</code>, <code>tail -f</code>, <code>ps</code>, <code>grep</code> from scratch. Shows you understand what these tools do at the OS level.</p>
+        <div class="chip-row"><span class="chip">os.walk</span><span class="chip">file seek</span><span class="chip">/proc</span></div>
       </div>
     </div>
 
-    <div class="tab-content" id="tab-examples">
-      <h3>Real Google SRE Coding Questions (Reported 2024-2026)</h3>
-
-      <div class="card">
-        <h3>Problem 1: Memory-Efficient Log Analysis</h3>
-        <div class="myth"><span class="lbl">The Prompt</span>"Write a Python script that reads a 50GB log file, extracts HTTP 5xx errors, and outputs a summary of the top 10 failing endpoints — without exceeding 512MB of RAM."</div>
-        <p><strong>What they're testing:</strong> Streaming I/O (iterators vs loading into memory), regex parsing, Counter/heap for top-N, memory awareness.</p>
-        <p><strong>Key signals:</strong> Do you use <code>for line in file</code> (streaming) or <code>file.read()</code> (memory bomb)? Do you mention memory profiling? Do you handle malformed lines?</p>
-      </div>
-
-      <div class="card">
-        <h3>Problem 2: Concurrent Health Checker</h3>
-        <div class="myth"><span class="lbl">The Prompt</span>"Write a concurrent API fetcher that checks health of 100,000 servers. Enforce a strict 5-second timeout per request and a rate limit of 50 requests per second."</div>
-        <p><strong>What they're testing:</strong> Concurrency (asyncio/threading), rate limiting (token bucket or semaphore), timeout handling, error aggregation.</p>
-        <p><strong>Key signals:</strong> Do you use a semaphore for concurrency control? Do you handle connection errors gracefully? Do you report partial results?</p>
-      </div>
-
-      <div class="card">
-        <h3>Problem 3: Rolling Window Anomaly Detection</h3>
-        <div class="myth"><span class="lbl">The Prompt</span>"Given a stream of events from millions of hosts, detect anomalies in rolling 5-minute windows. An anomaly is when a host's error rate exceeds 3x the fleet average."</div>
-        <p><strong>What they're testing:</strong> Streaming data structures (deque for windows), statistical reasoning, memory-bounded computation, real-time processing.</p>
-      </div>
-
-      <div class="card">
-        <h3>Problem 4: Implement a Token Bucket Rate Limiter</h3>
-        <div class="myth"><span class="lbl">The Prompt</span>"Implement a token bucket rate limiter that supports burst traffic. It should allow N requests per second with a burst capacity of B."</div>
-        <p><strong>What they're testing:</strong> Understanding of rate limiting algorithms, time-based logic, thread safety, clean API design.</p>
-      </div>
-
-      <div class="card">
-        <h3>Problem 5: File Metadata Aggregator</h3>
-        <div class="myth"><span class="lbl">The Prompt</span>"Write a script that traverses a directory tree, groups files by extension, and reports total size per extension. Handle symlinks without infinite loops."</div>
-        <p><strong>What they're testing:</strong> <code>os.walk</code>, symlink detection, aggregation patterns, edge case handling (broken symlinks, permission errors).</p>
-      </div>
-    </div>
-
-    <div class="tab-content" id="tab-solutions">
-      <h3>Solution Templates (Python)</h3>
-
-      <div class="card">
-        <h3>Template: Streaming Log Parser (O(1) Memory)</h3>
+    <h3>Solution Template: Streaming Log Parser</h3>
+    <div class="card">
 <pre><code><span class="cmt">#!/usr/bin/env python3</span>
 <span class="cmt">"""Parse a multi-GB log file with bounded memory."""</span>
 import re
@@ -285,7 +230,6 @@ from collections import Counter
 import heapq
 
 def parse_logs(filepath, top_n=10):
-    <span class="cmt"># Pattern for common log format</span>
     pattern = re.compile(
         r'(?P&lt;ip&gt;\S+) .* "(?P&lt;method&gt;\w+) (?P&lt;path&gt;\S+) .*" (?P&lt;status&gt;\d{3}) (?P&lt;size&gt;\d+)'
     )
@@ -299,22 +243,21 @@ def parse_logs(filepath, top_n=10):
                 continue  <span class="cmt"># skip malformed lines gracefully</span>
             status = int(match.group('status'))
             if 500 &lt;= status &lt; 600:
-                endpoint = match.group('path').split('?')[0]  <span class="cmt"># strip query params</span>
+                endpoint = match.group('path').split('?')[0]
                 error_counts[endpoint] += 1
 
     <span class="cmt"># Top-N using heap — O(n log k) instead of full sort</span>
     return heapq.nlargest(top_n, error_counts.items(), key=lambda x: x[1])
 </code></pre>
-        <div class="callout tip"><div class="h">Key Interview Signal</div>Narrate your choices: "I'm using a file iterator because it processes one line at a time, keeping memory constant regardless of file size. I'm using heapq.nlargest for top-N because it's O(n log k) — more efficient than sorting the entire Counter."</div>
-      </div>
+    </div>
 
-      <div class="card">
-        <h3>Template: Concurrent Health Checker with Rate Limiting</h3>
+    <h3>Solution Template: Concurrent Health Checker</h3>
+    <div class="card">
 <pre><code><span class="cmt">#!/usr/bin/env python3</span>
 <span class="cmt">"""Check health of N servers with concurrency + rate limiting."""</span>
 import asyncio
 import aiohttp
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 
 @dataclass
@@ -332,16 +275,13 @@ async def check_health(
 ) -&gt; List[HealthResult]:
     results = []
     semaphore = asyncio.Semaphore(max_concurrent)
-    <span class="cmt"># Token bucket via asyncio — refill every 1/rate seconds</span>
     rate_limiter = asyncio.Semaphore(requests_per_sec)
 
     async def refill_tokens():
         while True:
             await asyncio.sleep(1.0 / requests_per_sec)
-            try:
-                rate_limiter.release()
-            except ValueError:
-                pass  <span class="cmt"># already at max</span>
+            try: rate_limiter.release()
+            except ValueError: pass
 
     async def check_one(session, host):
         await rate_limiter.acquire()
@@ -353,51 +293,37 @@ async def check_health(
                     timeout=aiohttp.ClientTimeout(total=timeout_sec)
                 ) as resp:
                     latency = (asyncio.get_event_loop().time() - start) * 1000
-                    results.append(HealthResult(
-                        host=host,
-                        healthy=(resp.status == 200),
-                        latency_ms=latency
-                    ))
+                    results.append(HealthResult(host=host, healthy=(resp.status == 200), latency_ms=latency))
             except (asyncio.TimeoutError, aiohttp.ClientError) as e:
-                results.append(HealthResult(
-                    host=host, healthy=False, error=str(e)
-                ))
+                results.append(HealthResult(host=host, healthy=False, error=str(e)))
 
     async with aiohttp.ClientSession() as session:
         refiller = asyncio.create_task(refill_tokens())
-        tasks = [check_one(session, h) for h in hosts]
-        await asyncio.gather(*tasks)
+        await asyncio.gather(*[check_one(session, h) for h in hosts])
         refiller.cancel()
-
     return results
 </code></pre>
-        <div class="callout tip"><div class="h">Key Interview Signal</div>"I'm separating concurrency control (semaphore limits in-flight requests) from rate limiting (token bucket limits requests per second). The timeout is enforced per-request via aiohttp's ClientTimeout, and I'm catching both timeout and connection errors to ensure partial failures don't crash the entire check."</div>
-      </div>
+    </div>
 
-      <div class="card">
-        <h3>Template: Token Bucket Rate Limiter (Thread-Safe)</h3>
-<pre><code><span class="cmt">#!/usr/bin/env python3</span>
-<span class="cmt">"""Thread-safe token bucket rate limiter."""</span>
-import time
-import threading
+    <h3>Solution Template: Token Bucket Rate Limiter</h3>
+    <div class="card">
+<pre><code><span class="cmt">"""Thread-safe token bucket rate limiter."""</span>
+import time, threading
 
 class TokenBucket:
     def __init__(self, rate: float, burst: int):
         self.rate = rate        <span class="cmt"># tokens per second</span>
         self.burst = burst      <span class="cmt"># max tokens (burst capacity)</span>
-        self.tokens = burst     <span class="cmt"># start full</span>
+        self.tokens = float(burst)
         self.last_refill = time.monotonic()
         self.lock = threading.Lock()
 
     def _refill(self):
         now = time.monotonic()
-        elapsed = now - self.last_refill
-        new_tokens = elapsed * self.rate
-        self.tokens = min(self.burst, self.tokens + new_tokens)
+        self.tokens = min(self.burst, self.tokens + (now - self.last_refill) * self.rate)
         self.last_refill = now
 
     def acquire(self, tokens: int = 1) -&gt; bool:
-        """Try to consume tokens. Returns True if allowed."""
         with self.lock:
             self._refill()
             if self.tokens &gt;= tokens:
@@ -406,26 +332,429 @@ class TokenBucket:
             return False
 
     def wait(self, tokens: int = 1):
-        """Block until tokens are available."""
         while not self.acquire(tokens):
             time.sleep(1.0 / self.rate)
 </code></pre>
-      </div>
     </div>
-
-    <div class="callout warn"><div class="h">Common Coding Round Traps</div>
-    <strong>1.</strong> Loading entire file into memory with <code>.read()</code> or <code>.readlines()</code> — instant fail signal.<br>
-    <strong>2.</strong> No error handling — production code must handle malformed input gracefully.<br>
-    <strong>3.</strong> Ignoring timeouts in network code — shows you haven't operated production systems.<br>
-    <strong>4.</strong> Over-optimizing algorithm before getting a working solution — correctness first, then optimize.<br>
-    <strong>5.</strong> Not explaining your choices — narration is 50% of the signal.</div>
   </div>
 </section>
 
-<!-- ============ SECTION 03: LINUX INTERNALS ============ -->
+<!-- ============ SECTION 03: ADVANCED PYTHON ============ -->
+<section id="python-adv">
+  <div class="wrap">
+    <span class="eyebrow">Section 03 — Advanced Python for SRE</span>
+    <h2 class="sec">Production Python Patterns</h2>
+    <p class="lead">Beyond basic scripting — these are the patterns that separate a "scripter" from a production-grade SRE coder. Google evaluates whether your code would survive in a real operational environment.</p>
+
+    <h3>Pattern 1: Retry with Exponential Backoff & Jitter</h3>
+    <div class="card">
+      <p>Every network call in production needs retry logic. But naive retries cause thundering herds. The solution: exponential backoff with full jitter.</p>
+<pre><code><span class="cmt">"""Production-grade retry decorator with exponential backoff + jitter."""</span>
+import time, random, functools, logging
+from typing import Tuple, Type
+
+logger = logging.getLogger(__name__)
+
+def retry(
+    max_attempts: int = 3,
+    base_delay: float = 1.0,
+    max_delay: float = 60.0,
+    exceptions: Tuple[Type[Exception], ...] = (Exception,),
+    backoff_factor: float = 2.0
+):
+    """Decorator: retries with exponential backoff + full jitter."""
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_attempts):
+                try:
+                    return func(*args, **kwargs)
+                except exceptions as e:
+                    if attempt == max_attempts - 1:
+                        logger.error(f"{func.__name__} failed after {max_attempts} attempts: {e}")
+                        raise
+                    <span class="cmt"># Exponential backoff with full jitter</span>
+                    delay = min(max_delay, base_delay * (backoff_factor ** attempt))
+                    jittered = random.uniform(0, delay)  <span class="cmt"># FULL jitter, not just additive</span>
+                    logger.warning(f"{func.__name__} attempt {attempt+1} failed: {e}. "
+                                   f"Retrying in {jittered:.2f}s")
+                    time.sleep(jittered)
+        return wrapper
+    return decorator
+
+<span class="cmt"># Usage:</span>
+@retry(max_attempts=5, base_delay=0.5, exceptions=(ConnectionError, TimeoutError))
+def fetch_config(url):
+    response = requests.get(url, timeout=10)
+    response.raise_for_status()
+    return response.json()
+</code></pre>
+      <div class="callout tip"><div class="h">Why Full Jitter?</div>
+      AWS's analysis showed that full jitter (random between 0 and calculated delay) reduces total completion time by ~40% compared to equal jitter or no jitter. It decorrelates retry storms across clients.</div>
+    </div>
+
+    <h3>Pattern 2: Circuit Breaker</h3>
+    <div class="card">
+      <p>When a dependency is failing, stop hammering it. A circuit breaker "opens" after N failures, short-circuits all calls for a cooldown period, then "half-opens" to test recovery.</p>
+<pre><code><span class="cmt">"""Circuit breaker pattern — prevents cascading failures."""</span>
+import time, threading
+from enum import Enum
+
+class State(Enum):
+    CLOSED = "closed"       <span class="cmt"># normal operation</span>
+    OPEN = "open"           <span class="cmt"># failing, reject all calls</span>
+    HALF_OPEN = "half_open" <span class="cmt"># testing if dependency recovered</span>
+
+class CircuitBreaker:
+    def __init__(self, failure_threshold=5, recovery_timeout=30, half_open_max=3):
+        self.failure_threshold = failure_threshold
+        self.recovery_timeout = recovery_timeout
+        self.half_open_max = half_open_max
+        self.state = State.CLOSED
+        self.failure_count = 0
+        self.last_failure_time = 0
+        self.half_open_calls = 0
+        self.lock = threading.Lock()
+
+    def call(self, func, *args, **kwargs):
+        with self.lock:
+            if self.state == State.OPEN:
+                if time.time() - self.last_failure_time &gt; self.recovery_timeout:
+                    self.state = State.HALF_OPEN
+                    self.half_open_calls = 0
+                else:
+                    raise CircuitOpenError(f"Circuit open, retry after {self.recovery_timeout}s")
+
+            if self.state == State.HALF_OPEN and self.half_open_calls &gt;= self.half_open_max:
+                raise CircuitOpenError("Half-open limit reached")
+
+        try:
+            result = func(*args, **kwargs)
+            with self.lock:
+                if self.state == State.HALF_OPEN:
+                    self.state = State.CLOSED  <span class="cmt"># recovered!</span>
+                self.failure_count = 0
+            return result
+        except Exception as e:
+            with self.lock:
+                self.failure_count += 1
+                self.last_failure_time = time.time()
+                if self.state == State.HALF_OPEN or self.failure_count &gt;= self.failure_threshold:
+                    self.state = State.OPEN
+            raise
+
+class CircuitOpenError(Exception):
+    pass
+</code></pre>
+    </div>
+
+    <h3>Pattern 3: Graceful Shutdown Handler</h3>
+    <div class="card">
+      <p>Production services must handle SIGTERM gracefully — finish in-flight work, close connections, flush buffers, then exit cleanly. Kubernetes sends SIGTERM 30s before SIGKILL.</p>
+<pre><code><span class="cmt">"""Graceful shutdown with signal handling and cleanup."""</span>
+import signal, sys, threading, logging, time
+
+logger = logging.getLogger(__name__)
+
+class GracefulShutdown:
+    def __init__(self, timeout: float = 25.0):
+        self.timeout = timeout
+        self.shutdown_event = threading.Event()
+        self.cleanup_tasks = []
+        signal.signal(signal.SIGTERM, self._handle_signal)
+        signal.signal(signal.SIGINT, self._handle_signal)
+
+    def _handle_signal(self, signum, frame):
+        sig_name = signal.Signals(signum).name
+        logger.info(f"Received {sig_name}, initiating graceful shutdown...")
+        self.shutdown_event.set()
+
+    def register_cleanup(self, func, *args):
+        """Register a cleanup function to run on shutdown."""
+        self.cleanup_tasks.append((func, args))
+
+    @property
+    def should_stop(self) -&gt; bool:
+        return self.shutdown_event.is_set()
+
+    def wait_for_shutdown(self):
+        """Block until shutdown signal received, then run cleanup."""
+        self.shutdown_event.wait()
+        logger.info(f"Running {len(self.cleanup_tasks)} cleanup tasks...")
+        deadline = time.time() + self.timeout
+        for func, args in self.cleanup_tasks:
+            if time.time() &gt; deadline:
+                logger.error("Cleanup timeout exceeded, forcing exit")
+                break
+            try:
+                func(*args)
+            except Exception as e:
+                logger.error(f"Cleanup task failed: {e}")
+        logger.info("Shutdown complete")
+        sys.exit(0)
+
+<span class="cmt"># Usage:</span>
+shutdown = GracefulShutdown(timeout=25)
+shutdown.register_cleanup(db_pool.close)
+shutdown.register_cleanup(flush_metrics)
+
+while not shutdown.should_stop:
+    process_next_item()  <span class="cmt"># your main loop</span>
+</code></pre>
+    </div>
+
+    <h3>Pattern 4: Implement <code>tail -f</code> with Log Rotation Detection</h3>
+    <div class="card">
+      <p>A classic SRE interview question. You must handle: file rotation (inode changes), file truncation, and new lines appearing. This tests your understanding of file descriptors and inodes.</p>
+<pre><code><span class="cmt">"""Implement tail -f that survives log rotation."""</span>
+import os, time, stat
+
+def tail_follow(filepath, poll_interval=0.1):
+    """Yield new lines from a file, surviving rotation and truncation."""
+    while not os.path.exists(filepath):
+        time.sleep(poll_interval)
+
+    fd = open(filepath, 'r')
+    fd.seek(0, os.SEEK_END)  <span class="cmt"># start at end of file</span>
+    current_inode = os.fstat(fd.fileno()).st_ino
+    current_pos = fd.tell()
+
+    while True:
+        line = fd.readline()
+        if line:
+            yield line.rstrip('\n')
+            current_pos = fd.tell()
+        else:
+            <span class="cmt"># No new data — check for rotation or truncation</span>
+            try:
+                st = os.stat(filepath)
+            except FileNotFoundError:
+                <span class="cmt"># File deleted, wait for recreation</span>
+                time.sleep(poll_interval)
+                continue
+
+            if st.st_ino != current_inode:
+                <span class="cmt"># ROTATION: file was replaced (new inode)</span>
+                fd.close()
+                fd = open(filepath, 'r')
+                current_inode = os.fstat(fd.fileno()).st_ino
+                current_pos = 0
+            elif st.st_size &lt; current_pos:
+                <span class="cmt"># TRUNCATION: file was truncated (same inode, smaller)</span>
+                fd.seek(0)
+                current_pos = 0
+            else:
+                time.sleep(poll_interval)
+
+<span class="cmt"># Usage:</span>
+for line in tail_follow('/var/log/app.log'):
+    if 'ERROR' in line:
+        alert(line)
+</code></pre>
+      <div class="callout tip"><div class="h">Interview Signal</div>"I'm checking the inode number to detect rotation — when logrotate creates a new file, it gets a new inode even if the path is the same. I also handle truncation by comparing file size to our read position. This is exactly how the real tail -F works internally."</div>
+    </div>
+
+    <h3>Pattern 5: Connection Pool with Health Checking</h3>
+    <div class="card">
+<pre><code><span class="cmt">"""Connection pool with periodic health checks and eviction."""</span>
+import threading, time, queue
+from contextlib import contextmanager
+
+class ConnectionPool:
+    def __init__(self, factory, max_size=10, health_interval=30, max_idle=300):
+        self.factory = factory        <span class="cmt"># callable that creates a connection</span>
+        self.max_size = max_size
+        self.health_interval = health_interval
+        self.max_idle = max_idle
+        self.pool = queue.Queue(maxsize=max_size)
+        self.size = 0
+        self.lock = threading.Lock()
+        self._start_health_checker()
+
+    def _start_health_checker(self):
+        t = threading.Thread(target=self._health_loop, daemon=True)
+        t.start()
+
+    def _health_loop(self):
+        while True:
+            time.sleep(self.health_interval)
+            self._evict_stale()
+
+    def _evict_stale(self):
+        """Remove connections that are idle too long or unhealthy."""
+        healthy = []
+        while not self.pool.empty():
+            try:
+                conn, last_used = self.pool.get_nowait()
+                if time.time() - last_used &gt; self.max_idle:
+                    conn.close()
+                    with self.lock: self.size -= 1
+                elif not conn.is_healthy():
+                    conn.close()
+                    with self.lock: self.size -= 1
+                else:
+                    healthy.append((conn, last_used))
+            except queue.Empty:
+                break
+        for item in healthy:
+            self.pool.put(item)
+
+    @contextmanager
+    def acquire(self, timeout=5.0):
+        """Context manager: get a connection, return it when done."""
+        conn = self._get_connection(timeout)
+        try:
+            yield conn
+        except Exception:
+            <span class="cmt"># Don't return broken connections to pool</span>
+            conn.close()
+            with self.lock: self.size -= 1
+            raise
+        else:
+            self.pool.put((conn, time.time()))
+
+    def _get_connection(self, timeout):
+        try:
+            conn, _ = self.pool.get(timeout=0.1)
+            if conn.is_healthy():
+                return conn
+            conn.close()
+            with self.lock: self.size -= 1
+        except queue.Empty:
+            pass
+        with self.lock:
+            if self.size &lt; self.max_size:
+                self.size += 1
+                return self.factory()
+        <span class="cmt"># Pool exhausted, wait</span>
+        conn, _ = self.pool.get(timeout=timeout)
+        return conn
+</code></pre>
+    </div>
+
+    <h3>Pattern 6: Sliding Window Counter (Anomaly Detection)</h3>
+    <div class="card">
+<pre><code><span class="cmt">"""Memory-bounded sliding window for real-time anomaly detection."""</span>
+from collections import deque
+import time
+
+class SlidingWindowCounter:
+    """Count events in a sliding time window with O(1) memory per window."""
+    def __init__(self, window_seconds: float = 300, bucket_seconds: float = 1):
+        self.window = window_seconds
+        self.bucket_size = bucket_seconds
+        self.num_buckets = int(window_seconds / bucket_seconds)
+        self.buckets = deque(maxlen=self.num_buckets)
+        self.current_bucket_time = 0
+        self.current_count = 0
+
+    def _advance_time(self):
+        now = time.time()
+        current = int(now / self.bucket_size)
+        if current &gt; self.current_bucket_time:
+            <span class="cmt"># Flush current bucket and advance</span>
+            if self.current_bucket_time &gt; 0:
+                self.buckets.append(self.current_count)
+            <span class="cmt"># Fill gaps with zeros</span>
+            gaps = min(current - self.current_bucket_time - 1, self.num_buckets)
+            for _ in range(gaps):
+                self.buckets.append(0)
+            self.current_bucket_time = current
+            self.current_count = 0
+
+    def increment(self, count=1):
+        self._advance_time()
+        self.current_count += count
+
+    @property
+    def total(self) -&gt; int:
+        self._advance_time()
+        return sum(self.buckets) + self.current_count
+
+    @property
+    def rate_per_second(self) -&gt; float:
+        return self.total / self.window
+
+<span class="cmt"># Usage: detect anomalies</span>
+error_window = SlidingWindowCounter(window_seconds=300)  <span class="cmt"># 5-min window</span>
+request_window = SlidingWindowCounter(window_seconds=300)
+
+def on_request(status_code):
+    request_window.increment()
+    if status_code &gt;= 500:
+        error_window.increment()
+    <span class="cmt"># Alert if error rate exceeds 5%</span>
+    if request_window.total &gt; 100:  <span class="cmt"># minimum sample size</span>
+        error_rate = error_window.total / request_window.total
+        if error_rate &gt; 0.05:
+            trigger_alert(f"Error rate {error_rate:.1%} exceeds 5% threshold")
+</code></pre>
+    </div>
+
+    <h3>Pattern 7: Config File Watcher with Hot Reload</h3>
+    <div class="card">
+<pre><code><span class="cmt">"""Watch config file for changes and hot-reload without restart."""</span>
+import os, time, json, hashlib, threading, logging
+
+logger = logging.getLogger(__name__)
+
+class ConfigWatcher:
+    def __init__(self, config_path, on_change_callback, poll_interval=5):
+        self.path = config_path
+        self.callback = on_change_callback
+        self.poll_interval = poll_interval
+        self.last_hash = None
+        self.config = {}
+        self.lock = threading.RLock()
+        self._load()
+        self._start_watcher()
+
+    def _compute_hash(self):
+        try:
+            with open(self.path, 'rb') as f:
+                return hashlib.sha256(f.read()).hexdigest()
+        except FileNotFoundError:
+            return None
+
+    def _load(self):
+        try:
+            with open(self.path, 'r') as f:
+                new_config = json.load(f)
+            with self.lock:
+                self.config = new_config
+                self.last_hash = self._compute_hash()
+            logger.info(f"Config loaded: {self.path}")
+            return True
+        except (json.JSONDecodeError, FileNotFoundError) as e:
+            logger.error(f"Config load failed: {e}")
+            return False  <span class="cmt"># keep old config on parse failure</span>
+
+    def _start_watcher(self):
+        t = threading.Thread(target=self._watch_loop, daemon=True)
+        t.start()
+
+    def _watch_loop(self):
+        while True:
+            time.sleep(self.poll_interval)
+            current_hash = self._compute_hash()
+            if current_hash and current_hash != self.last_hash:
+                logger.info("Config change detected, reloading...")
+                if self._load():
+                    self.callback(self.config)
+
+    def get(self, key, default=None):
+        with self.lock:
+            return self.config.get(key, default)
+</code></pre>
+      <div class="callout tip"><div class="h">Interview Signal</div>"I use a hash comparison rather than mtime because mtime can be unreliable across filesystems. On parse failure, I keep the old config — a corrupt config file shouldn't crash a running service. The RLock allows nested reads safely."</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 04: LINUX INTERNALS ============ -->
 <section id="linux">
   <div class="wrap">
-    <span class="eyebrow">Section 03 — Linux & Systems</span>
+    <span class="eyebrow">Section 04 — Linux & Systems</span>
     <h2 class="sec">Linux Internals & Kernel Reasoning</h2>
     <p class="lead">Google SRE interviews test mechanistic understanding of Linux — not command memorization. They want to know WHY you chose a command, WHAT signal you expect, and HOW the kernel handles the operation.</p>
 
@@ -434,7 +763,7 @@ class TokenBucket:
         <h3>Process Management</h3>
         <p><strong>Process states:</strong> Running (R), Sleeping (S), Uninterruptible Sleep (D), Zombie (Z), Stopped (T). The D-state is critical — it means the process is waiting on I/O and cannot be killed (even with SIGKILL).</p>
         <p><strong>Key concepts:</strong> fork/exec model, copy-on-write, process groups, sessions, orphan processes, zombie reaping.</p>
-        <p><strong>Interview hot topic:</strong> "Why would a process be stuck in D-state?" — Answer: Waiting on uninterruptible I/O (disk, NFS mount). Indicates storage/network issue, not a process bug.</p>
+        <p><strong>Interview hot topic:</strong> "Why would a process be stuck in D-state?" — Waiting on uninterruptible I/O (disk, NFS mount). Indicates storage/network issue, not a process bug.</p>
       </div>
       <div class="card">
         <h3>Memory Management</h3>
@@ -450,176 +779,654 @@ class TokenBucket:
       </div>
       <div class="card">
         <h3>Networking Internals</h3>
-        <p><strong>TCP handshake:</strong> SYN → SYN-ACK → ACK. The SYN backlog queue is finite — if saturated, new connections are dropped (SYN flood or misconfiguration).</p>
+        <p><strong>TCP handshake:</strong> SYN → SYN-ACK → ACK. The SYN backlog queue is finite — if saturated, new connections are dropped.</p>
         <p><strong>Key concepts:</strong> Socket states, TIME_WAIT, connection pooling, TCP tuning (backlog, keepalive), DNS resolution, iptables/nftables, network namespaces.</p>
         <p><strong>Interview hot topic:</strong> "Intermittent connection timeouts" — Check SYN backlog (<code>ss -s</code>), check application thread pool, check DNS TTL, check for packet loss (<code>mtr</code>).</p>
       </div>
       <div class="card">
         <h3>Scheduling & CPU</h3>
-        <p><strong>CFS (Completely Fair Scheduler):</strong> Uses a red-black tree of tasks sorted by virtual runtime. Tasks with less CPU time get priority. Nice values adjust weight.</p>
+        <p><strong>CFS (Completely Fair Scheduler):</strong> Uses a red-black tree of tasks sorted by virtual runtime. Tasks with less CPU time get priority.</p>
         <p><strong>Key concepts:</strong> Context switches, CPU affinity, cgroups CPU limits, load average (1/5/15 min), runqueue depth, CPU steal time (VMs).</p>
         <p><strong>Interview hot topic:</strong> "High load average but low CPU%" — Many processes in D-state (I/O wait) inflate load average without consuming CPU.</p>
       </div>
       <div class="card">
         <h3>Cgroups & Containers</h3>
-        <p><strong>Cgroups v2:</strong> Hierarchical resource control — CPU, memory, I/O, PIDs. Prevents noisy neighbor problems. Containers use cgroups + namespaces for isolation.</p>
+        <p><strong>Cgroups v2:</strong> Hierarchical resource control — CPU, memory, I/O, PIDs. Prevents noisy neighbor problems.</p>
         <p><strong>Key concepts:</strong> Memory limits (hard/soft), CPU shares vs quotas, I/O weight, PID limits, OOM within cgroup, namespace types (PID, NET, MNT, UTS, IPC, USER).</p>
-        <p><strong>Interview hot topic:</strong> "How do cgroups prevent noisy neighbors?" — Memory cgroup enforces hard limits; CPU cgroup uses CFS bandwidth throttling; I/O cgroup uses BFQ weights.</p>
+        <p><strong>Interview hot topic:</strong> "How do cgroups prevent noisy neighbors?" — Memory cgroup enforces hard limits; CPU cgroup uses CFS bandwidth throttling.</p>
       </div>
     </div>
 
     <h3>The Command → Intent → Signal Framework</h3>
-    <p>Google doesn't evaluate command knowledge. They evaluate <strong>judgment through command choice</strong>. Before touching the keyboard, strong SREs ask: Is this live or historical? Am I looking for symptoms or root cause? What's the lowest-cost, highest-signal command?</p>
-
     <div class="tbl-scroll">
     <table class="tbl">
       <thead><tr><th>Scenario</th><th>First Command</th><th>Why (Signal)</th><th>Red Flag Alternative</th></tr></thead>
       <tbody>
-        <tr><td>Service is slow, CPU normal</td><td><code>ss -s</code> or <code>iostat 1</code></td><td>Check network backlog or disk I/O wait — the two hidden latency sources</td><td>Immediately grepping all logs</td></tr>
-        <tr><td>High load average</td><td><code>vmstat 1 5</code></td><td>Distinguishes CPU-bound (us/sy) from I/O-bound (wa) from memory pressure (si/so)</td><td>Running <code>top</code> and staring</td></tr>
-        <tr><td>Process stuck</td><td><code>cat /proc/PID/status</code></td><td>Shows state (D = I/O wait), voluntary/involuntary context switches</td><td>Immediately sending SIGKILL</td></tr>
-        <tr><td>Disk full</td><td><code>df -h && df -i</code></td><td>Checks both block usage AND inode usage — inode exhaustion is a common gotcha</td><td>Only checking <code>df -h</code></td></tr>
-        <tr><td>Can't connect to service</td><td><code>ss -lntp | grep PORT</code></td><td>Confirms if the service is actually listening before debugging network path</td><td>Running <code>ping</code> (wrong layer)</td></tr>
-        <tr><td>Memory pressure</td><td><code>free -m</code> then <code>slabtop</code></td><td>Distinguishes user-space leaks from kernel slab growth (dentries, inodes)</td><td>Restarting the service immediately</td></tr>
+        <tr><td>Service is slow, CPU normal</td><td><code>ss -s</code> or <code>iostat 1</code></td><td>Check network backlog or disk I/O wait</td><td>Immediately grepping all logs</td></tr>
+        <tr><td>High load average</td><td><code>vmstat 1 5</code></td><td>Distinguishes CPU-bound from I/O-bound from memory pressure</td><td>Running <code>top</code> and staring</td></tr>
+        <tr><td>Process stuck</td><td><code>cat /proc/PID/status</code></td><td>Shows state, voluntary/involuntary context switches</td><td>Immediately sending SIGKILL</td></tr>
+        <tr><td>Disk full</td><td><code>df -h && df -i</code></td><td>Checks both block usage AND inode usage</td><td>Only checking <code>df -h</code></td></tr>
+        <tr><td>Can't connect to service</td><td><code>ss -lntp | grep PORT</code></td><td>Confirms if the service is actually listening</td><td>Running <code>ping</code> (wrong layer)</td></tr>
+        <tr><td>Memory pressure</td><td><code>free -m</code> then <code>slabtop</code></td><td>Distinguishes user-space leaks from kernel slab growth</td><td>Restarting the service immediately</td></tr>
       </tbody>
     </table>
     </div>
-
-    <div class="callout tip"><div class="h">Interview Narration Pattern</div>
-    "I'll start with [command] because it gives me [specific signal] with minimal system impact. Based on what I see, I'll either drill into [path A] if the signal suggests [hypothesis 1], or pivot to [path B] if it points to [hypothesis 2]."</div>
   </div>
 </section>
 
-<!-- ============ SECTION 04: BEHAVIORAL / GOOGLEYNESS ============ -->
+<!-- ============ SECTION 05: LINUX DEEP DIVE ============ -->
+<section id="linux-deep">
+  <div class="wrap">
+    <span class="eyebrow">Section 05 — Linux Deep Dive</span>
+    <h2 class="sec">Advanced Kernel Concepts</h2>
+    <p class="lead">These topics separate L4 from L5 candidates. Google expects Senior SREs to reason about kernel behavior mechanistically — not just know commands, but understand the data structures and algorithms the kernel uses.</p>
+
+    <h3>Memory Reclaim & the Page Cache</h3>
+    <div class="card">
+      <p>The Linux kernel aggressively uses free RAM as page cache — caching file data for faster subsequent reads. This is why <code>free</code> shows little "free" memory on a healthy system. The key insight: <strong>used memory ≠ unavailable memory</strong>.</p>
+      <div class="grid two">
+        <div class="card">
+          <h3>Page Cache Lifecycle</h3>
+          <p>1. Process reads file → kernel loads pages into page cache<br>
+          2. Subsequent reads hit cache (no disk I/O)<br>
+          3. Under memory pressure, kernel reclaims <strong>clean</strong> pages (can be re-read from disk)<br>
+          4. <strong>Dirty</strong> pages must be written back to disk before reclaim<br>
+          5. If reclaim can't free enough → OOM killer activates</p>
+        </div>
+        <div class="card">
+          <h3>Key /proc/meminfo Fields</h3>
+          <p><code>MemAvailable</code> — what's actually available (free + reclaimable cache)<br>
+          <code>Cached</code> — page cache size<br>
+          <code>Dirty</code> — pages modified but not yet written to disk<br>
+          <code>Slab</code> — kernel data structure caches (dentries, inodes)<br>
+          <code>SReclaimable</code> — slab memory that CAN be freed<br>
+          <code>SUnreclaim</code> — slab memory that CANNOT be freed</p>
+        </div>
+      </div>
+      <div class="callout info"><div class="h">The OOM Killer Decision</div>
+      The OOM killer selects victims using <code>oom_score</code> (0-1000). Score is based on: RSS (memory usage), oom_score_adj (admin override, -1000 to +1000), and whether the process is privileged. Check with: <code>cat /proc/PID/oom_score</code>. Set <code>oom_score_adj = -1000</code> to make a process unkillable by OOM.</div>
+    </div>
+
+    <h3>eBPF: The Modern SRE Superpower</h3>
+    <div class="card">
+      <p>eBPF (Extended Berkeley Packet Filter) allows running sandboxed programs inside the Linux kernel without modifying kernel source or loading kernel modules. It's revolutionizing observability, networking, and security.</p>
+      <div class="grid two">
+        <div class="card">
+          <h3>What eBPF Can Do</h3>
+          <p><strong>Observability:</strong> Trace any kernel function, measure latency histograms, count events — all with near-zero overhead.<br>
+          <strong>Networking:</strong> XDP (eXpress Data Path) processes packets before they reach the network stack — 10x faster than iptables.<br>
+          <strong>Security:</strong> Seccomp-BPF filters syscalls. Runtime security monitoring without kernel modules.</p>
+        </div>
+        <div class="card">
+          <h3>Key eBPF Tools for SRE</h3>
+          <p><code>bpftrace</code> — one-liner tracing (like awk for kernel events)<br>
+          <code>bcc</code> — Python + C toolkit for complex traces<br>
+          <code>tcplife</code> — trace TCP connection lifetimes<br>
+          <code>biolatency</code> — histogram of block I/O latency<br>
+          <code>execsnoop</code> — trace new process execution<br>
+          <code>opensnoop</code> — trace file opens</p>
+        </div>
+      </div>
+<pre><code><span class="cmt"># Trace all file opens by a specific process</span>
+$ bpftrace -e 'tracepoint:syscalls:sys_enter_openat /pid == 1234/ {
+    printf("%s %s\n", comm, str(args-&gt;filename));
+}'
+
+<span class="cmt"># Histogram of disk I/O latency</span>
+$ bpftrace -e 'tracepoint:block:block_rq_complete {
+    @usecs = hist((nsecs - @start[args-&gt;dev, args-&gt;sector]) / 1000);
+}'
+
+<span class="cmt"># Count syscalls by process</span>
+$ bpftrace -e 'tracepoint:raw_syscalls:sys_enter { @[comm] = count(); }'
+</code></pre>
+    </div>
+
+    <h3>TCP Connection States Deep Dive</h3>
+    <div class="card">
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>State</th><th>Meaning</th><th>Problem If Accumulating</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>ESTABLISHED</td><td>Active connection</td><td>Connection leak (not closing)</td><td>Fix application code, add connection timeout</td></tr>
+          <tr><td>TIME_WAIT</td><td>Connection closed, waiting 2×MSL (60s)</td><td>Port exhaustion on high-churn servers</td><td><code>net.ipv4.tcp_tw_reuse=1</code>, connection pooling</td></tr>
+          <tr><td>CLOSE_WAIT</td><td>Remote closed, local hasn't closed yet</td><td>Application bug — not calling close()</td><td>Fix application code (missing close in error path)</td></tr>
+          <tr><td>SYN_RECV</td><td>SYN received, waiting for ACK</td><td>SYN flood attack or slow clients</td><td>Increase backlog, enable SYN cookies</td></tr>
+          <tr><td>FIN_WAIT2</td><td>Sent FIN, waiting for remote FIN</td><td>Remote not closing properly</td><td><code>net.ipv4.tcp_fin_timeout</code> (default 60s)</td></tr>
+        </tbody>
+      </table>
+      </div>
+<pre><code><span class="cmt"># Count connections by state</span>
+$ ss -s
+<span class="cmt"># Or detailed:</span>
+$ ss -tan | awk '{print $1}' | sort | uniq -c | sort -rn
+
+<span class="cmt"># Find processes with CLOSE_WAIT (application bug)</span>
+$ ss -tanp state close-wait
+
+<span class="cmt"># Check SYN backlog overflow</span>
+$ nstat -az | grep -i syn
+<span class="cmt"># TcpExtListenOverflows = connections dropped due to full backlog</span>
+</code></pre>
+    </div>
+
+    <h3>Disk I/O: Reading iostat Like a Pro</h3>
+    <div class="card">
+<pre><code>$ iostat -x 1 3
+Device   r/s    w/s   rkB/s   wkB/s  await  r_await  w_await  %util
+sda     150.0  200.0  4800    8000   12.5    8.0      15.5     85.0
+nvme0n1 5000   8000   200000  320000  0.3    0.2       0.4     45.0
+</code></pre>
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>Metric</th><th>What It Means</th><th>Healthy Value</th><th>Red Flag</th></tr></thead>
+        <tbody>
+          <tr><td>await</td><td>Average time (ms) for I/O requests including queue time</td><td>&lt;5ms (SSD), &lt;20ms (HDD)</td><td>&gt;50ms means I/O bottleneck</td></tr>
+          <tr><td>%util</td><td>% time device was busy</td><td>&lt;70%</td><td>100% = saturated (but misleading for NVMe!)</td></tr>
+          <tr><td>avgqu-sz</td><td>Average queue depth</td><td>&lt;4 (SSD), &lt;2 (HDD)</td><td>Growing queue = requests waiting</td></tr>
+          <tr><td>r/s + w/s</td><td>IOPS</td><td>Depends on device</td><td>Near device max = saturated</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout warn"><div class="h">The %util Trap on NVMe</div>
+      <code>%util</code> is meaningless for NVMe drives because they handle thousands of parallel requests. A NVMe at 45% util with 0.3ms await is perfectly healthy. For NVMe, focus on <strong>await</strong> and <strong>queue depth</strong> instead.</div>
+    </div>
+
+    <h3>strace: The Last Resort Debugger</h3>
+    <div class="card">
+      <p><code>strace</code> traces system calls made by a process. It's the "break glass" tool when nothing else explains the behavior. But it has significant overhead — use sparingly in production.</p>
+<pre><code><span class="cmt"># Attach to running process, trace only file operations</span>
+$ strace -p 1234 -e trace=file -f
+
+<span class="cmt"># Trace network calls with timestamps</span>
+$ strace -p 1234 -e trace=network -T -tt
+
+<span class="cmt"># Summary: which syscalls take the most time?</span>
+$ strace -c -p 1234
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- -------
+ 85.23    2.456789        1234      1991           futex
+  8.12    0.234000          23     10174           read
+  3.45    0.099000           9     11000           write
+
+<span class="cmt"># Trace a hanging process — what's it waiting on?</span>
+$ strace -p 1234 -e trace=futex,poll,epoll_wait
+<span class="cmt"># If stuck on futex() → lock contention</span>
+<span class="cmt"># If stuck on poll/epoll → waiting for I/O</span>
+<span class="cmt"># If stuck on read() → waiting for data from fd</span>
+
+<span class="cmt"># Find which files a process is opening</span>
+$ strace -p 1234 -e openat 2&gt;&amp;1 | grep -v ENOENT
+</code></pre>
+      <div class="callout tip"><div class="h">Interview Narration</div>"I'd use strace as a last resort because it has 2-5x performance overhead via ptrace. For production, I'd prefer eBPF-based tools like opensnoop or execsnoop which have near-zero overhead. But if I need to understand exactly what a specific process is doing right now, strace gives me the complete picture."</div>
+    </div>
+
+    <h3>/proc Filesystem: The Kernel's API</h3>
+    <div class="card">
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>Path</th><th>What It Shows</th><th>When to Use</th></tr></thead>
+        <tbody>
+          <tr><td>/proc/PID/status</td><td>Process state, memory, threads, capabilities</td><td>Quick process health check</td></tr>
+          <tr><td>/proc/PID/fd/</td><td>Open file descriptors (symlinks to actual files)</td><td>Finding leaked FDs, deleted-but-open files</td></tr>
+          <tr><td>/proc/PID/maps</td><td>Memory mappings (shared libs, heap, stack)</td><td>Understanding memory layout</td></tr>
+          <tr><td>/proc/PID/smaps</td><td>Detailed memory per mapping (RSS, PSS, Shared)</td><td>Finding memory leaks</td></tr>
+          <tr><td>/proc/PID/io</td><td>I/O counters (bytes read/written)</td><td>Identifying I/O-heavy processes</td></tr>
+          <tr><td>/proc/PID/stack</td><td>Kernel stack trace</td><td>Why is this process stuck in D-state?</td></tr>
+          <tr><td>/proc/meminfo</td><td>System-wide memory breakdown</td><td>Understanding memory pressure</td></tr>
+          <tr><td>/proc/net/tcp</td><td>All TCP connections (raw)</td><td>When ss isn't available</td></tr>
+          <tr><td>/proc/sys/vm/</td><td>VM tuning knobs</td><td>Tuning swappiness, dirty ratios</td></tr>
+          <tr><td>/proc/pressure/</td><td>PSI (Pressure Stall Information)</td><td>Quantifying resource contention</td></tr>
+        </tbody>
+      </table>
+      </div>
+<pre><code><span class="cmt"># Find deleted files still consuming disk space</span>
+$ find /proc/*/fd -ls 2&gt;/dev/null | grep deleted
+
+<span class="cmt"># Check why a process is in D-state</span>
+$ cat /proc/PID/stack
+[&lt;0&gt;] nfs_wait_bit_killable+0x28/0x40
+[&lt;0&gt;] __wait_on_bit+0x42/0x80
+<span class="cmt"># ^ This tells us it's waiting on NFS!</span>
+
+<span class="cmt"># Check PSI (Pressure Stall Information) — Linux 4.20+</span>
+$ cat /proc/pressure/memory
+some avg10=2.50 avg60=1.20 avg300=0.80 total=123456789
+full avg10=0.10 avg60=0.05 avg300=0.02 total=12345678
+<span class="cmt"># "some" = at least one task stalled; "full" = ALL tasks stalled</span>
+</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 06: LINUX SCENARIOS ============ -->
+<section id="linux-scenarios">
+  <div class="wrap">
+    <span class="eyebrow">Section 06 — Linux Troubleshooting Labs</span>
+    <h2 class="sec">Real-World Linux Scenarios</h2>
+    <p class="lead">These are the exact types of scenarios you'll face in the troubleshooting round. Each one teaches a different kernel concept and debugging methodology. Practice thinking through them out loud.</p>
+
+    <div class="scenario">
+      <h3>Scenario 1: The Phantom Disk Usage</h3>
+      <div class="alert">ALERT: /data partition at 100% — but du -sh /data shows only 60% used</div>
+      <div class="diagnosis">
+        <h4>Diagnosis Flow:</h4>
+        <p><strong>Hypothesis:</strong> Deleted files are still held open by running processes. When a file is deleted while a process has it open, the directory entry is removed (so <code>du</code> doesn't see it) but the inode and data blocks remain allocated until the file descriptor is closed.</p>
+<pre><code><span class="cmt"># Step 1: Confirm the discrepancy</span>
+$ df -h /data        <span class="cmt"># shows 100% used</span>
+$ du -sh /data       <span class="cmt"># shows 60% — where's the other 40%?</span>
+
+<span class="cmt"># Step 2: Find deleted-but-open files</span>
+$ lsof +L1 /data     <span class="cmt"># +L1 = files with link count &lt; 1 (deleted)</span>
+COMMAND   PID  USER   FD   TYPE DEVICE SIZE/OFF NLINKS NODE NAME
+java     1234  app   45w   REG  253,1  42G       0    ... /data/app.log (deleted)
+
+<span class="cmt"># Step 3: Recover space without killing the process</span>
+$ : &gt; /proc/1234/fd/45   <span class="cmt"># truncate the file via its fd</span>
+<span class="cmt"># OR restart the process to release the fd</span>
+</code></pre>
+      </div>
+      <div class="resolution">
+        <h4>Root Cause & Prevention:</h4>
+        <p>The application was writing to a log file that logrotate deleted, but the app never reopened its log file. Fix: configure the app to handle SIGHUP (reopen logs), or use <code>copytruncate</code> in logrotate config instead of <code>create</code>.</p>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <h3>Scenario 2: Fork Bomb Recovery</h3>
+      <div class="alert">ALERT: Server unresponsive. SSH connections timing out. Console shows "fork: retry: Resource temporarily unavailable"</div>
+      <div class="diagnosis">
+        <h4>Diagnosis Flow:</h4>
+        <p><strong>What happened:</strong> A fork bomb (e.g., <code>:(){ :|:& };:</code>) exhausted the system's PID limit. Every fork() call fails because the process table is full.</p>
+<pre><code><span class="cmt"># If you can get a console (not SSH — SSH needs to fork):</span>
+
+<span class="cmt"># Step 1: Kill the fork bomb (use exec to avoid forking)</span>
+$ exec killall -9 -u baduser  <span class="cmt"># kill all processes by the offending user</span>
+
+<span class="cmt"># Step 2: If even that fails, use echo to /proc</span>
+$ echo 1 &gt; /proc/sys/kernel/sysrq  <span class="cmt"># enable sysrq</span>
+$ echo i &gt; /proc/sysrq-trigger     <span class="cmt"># kill all processes except init</span>
+
+<span class="cmt"># Prevention: Set PID limits</span>
+$ ulimit -u 1000                     <span class="cmt"># per-user process limit</span>
+$ echo "baduser hard nproc 500" &gt;&gt; /etc/security/limits.conf
+
+<span class="cmt"># Better: Use cgroups PID controller</span>
+$ echo 500 &gt; /sys/fs/cgroup/user.slice/user-1000.slice/pids.max
+</code></pre>
+      </div>
+      <div class="resolution">
+        <h4>Prevention:</h4>
+        <p>1. Set <code>nproc</code> limits in <code>/etc/security/limits.conf</code><br>
+        2. Use cgroups v2 PID controller for per-user/per-service limits<br>
+        3. In Kubernetes: set <code>spec.containers[].resources.limits.pids</code><br>
+        4. Monitor PID usage: <code>cat /proc/sys/kernel/pid_max</code> vs <code>ls /proc | grep -c '^[0-9]'</code></p>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <h3>Scenario 3: TCP TIME_WAIT Exhaustion</h3>
+      <div class="alert">ALERT: Service returning "Cannot assign requested address" errors. Connection rate dropping.</div>
+      <div class="diagnosis">
+        <h4>Diagnosis Flow:</h4>
+<pre><code><span class="cmt"># Step 1: Check connection states</span>
+$ ss -s
+TCP:   65432 (estab 200, closed 100, orphaned 5, timewait 64000)
+<span class="cmt"># ^ 64,000 TIME_WAIT connections! Ephemeral port range is only 28,232 ports</span>
+
+<span class="cmt"># Step 2: Understand the problem</span>
+<span class="cmt"># Ephemeral port range: 32768-60999 = 28,232 ports</span>
+<span class="cmt"># Each TIME_WAIT holds a port for 60 seconds</span>
+<span class="cmt"># If creating &gt;470 connections/sec to same dest, ports exhaust</span>
+
+<span class="cmt"># Step 3: Immediate mitigation</span>
+$ sysctl -w net.ipv4.tcp_tw_reuse=1  <span class="cmt"># reuse TIME_WAIT for new outbound</span>
+
+<span class="cmt"># Step 4: Long-term fixes</span>
+$ sysctl -w net.ipv4.ip_local_port_range="1024 65535"  <span class="cmt"># expand range</span>
+<span class="cmt"># AND: implement connection pooling in the application</span>
+<span class="cmt"># AND: use HTTP keepalive to reuse connections</span>
+</code></pre>
+      </div>
+      <div class="resolution">
+        <h4>Key Insight:</h4>
+        <p>TIME_WAIT exists to prevent old packets from a previous connection being accepted by a new connection on the same port. It's a safety mechanism, not a bug. The real fix is <strong>connection pooling</strong> — reuse connections instead of creating new ones for every request. <code>tcp_tw_reuse</code> is safe for outbound connections; never use the deprecated <code>tcp_tw_recycle</code>.</p>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <h3>Scenario 4: Memory Leak in a Long-Running Service</h3>
+      <div class="alert">ALERT: Service RSS growing 100MB/hour. OOM kill expected in ~6 hours.</div>
+      <div class="diagnosis">
+        <h4>Diagnosis Flow:</h4>
+<pre><code><span class="cmt"># Step 1: Confirm the leak pattern</span>
+$ while true; do
+    echo "$(date) $(grep VmRSS /proc/$(pidof myservice)/status)"
+    sleep 60
+  done
+<span class="cmt"># Watch RSS grow over time</span>
+
+<span class="cmt"># Step 2: Check if it's heap or mmap growth</span>
+$ cat /proc/PID/smaps_rollup
+Rss:             4500000 kB
+Pss:             4200000 kB
+Shared_Clean:     200000 kB
+Private_Dirty:   4000000 kB   <span class="cmt"># ← this is the leak (heap/anon)</span>
+
+<span class="cmt"># Step 3: For Python services — check with tracemalloc</span>
+<span class="cmt"># Add to the service code:</span>
+import tracemalloc
+tracemalloc.start()
+<span class="cmt"># ... later ...</span>
+snapshot = tracemalloc.take_snapshot()
+top_stats = snapshot.statistics('lineno')
+for stat in top_stats[:10]:
+    print(stat)
+
+<span class="cmt"># Step 4: For C/Go services — use pmap for mapping analysis</span>
+$ pmap -x PID | sort -k3 -n -r | head -20
+<span class="cmt"># Look for large anonymous mappings growing over time</span>
+
+<span class="cmt"># Step 5: Check for file descriptor leaks (each fd = memory)</span>
+$ ls /proc/PID/fd | wc -l   <span class="cmt"># growing fd count = leak</span>
+$ cat /proc/PID/fdinfo/N    <span class="cmt"># details of specific fd</span>
+</code></pre>
+      </div>
+      <div class="resolution">
+        <h4>Common Causes:</h4>
+        <p>1. <strong>Unbounded caches/maps</strong> — data structures that grow but never evict<br>
+        2. <strong>Goroutine/thread leaks</strong> — spawning workers that never terminate<br>
+        3. <strong>Connection leaks</strong> — HTTP clients not closing response bodies<br>
+        4. <strong>Event listener accumulation</strong> — registering callbacks without deregistering<br>
+        5. <strong>Slab cache growth</strong> — kernel dentries/inodes (check <code>slabtop</code>)</p>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <h3>Scenario 5: The Mysterious Latency Spike</h3>
+      <div class="alert">ALERT: p99 latency jumped from 50ms to 2000ms. p50 unchanged at 20ms. CPU/memory normal.</div>
+      <div class="diagnosis">
+        <h4>Diagnosis Flow:</h4>
+<pre><code><span class="cmt"># Key insight: p99 spike with normal p50 = a SUBSET of requests are slow</span>
+<span class="cmt"># This is NOT a general overload — it's targeted</span>
+
+<span class="cmt"># Step 1: Check for I/O latency (the silent killer)</span>
+$ iostat -x 1 3
+<span class="cmt"># If await is high → disk I/O contention</span>
+
+<span class="cmt"># Step 2: Check for GC pauses (JVM/Go/Python)</span>
+$ grep "GC pause" /var/log/app/gc.log | tail -20
+<span class="cmt"># GC pauses affect a random subset of requests</span>
+
+<span class="cmt"># Step 3: Check for lock contention</span>
+$ perf top -p PID
+<span class="cmt"># If you see futex_wait or pthread_mutex_lock dominating → lock contention</span>
+
+<span class="cmt"># Step 4: Check for DNS resolution delays</span>
+$ strace -p PID -e trace=connect,sendto -T 2&gt;&amp;1 | grep -i "dns\|53"
+<span class="cmt"># DNS timeouts cause exactly this pattern: most requests fast, some 2s+ slow</span>
+
+<span class="cmt"># Step 5: Check for connection pool exhaustion</span>
+$ ss -tnp | grep PID | wc -l   <span class="cmt"># how many connections does the process have?</span>
+<span class="cmt"># If at pool max → requests queue waiting for a connection</span>
+
+<span class="cmt"># Step 6: Check for CPU throttling (cgroups)</span>
+$ cat /sys/fs/cgroup/cpu/docker/CONTAINER_ID/cpu.stat
+nr_throttled 15234
+throttled_time 89000000000  <span class="cmt"># 89 seconds of throttling!</span>
+</code></pre>
+      </div>
+      <div class="resolution">
+        <h4>The Pattern:</h4>
+        <p>"p99 spike with normal p50" almost always means one of: <strong>GC pauses</strong>, <strong>DNS timeouts</strong>, <strong>lock contention</strong>, <strong>connection pool exhaustion</strong>, or <strong>CPU throttling in cgroups</strong>. The key diagnostic is that it's a bimodal distribution — most requests are fine, a few are very slow.</p>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <h3>Scenario 6: Inode Exhaustion</h3>
+      <div class="alert">ALERT: "No space left on device" but df -h shows 40% free space</div>
+      <div class="diagnosis">
+        <h4>Diagnosis Flow:</h4>
+<pre><code><span class="cmt"># Step 1: Check inodes separately from blocks</span>
+$ df -i
+Filesystem     Inodes   IUsed   IFree IUse% Mounted on
+/dev/sda1      5242880  5242880     0  100%  /
+
+<span class="cmt"># Step 2: Find where the inodes are consumed</span>
+$ find / -xdev -printf '%h\n' | sort | uniq -c | sort -rn | head -10
+ 2500000 /var/spool/mail/queue
+  500000 /tmp/sessions
+<span class="cmt"># ^ millions of tiny files in one directory</span>
+
+<span class="cmt"># Step 3: Identify the culprit</span>
+<span class="cmt"># Common causes: mail queue buildup, PHP session files,</span>
+<span class="cmt"># container overlay layers, package manager cache</span>
+
+<span class="cmt"># Step 4: Clean up (carefully!)</span>
+$ find /var/spool/mail/queue -type f -mtime +7 -delete
+<span class="cmt"># Delete files older than 7 days</span>
+
+<span class="cmt"># Prevention: Monitor inode usage in your alerting</span>
+<span class="cmt"># Set up tmpwatch/systemd-tmpfiles for temp directories</span>
+</code></pre>
+      </div>
+      <div class="resolution">
+        <h4>Key Insight:</h4>
+        <p>Each file (even 0 bytes) consumes one inode. Filesystems have a fixed number of inodes set at creation time. Millions of tiny files (session files, cache entries, mail queue) can exhaust inodes while leaving plenty of block space. Prevention: use <code>mkfs -N</code> to set inode count at filesystem creation, or use XFS which allocates inodes dynamically.</p>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <h3>Scenario 7: CPU Steal Time in VMs</h3>
+      <div class="alert">ALERT: Application latency increased 3x. top shows 40% steal time (%st).</div>
+      <div class="diagnosis">
+        <h4>Diagnosis Flow:</h4>
+<pre><code><span class="cmt"># Step 1: Confirm steal time</span>
+$ mpstat 1 5
+%usr  %sys  %iowait  %steal  %idle
+ 25    10      5       40      20
+<span class="cmt"># 40% steal = the hypervisor is taking 40% of our CPU time</span>
+
+<span class="cmt"># Step 2: Understand what steal means</span>
+<span class="cmt"># Steal time = time the vCPU wanted to run but the hypervisor</span>
+<span class="cmt"># scheduled a different VM's vCPU on the physical core instead.</span>
+<span class="cmt"># It's the "noisy neighbor" problem in shared hosting.</span>
+
+<span class="cmt"># Step 3: Verify it's not our fault</span>
+$ cat /proc/cpuinfo | grep "model name"  <span class="cmt"># check CPU type</span>
+$ nproc                                   <span class="cmt"># check vCPU count</span>
+$ uptime                                  <span class="cmt"># check load average</span>
+<span class="cmt"># If our load is low but steal is high → noisy neighbor</span>
+
+<span class="cmt"># Step 4: Mitigation options</span>
+<span class="cmt"># - Request migration to a different host (cloud provider)</span>
+<span class="cmt"># - Switch to dedicated/bare-metal instances</span>
+<span class="cmt"># - Use CPU pinning (if available)</span>
+<span class="cmt"># - Scale horizontally to reduce per-instance load</span>
+</code></pre>
+      </div>
+      <div class="resolution">
+        <h4>Key Insight:</h4>
+        <p>CPU steal time is invisible to the application — it just sees slower execution. It's a hypervisor-level problem you can't fix from inside the VM. In cloud environments, this is the #1 reason to use dedicated instances for latency-sensitive workloads. Always monitor %st in your dashboards.</p>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <h3>Scenario 8: Network Partition Debugging</h3>
+      <div class="alert">ALERT: Service A can't reach Service B. Both services report healthy locally.</div>
+      <div class="diagnosis">
+        <h4>Layer-by-Layer Diagnosis:</h4>
+<pre><code><span class="cmt"># Step 1: DNS — does the name resolve correctly?</span>
+$ dig service-b.internal +short
+10.0.5.42
+$ dig @8.8.8.8 service-b.internal +short  <span class="cmt"># compare with external DNS</span>
+
+<span class="cmt"># Step 2: L3 — can we reach the IP at all?</span>
+$ ping -c 3 10.0.5.42
+<span class="cmt"># If no response: routing issue, firewall, or host down</span>
+
+<span class="cmt"># Step 3: L4 — can we establish TCP connection?</span>
+$ nc -zv 10.0.5.42 8080 -w 5
+<span class="cmt"># If timeout: firewall blocking the port, service not listening</span>
+
+<span class="cmt"># Step 4: Path analysis — where are packets being dropped?</span>
+$ mtr -n --report 10.0.5.42
+<span class="cmt"># Shows packet loss at each hop</span>
+
+<span class="cmt"># Step 5: Check local firewall rules</span>
+$ iptables -L -n -v | grep -i drop
+$ nft list ruleset | grep drop
+
+<span class="cmt"># Step 6: Check for network namespace issues (containers)</span>
+$ ip netns list
+$ nsenter -t PID -n ss -lntp  <span class="cmt"># check from inside container's netns</span>
+
+<span class="cmt"># Step 7: Packet capture (last resort)</span>
+$ tcpdump -i any host 10.0.5.42 and port 8080 -nn -c 20
+<span class="cmt"># Look for: SYN without SYN-ACK (firewall), RST (connection refused),</span>
+<span class="cmt"># retransmissions (packet loss)</span>
+</code></pre>
+      </div>
+      <div class="resolution">
+        <h4>Common Causes:</h4>
+        <p>1. <strong>Security group/firewall rule change</strong> — most common in cloud<br>
+        2. <strong>DNS propagation delay</strong> — service moved but DNS cached old IP<br>
+        3. <strong>Network policy (Kubernetes)</strong> — new policy blocking traffic<br>
+        4. <strong>MTU mismatch</strong> — packets too large being silently dropped<br>
+        5. <strong>ARP cache poisoning</strong> — stale MAC address in ARP table</p>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <h3>Scenario 9: Kernel Soft Lockup</h3>
+      <div class="alert">ALERT: dmesg shows "BUG: soft lockup - CPU#3 stuck for 22s!"</div>
+      <div class="diagnosis">
+        <h4>Diagnosis Flow:</h4>
+<pre><code><span class="cmt"># Step 1: Check dmesg for the full message</span>
+$ dmesg -T | grep -A 20 "soft lockup"
+<span class="cmt"># Shows which CPU, which process, and the kernel stack trace</span>
+
+<span class="cmt"># What is a soft lockup?</span>
+<span class="cmt"># A CPU has been running kernel code for &gt;20s without scheduling.</span>
+<span class="cmt"># The watchdog timer fires because the CPU hasn't serviced interrupts.</span>
+
+<span class="cmt"># Step 2: Identify the cause from the stack trace</span>
+<span class="cmt"># Common patterns:</span>
+<span class="cmt"># - spin_lock → lock contention in kernel</span>
+<span class="cmt"># - nfs/cifs → network filesystem hung</span>
+<span class="cmt"># - ext4/xfs → filesystem corruption or I/O stall</span>
+<span class="cmt"># - virtio → hypervisor/VM issue</span>
+
+<span class="cmt"># Step 3: Check if it's a hardware issue</span>
+$ mcelog --client  <span class="cmt"># check for hardware errors (ECC, CPU)</span>
+$ lspci -v | grep -i error
+
+<span class="cmt"># Step 4: Check I/O subsystem</span>
+$ cat /sys/block/sda/device/timeout  <span class="cmt"># SCSI timeout</span>
+$ dmesg | grep -i "reset\|timeout\|error" | tail -20
+
+<span class="cmt"># Mitigation:</span>
+<span class="cmt"># - If NFS: check NFS server health, consider soft mount</span>
+<span class="cmt"># - If disk: check disk health (smartctl), replace if failing</span>
+<span class="cmt"># - If VM: check hypervisor logs, consider live migration</span>
+</code></pre>
+      </div>
+      <div class="resolution">
+        <h4>Key Insight:</h4>
+        <p>Soft lockups are kernel-level issues — they indicate a CPU is stuck in kernel code. Unlike hard lockups (CPU completely frozen), soft lockups still allow the watchdog to fire. They're usually caused by: storage I/O stalls, kernel bugs, hardware issues, or hypervisor problems. The kernel stack trace in dmesg is your primary diagnostic tool.</p>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <h3>Scenario 10: DNS Resolution Failures</h3>
+      <div class="alert">ALERT: Intermittent "Name or service not known" errors. ~5% of requests failing.</div>
+      <div class="diagnosis">
+        <h4>Diagnosis Flow:</h4>
+<pre><code><span class="cmt"># Step 1: Test DNS resolution directly</span>
+$ dig service.internal @127.0.0.53  <span class="cmt"># local resolver (systemd-resolved)</span>
+$ dig service.internal @10.0.0.2    <span class="cmt"># upstream DNS server directly</span>
+<span class="cmt"># Compare: if local fails but upstream works → local resolver issue</span>
+
+<span class="cmt"># Step 2: Check resolver configuration</span>
+$ cat /etc/resolv.conf
+$ resolvectl status  <span class="cmt"># systemd-resolved status</span>
+
+<span class="cmt"># Step 3: Check for UDP packet loss (DNS uses UDP)</span>
+$ nstat -az | grep -i udp
+UdpInErrors                     15234    <span class="cmt"># ← dropped UDP packets!</span>
+UdpRcvbufErrors                 15234    <span class="cmt"># ← receive buffer overflow</span>
+
+<span class="cmt"># Step 4: Check resolver capacity</span>
+$ ss -ulnp | grep ":53"  <span class="cmt"># is the resolver listening?</span>
+$ cat /proc/net/udp | wc -l  <span class="cmt"># UDP socket count</span>
+
+<span class="cmt"># Step 5: Fix UDP buffer overflow</span>
+$ sysctl -w net.core.rmem_max=26214400
+$ sysctl -w net.core.rmem_default=26214400
+
+<span class="cmt"># Step 6: Check for conntrack table exhaustion (common in k8s)</span>
+$ cat /proc/sys/net/netfilter/nf_conntrack_count
+$ cat /proc/sys/net/netfilter/nf_conntrack_max
+<span class="cmt"># If count ≈ max → DNS (UDP) entries filling conntrack table</span>
+$ dmesg | grep "nf_conntrack: table full"
+</code></pre>
+      </div>
+      <div class="resolution">
+        <h4>Common Causes:</h4>
+        <p>1. <strong>UDP receive buffer overflow</strong> — resolver can't keep up with query rate<br>
+        2. <strong>Conntrack table full</strong> — especially in Kubernetes with many short-lived DNS queries<br>
+        3. <strong>ndots:5 in resolv.conf</strong> — Kubernetes default causes 5x DNS queries per lookup<br>
+        4. <strong>DNS server overloaded</strong> — too many pods querying CoreDNS<br>
+        5. <strong>Race condition in /etc/resolv.conf</strong> — DHCP renewal rewriting the file</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 07: BEHAVIORAL / GOOGLEYNESS ============ -->
 <section id="behavioral">
   <div class="wrap">
-    <span class="eyebrow">Section 04 — Googleyness & Leadership</span>
+    <span class="eyebrow">Section 07 — Googleyness & Leadership</span>
     <h2 class="sec">The Behavioral Round: What Google Actually Scores</h2>
-    <p class="lead">Google's Googleyness & Leadership round evaluates six specific attributes. It's not a casual chat — it's a scored signal that goes directly to the Hiring Committee. For SRE specifically, they weight incident leadership, blameless culture, and calm under pressure.</p>
+    <p class="lead">Google's Googleyness & Leadership round evaluates six specific attributes. For SRE specifically, they weight incident leadership, blameless culture, and calm under pressure.</p>
 
     <h3>The Six Googleyness Attributes</h3>
     <div class="grid three">
-      <div class="card">
-        <span class="badge b-blue">1</span>
-        <h3>Thrives in Ambiguity</h3>
-        <p>Can you make progress when the path isn't fully defined? Do you ask useful questions, establish assumptions, and move forward — or stall until every unknown is removed?</p>
-      </div>
-      <div class="card">
-        <span class="badge b-blue">2</span>
-        <h3>Values Feedback</h3>
-        <p>Can you reconsider your thinking when new information appears? The signal is intellectual humility and openness to learning — not automatic agreement.</p>
-      </div>
-      <div class="card">
-        <span class="badge b-blue">3</span>
-        <h3>Challenges Status Quo</h3>
-        <p>Do you demonstrate independent judgment? Can you question assumptions and propose better approaches when the existing way is no longer optimal?</p>
-      </div>
-      <div class="card">
-        <span class="badge b-blue">4</span>
-        <h3>Puts User First</h3>
-        <p>Are your technical decisions connected to user impact? Can you explain what changed for the user and why that outcome mattered?</p>
-      </div>
-      <div class="card">
-        <span class="badge b-blue">5</span>
-        <h3>Does the Right Thing</h3>
-        <p>Judgment and integrity. The correct decision that carried some cost — time, effort, disagreement, or personal discomfort. Ownership and accountability.</p>
-      </div>
-      <div class="card">
-        <span class="badge b-blue">6</span>
-        <h3>Cares About the Team</h3>
-        <p>Do you improve the effectiveness of those around you? Mentoring, conflict resolution, creating opportunities for others, helping teammates succeed.</p>
-      </div>
+      <div class="card"><span class="badge b-blue">1</span><h3>Thrives in Ambiguity</h3><p>Make progress when the path isn't fully defined. Ask useful questions, establish assumptions, move forward.</p></div>
+      <div class="card"><span class="badge b-blue">2</span><h3>Values Feedback</h3><p>Reconsider your thinking when new information appears. Intellectual humility and openness to learning.</p></div>
+      <div class="card"><span class="badge b-blue">3</span><h3>Challenges Status Quo</h3><p>Independent judgment. Question assumptions and propose better approaches.</p></div>
+      <div class="card"><span class="badge b-blue">4</span><h3>Puts User First</h3><p>Technical decisions connected to user impact. Explain what changed for the user.</p></div>
+      <div class="card"><span class="badge b-blue">5</span><h3>Does the Right Thing</h3><p>Judgment and integrity. The correct decision that carried some cost.</p></div>
+      <div class="card"><span class="badge b-blue">6</span><h3>Cares About the Team</h3><p>Improve effectiveness of those around you. Mentoring, conflict resolution, creating opportunities.</p></div>
     </div>
 
-    <h3>Two Types of Questions (Critical Distinction)</h3>
-    <div class="grid two">
-      <div class="card">
-        <h3>Experience Questions</h3>
-        <p>"Tell me about a time you..." — These want a <strong>specific story</strong> from your past. Use STAR method. Depth is the signal. One concrete example > three vague ones.</p>
-        <div class="callout tip"><div class="h">Example</div>"Tell me about the most severe outage you handled."</div>
-      </div>
-      <div class="card">
-        <h3>Process Questions</h3>
-        <p>"How do you..." — These want your <strong>framework for a category of situations</strong>. Start with your approach/principles, THEN illustrate with a brief example.</p>
-        <div class="callout tip"><div class="h">Example</div>"How do you influence people you haven't worked with before?"</div>
-      </div>
-    </div>
-
-    <div class="callout warn"><div class="h">The #1 Mistake</div>
-    Answering process questions with only a story. "One story shows me one situation. For a process question, I'm trying to understand how you would operate across many situations." — Google Interviewer feedback from mock interviews. Start with your framework, then use a brief example to illustrate.</div>
-
-    <h3>The SRE-STAR(M) Method for Behavioral Answers</h3>
-    <p>For SRE roles, extend the standard STAR method with <strong>M = Mitigation/Measurement</strong>:</p>
+    <h3>The SRE-STAR(M) Method</h3>
     <div class="tbl-scroll">
     <table class="tbl">
-      <thead><tr><th>Letter</th><th>Component</th><th>SRE-Specific Focus</th><th>Time Allocation</th></tr></thead>
+      <thead><tr><th>Letter</th><th>Component</th><th>SRE-Specific Focus</th><th>Time</th></tr></thead>
       <tbody>
         <tr><td>S</td><td>Situation</td><td>Set the operational context: scale, impact, urgency</td><td>~20%</td></tr>
         <tr><td>T</td><td>Task</td><td>Your specific responsibility in the incident/project</td><td>~10%</td></tr>
         <tr><td>A</td><td>Action</td><td>What YOU did — mitigation first, then root cause, then prevention</td><td>~40%</td></tr>
-        <tr><td>R</td><td>Result</td><td>Quantified outcome: MTTR reduced, error budget preserved, users impacted</td><td>~15%</td></tr>
-        <tr><td>M</td><td>Mitigation/Measurement</td><td>What systemic change prevented recurrence? What did you measure?</td><td>~15%</td></tr>
+        <tr><td>R</td><td>Result</td><td>Quantified outcome: MTTR reduced, error budget preserved</td><td>~15%</td></tr>
+        <tr><td>M</td><td>Mitigation</td><td>Systemic change that prevented recurrence</td><td>~15%</td></tr>
       </tbody>
     </table>
     </div>
 
-    <h3>Top 20 Googleyness Questions (Frequently Reported)</h3>
-    <div class="card">
-      <p><strong>Incident & Operations:</strong></p>
-      <p>1. Tell me about the most severe outage you handled.<br>
-      2. Describe a time you had to make a critical decision with incomplete data.<br>
-      3. Tell me about a time you disagreed with a SWE about a reliability concern.<br>
-      4. How do you handle being paged at 3AM for an alert you've never seen?<br>
-      5. Describe a time you had to pivot midway through a project.</p>
-
-      <p><strong>Leadership & Influence:</strong></p>
-      <p>6. Tell me about a time you influenced a team without formal authority.<br>
-      7. Describe a situation where you mentored a junior team member.<br>
-      8. Tell me about a time you proposed an idea but your team disagreed.<br>
-      9. How do you handle unreasonable demands from your manager?<br>
-      10. Describe a time you worked outside your role definition.</p>
-
-      <p><strong>Collaboration & Conflict:</strong></p>
-      <p>11. Tell me about a time you had a conflict with a colleague and how you resolved it.<br>
-      12. Describe working with someone difficult. How did you handle it?<br>
-      13. Tell me about cross-team collaboration that went well (or poorly).<br>
-      14. How do you ensure accessibility and inclusion in your work?<br>
-      15. What would you do if a junior team member was delaying tasks?</p>
-
-      <p><strong>Growth & Self-Awareness:</strong></p>
-      <p>16. Tell me about critical feedback you received. How did you respond?<br>
-      17. Describe your biggest professional accomplishment.<br>
-      18. Tell me about a time your work was deprioritized mid-project.<br>
-      19. How do you manage multiple priorities in a dynamic environment?<br>
-      20. What excites you about the SRE role at Google specifically?</p>
-    </div>
-
-    <div class="callout tip"><div class="h">SRE-Specific Behavioral Signals</div>
-    <strong>Blamelessness:</strong> Never blame individuals in your stories. Frame failures as system failures.<br>
-    <strong>Mitigation-first:</strong> In outage stories, always mention stabilizing the system BEFORE root-causing.<br>
-    <strong>Quantification:</strong> Use numbers — "reduced MTTR from 45 min to 8 min," "saved 20 engineering hours/week of toil."<br>
-    <strong>Systemic thinking:</strong> End stories with what you changed to prevent recurrence, not just how you fixed it once.</div>
+    <div class="callout warn"><div class="h">Critical Distinction: Experience vs Process Questions</div>
+    <strong>Experience:</strong> "Tell me about a time..." → Give ONE deep story using STAR(M).<br>
+    <strong>Process:</strong> "How do you..." → Give your FRAMEWORK first, then a brief illustrating example.<br>
+    Answering process questions with only a story is the #1 behavioral round mistake.</div>
   </div>
 </section>
 
-<!-- ============ SECTION 05: NALSD ============ -->
+<!-- ============ SECTION 08: NALSD ============ -->
 <section id="nalsd">
   <div class="wrap">
-    <span class="eyebrow">Section 05 — System Design</span>
+    <span class="eyebrow">Section 08 — System Design</span>
     <h2 class="sec">NALSD: Non-Abstract Large System Design</h2>
-    <p class="lead">The NALSD round is the defining round of Google SRE interviews. Unlike abstract system design, you work with real physical constraints — bandwidth, IOPS, storage, latency budgets. You must produce a "Bill of Materials" with actual numbers.</p>
-
-    <h3>The NALSD Framework (8 Steps)</h3>
-    <div class="timeline">
-      <div class="step"><h4>1. Clarify Requirements & Constraints</h4><p>Ask: What's the SLO? What's the data volume? What's the latency budget? What's the recovery time objective (RTO)?</p></div>
-      <div class="step"><h4>2. Estimate Load Characteristics</h4><p>QPS, storage growth rate, read/write ratio, peak-to-average ratio. Use back-of-envelope math.</p></div>
-      <div class="step"><h4>3. Choose Architecture Pattern</h4><p>Active-active vs active-passive, sharding strategy, replication model, consistency requirements.</p></div>
-      <div class="step"><h4>4. Capacity Math (Bill of Materials)</h4><p>Calculate: How many servers? How much storage? What network bandwidth? What IOPS per disk?</p></div>
-      <div class="step"><h4>5. Identify Failure Modes</h4><p>Single points of failure, blast radius, cascading failures, split-brain scenarios, data loss windows.</p></div>
-      <div class="step"><h4>6. Design for Degradation</h4><p>What happens at 2x load? At 10x? What do you shed first? How does the system degrade gracefully?</p></div>
-      <div class="step"><h4>7. Observability & Alerting</h4><p>SLIs to measure, burn-rate alerting, dashboards, what gets paged vs. what gets a ticket.</p></div>
-      <div class="step"><h4>8. Operational Concerns</h4><p>Deployment strategy, rollback plan, capacity planning, disaster recovery, cost optimization.</p></div>
-    </div>
+    <p class="lead">The NALSD round is the defining round of Google SRE interviews. You work with real physical constraints — bandwidth, IOPS, storage, latency budgets. You must produce a "Bill of Materials" with actual numbers.</p>
 
     <h3>Back-of-Envelope Numbers You Must Know</h3>
     <div class="tbl-scroll">
@@ -630,107 +1437,103 @@ class TokenBucket:
         <tr><td>HDD Sequential Read</td><td>~200 MB/s</td><td>Backup/restore time estimation</td></tr>
         <tr><td>Network (10GbE)</td><td>~1.2 GB/s</td><td>Cross-region replication bandwidth</td></tr>
         <tr><td>Memory Bandwidth</td><td>~50 GB/s (DDR4)</td><td>In-memory cache throughput</td></tr>
-        <tr><td>1 Million QPS</td><td>~12 requests/ms</td><td>Per-server capacity planning</td></tr>
-        <tr><td>99.9% availability</td><td>~8.7 hours downtime/year</td><td>Error budget calculation</td></tr>
-        <tr><td>99.99% availability</td><td>~52 minutes downtime/year</td><td>Multi-region justification</td></tr>
+        <tr><td>99.9% availability</td><td>~43 min downtime/month</td><td>Error budget calculation</td></tr>
+        <tr><td>99.99% availability</td><td>~4.3 min downtime/month</td><td>Multi-region justification</td></tr>
         <tr><td>Cross-continent RTT</td><td>~100-200ms</td><td>Global load balancing decisions</td></tr>
         <tr><td>Intra-datacenter RTT</td><td>~0.5ms</td><td>Service mesh overhead</td></tr>
-        <tr><td>1 PB storage (HDD)</td><td>~$20,000/month (cloud)</td><td>Cost-aware design decisions</td></tr>
       </tbody>
     </table>
     </div>
 
-    <h3>Common NALSD Questions</h3>
-    <div class="grid two">
-      <div class="card">
-        <h3>Design a Global Metrics Pipeline</h3>
-        <p>Must address: fan-in from millions of hosts, sharding by metric name, backpressure when ingestion exceeds capacity, cardinality explosions, HA ingestion, query latency SLO.</p>
-      </div>
-      <div class="card">
-        <h3>Design Disaster Recovery for 5PB</h3>
-        <p>Must address: RTO/RPO constraints, bandwidth math (can you replicate 5PB in 4 hours?), incremental vs full backup, cost of hot standby vs cold restore.</p>
-      </div>
-      <div class="card">
-        <h3>Design a Feature Flag System</h3>
-        <p>Must address: atomic rollout, blast-radius control (1% → 10% → 100%), auditability, rollback safety, config distribution consistency, staleness tolerance.</p>
-      </div>
-      <div class="card">
-        <h3>90-Day Plan for a Flaky Service</h3>
-        <p>Must address: immediate stabilization (Week 1), SLO definition (Week 2-3), observability gaps (Week 3-4), toil reduction (Week 5-8), systemic fixes (Week 8-12).</p>
-      </div>
-    </div>
-
     <div class="callout warn"><div class="h">NALSD Trap: The Physics Check</div>
-    A candidate designed active-passive DR for 5PB with a 4-hour RTO. The interviewer asked: "What's the bandwidth needed to replicate 5PB in 4 hours?" Answer: 5PB / 4h = 1.25 PB/h = ~2.8 Tbps. That's physically impossible on standard links. The candidate failed for not checking the physics. <strong>Always validate your design against physical limits.</strong></div>
+    Always validate your design against physical limits. 5PB / 4 hours = ~2.8 Tbps — physically impossible on standard links. <strong>Check the math before committing to a design.</strong></div>
   </div>
 </section>
 
-<!-- ============ SECTION 06: TROUBLESHOOTING ============ -->
+<!-- ============ SECTION 09: TROUBLESHOOTING ============ -->
 <section id="troubleshoot">
   <div class="wrap">
-    <span class="eyebrow">Section 06 — Troubleshooting</span>
+    <span class="eyebrow">Section 09 — Troubleshooting</span>
     <h2 class="sec">The Troubleshooting Round</h2>
-    <p class="lead">This round mirrors real incidents. You're given a vague symptom and must systematically narrow down the cause. The #1 rule: MITIGATE FIRST, then diagnose. Interviewers fail candidates who jump to root cause before stabilizing.</p>
+    <p class="lead">This round mirrors real incidents. The #1 rule: MITIGATE FIRST, then diagnose. Interviewers fail candidates who jump to root cause before stabilizing.</p>
 
     <h3>The Troubleshooting Framework</h3>
     <div class="grid two">
-      <div class="card">
-        <h3>Step 1: Assess Impact</h3>
-        <p>How many users affected? Which regions? Is it getting worse? What's the error budget burn rate? This determines urgency and whether to page more people.</p>
+      <div class="card"><h3>Step 1: Assess Impact</h3><p>How many users affected? Which regions? Is it getting worse? What's the error budget burn rate?</p></div>
+      <div class="card"><h3>Step 2: Mitigate</h3><p>Drain traffic? Roll back? Increase capacity? Failover? <strong>Stabilize before diagnosing.</strong></p></div>
+      <div class="card"><h3>Step 3: Hypothesize</h3><p>Form 2-3 hypotheses ranked by likelihood. Test the most likely first.</p></div>
+      <div class="card"><h3>Step 4: Test & Narrow</h3><p>Choose highest-signal, lowest-cost test for each hypothesis. Eliminate systematically.</p></div>
+    </div>
+
+    <h3>Additional Troubleshooting Scenarios</h3>
+
+    <div class="scenario">
+      <h3>Scenario: Cascading Failure After Dependency Timeout</h3>
+      <div class="alert">ALERT: Service A latency 10x normal. Service B (dependency) returned to normal 5 minutes ago.</div>
+      <div class="diagnosis">
+        <h4>What's happening:</h4>
+        <p>Service B had a brief outage. Service A's requests to B timed out, filling A's thread pool. Even after B recovered, A's thread pool is still exhausted because backed-up requests are still being processed.</p>
+<pre><code><span class="cmt"># Diagnosis:</span>
+$ ss -tnp | grep SERVICE_A_PID | wc -l  <span class="cmt"># connection count</span>
+$ curl localhost:8080/metrics | grep thread_pool
+<span class="cmt"># thread_pool_active: 200/200 (saturated!)</span>
+<span class="cmt"># thread_pool_queue: 15000 (backed up!)</span>
+
+<span class="cmt"># Fix: Shed the queued load</span>
+<span class="cmt"># 1. Restart Service A (clears the queue)</span>
+<span class="cmt"># 2. OR: if it has a queue-drop endpoint, trigger it</span>
+
+<span class="cmt"># Prevention: Circuit breaker + request deadline propagation</span>
+<span class="cmt"># If a request has been waiting &gt; its deadline, drop it immediately</span>
+</code></pre>
       </div>
-      <div class="card">
-        <h3>Step 2: Mitigate</h3>
-        <p>Can we drain traffic? Roll back a deploy? Increase capacity? Failover to another region? <strong>Stabilize the patient before diagnosing the disease.</strong></p>
-      </div>
-      <div class="card">
-        <h3>Step 3: Hypothesize</h3>
-        <p>Form 2-3 hypotheses ranked by likelihood. "Given the symptoms, it could be: (1) deploy regression, (2) dependency failure, (3) capacity exhaustion."</p>
-      </div>
-      <div class="card">
-        <h3>Step 4: Test & Narrow</h3>
-        <p>Choose the highest-signal, lowest-cost test for each hypothesis. Eliminate possibilities systematically. Don't scattershot commands.</p>
+      <div class="resolution">
+        <h4>Key Lesson:</h4>
+        <p>This is the "thundering herd" / "retry storm" pattern. Prevention requires: circuit breakers (stop calling failing dependencies), request deadlines (drop requests that have already timed out from the user's perspective), and load shedding (reject new requests when queue depth exceeds threshold).</p>
       </div>
     </div>
 
-    <h3>Classic Troubleshooting Scenarios</h3>
-    <div class="card">
-      <h3>Scenario: "The site is slow. CPU is normal."</h3>
-      <p><strong>Strong answer flow:</strong></p>
-      <p>1. <code>tail -n 200 /var/log/app.log</code> — check for recent errors/timeouts<br>
-      2. <code>ss -s</code> — check connection states (TIME_WAIT accumulation? SYN backlog?)<br>
-      3. <code>iostat -x 1 3</code> — check disk I/O wait (the silent latency killer)<br>
-      4. <code>vmstat 1 5</code> — check for memory pressure (si/so columns)<br>
-      5. Only then form hypotheses: "Based on high await in iostat, I suspect disk I/O contention. Let me check which process is generating the I/O with <code>iotop</code>."</p>
-    </div>
+    <div class="scenario">
+      <h3>Scenario: Gradual Performance Degradation Over Weeks</h3>
+      <div class="alert">ALERT: p50 latency has increased 20% over 3 weeks. No deploys correlate.</div>
+      <div class="diagnosis">
+        <h4>Diagnosis Flow:</h4>
+<pre><code><span class="cmt"># This is NOT an incident — it's a trend. Different approach needed.</span>
 
-    <div class="card">
-      <h3>Scenario: "p99 latency doubled after a deploy"</h3>
-      <p><strong>Strong answer flow:</strong></p>
-      <p>1. <strong>Mitigate:</strong> "First, is this within error budget? If not, I'd recommend immediate rollback while we investigate."<br>
-      2. <strong>Correlate:</strong> "What changed in the deploy? I'd diff the release, check for new dependencies, config changes."<br>
-      3. <strong>Canary analysis:</strong> "If we have canary metrics, compare canary vs baseline latency distribution."<br>
-      4. <strong>Drill down:</strong> "Check if latency increase is uniform or concentrated in specific endpoints/regions."<br>
-      5. <strong>Trace:</strong> "Pull distributed traces for slow requests — where is the time being spent?"</p>
-    </div>
+<span class="cmt"># Step 1: Correlate with growth metrics</span>
+<span class="cmt"># - Has QPS increased? (organic growth)</span>
+<span class="cmt"># - Has data size grown? (larger DB scans)</span>
+<span class="cmt"># - Has cardinality increased? (more unique keys)</span>
 
-    <div class="card">
-      <h3>Scenario: "A service can't reach its database"</h3>
-      <p><strong>Layer-by-layer diagnosis:</strong></p>
-      <p>1. <strong>DNS:</strong> <code>dig db-host.internal</code> — Does it resolve? Is the IP correct?<br>
-      2. <strong>Network:</strong> <code>nc -zv db-host 5432</code> — Can we establish a TCP connection?<br>
-      3. <strong>TLS:</strong> <code>openssl s_client -connect db-host:5432</code> — Certificate valid? Not expired?<br>
-      4. <strong>Auth:</strong> Check connection string, credentials, IAM roles<br>
-      5. <strong>Capacity:</strong> <code>SELECT count(*) FROM pg_stat_activity</code> — Connection pool exhausted?<br>
-      6. <strong>Firewall:</strong> Check security groups, iptables rules, network policies</p>
+<span class="cmt"># Step 2: Check resource utilization trends</span>
+<span class="cmt"># - CPU trending up? → need more capacity</span>
+<span class="cmt"># - Memory trending up? → possible leak or cache growth</span>
+<span class="cmt"># - Disk I/O trending up? → data growth exceeding cache</span>
+
+<span class="cmt"># Step 3: Database-specific checks</span>
+$ SELECT pg_database_size('mydb');  <span class="cmt"># has it grown?</span>
+$ SELECT * FROM pg_stat_user_tables ORDER BY seq_scan DESC;
+<span class="cmt"># Sequential scans increasing = missing indexes on growing tables</span>
+
+<span class="cmt"># Step 4: Check if working set exceeds cache</span>
+<span class="cmt"># If data grew past what fits in memory/cache,</span>
+<span class="cmt"># you'll see cache hit ratio dropping gradually</span>
+$ redis-cli info stats | grep hit_rate
+</code></pre>
+      </div>
+      <div class="resolution">
+        <h4>Key Insight:</h4>
+        <p>Gradual degradation without deploys is almost always: data growth exceeding cache capacity, missing indexes on growing tables, or organic traffic growth approaching capacity limits. The fix is capacity planning — not firefighting.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============ SECTION 07: QUIZ ============ -->
+<!-- ============ SECTION 10: QUIZ ============ -->
 <section id="quiz">
   <div class="wrap">
-    <span class="eyebrow">Section 07 — Test Yourself</span>
-    <h2 class="sec">Rapid-Fire Quiz</h2>
+    <span class="eyebrow">Section 10 — Test Yourself</span>
+    <h2 class="sec">Rapid-Fire Quiz (25 Questions)</h2>
     <p class="lead">Test your knowledge across all interview dimensions. Each question mirrors real Google SRE interview patterns.</p>
 
     <div class="quiz" data-correct="2">
@@ -739,283 +1542,482 @@ class TokenBucket:
       <button class="opt">The process is waiting for a signal from another process</button>
       <button class="opt">The process is waiting on I/O that cannot be interrupted (even by SIGKILL)</button>
       <button class="opt">The process is in a deadlock with another process</button>
-      <div class="explain">D-state means the process is in uninterruptible sleep, typically waiting on disk I/O or an NFS mount. It cannot be killed because the kernel needs the I/O operation to complete to maintain filesystem consistency. Many D-state processes usually indicate a storage or network filesystem issue.</div>
+      <div class="explain">D-state means the process is in uninterruptible sleep, typically waiting on disk I/O or an NFS mount. It cannot be killed because the kernel needs the I/O operation to complete to maintain filesystem consistency.</div>
     </div>
 
     <div class="quiz" data-correct="1">
-      <div class="q">Q2: You're writing a Python script to process a 50GB log file. Which approach is correct for memory efficiency?</div>
-      <button class="opt"><code>data = open('log.txt').read(); lines = data.split('\n')</code></button>
+      <div class="q">Q2: Which approach is correct for processing a 50GB log file with bounded memory?</div>
+      <button class="opt"><code>data = open('log.txt').read()</code></button>
       <button class="opt"><code>with open('log.txt') as f: for line in f:</code></button>
       <button class="opt"><code>lines = open('log.txt').readlines()</code></button>
-      <button class="opt"><code>import mmap; data = mmap.mmap(f.fileno(), 0)</code></button>
-      <div class="explain">Using <code>for line in f</code> treats the file object as an iterator, reading one line at a time with O(1) memory usage regardless of file size. The other options either load the entire file into memory (.read(), .readlines()) or use mmap which maps the entire file into virtual address space (works but isn't the idiomatic Python approach for line-by-line processing).</div>
+      <button class="opt"><code>data = pathlib.Path('log.txt').read_text()</code></button>
+      <div class="explain">Using <code>for line in f</code> treats the file as an iterator, reading one line at a time with O(1) memory. All other options load the entire file into memory.</div>
     </div>
 
     <div class="quiz" data-correct="0">
-      <div class="q">Q3: Your service has a 99.9% availability SLO. How much downtime does that allow per month?</div>
-      <button class="opt">~43 minutes per month</button>
-      <button class="opt">~4.3 minutes per month</button>
-      <button class="opt">~8.7 hours per month</button>
-      <button class="opt">~7.2 minutes per month</button>
-      <div class="explain">99.9% availability = 0.1% downtime. 30 days × 24 hours × 60 minutes = 43,200 minutes/month. 0.1% of 43,200 = 43.2 minutes. This is your error budget — once consumed, you should freeze deployments and focus on reliability.</div>
+      <div class="q">Q3: 99.9% availability SLO — how much downtime per month?</div>
+      <button class="opt">~43 minutes</button>
+      <button class="opt">~4.3 minutes</button>
+      <button class="opt">~8.7 hours</button>
+      <button class="opt">~7.2 minutes</button>
+      <div class="explain">99.9% = 0.1% downtime. 30 days × 24h × 60min = 43,200 min. 0.1% of 43,200 = 43.2 minutes. This is your monthly error budget.</div>
     </div>
 
     <div class="quiz" data-correct="3">
-      <div class="q">Q4: In a Google SRE troubleshooting interview, what should you do FIRST when told "the site is down"?</div>
-      <button class="opt">Start checking logs for error messages</button>
-      <button class="opt">Ask what was the last deployment</button>
-      <button class="opt">Run a full system diagnostic (top, vmstat, iostat)</button>
+      <div class="q">Q4: What should you do FIRST when told "the site is down" in a troubleshooting interview?</div>
+      <button class="opt">Check logs for errors</button>
+      <button class="opt">Ask about the last deployment</button>
+      <button class="opt">Run top and vmstat</button>
       <button class="opt">Assess impact scope and attempt mitigation before diagnosis</button>
-      <div class="explain">The "Mitigation-First" mindset is the #1 signal Google evaluates. Before debugging, assess: How many users are affected? Can we mitigate (drain traffic, rollback, failover)? Stabilize the patient before diagnosing the disease. Jumping straight to root-cause analysis is a common failure pattern.</div>
+      <div class="explain">The "Mitigation-First" mindset is the #1 signal. Assess impact, then mitigate (drain, rollback, failover). Only after stabilization do you diagnose root cause.</div>
     </div>
 
     <div class="quiz" data-correct="2">
-      <div class="q">Q5: What distinguishes a "process question" from an "experience question" in the Googleyness round?</div>
-      <button class="opt">Process questions are about technical processes; experience questions are about soft skills</button>
-      <button class="opt">Process questions require longer answers; experience questions are brief</button>
-      <button class="opt">Process questions ask "how do you approach X" (wanting your framework); experience questions ask "tell me about a time" (wanting a specific story)</button>
-      <button class="opt">There is no difference; they should be answered the same way</button>
-      <div class="explain">This is the most common mistake in Googleyness rounds. Experience questions want depth in ONE specific story (use STAR). Process questions want your FRAMEWORK for a category of situations — start with principles/approach, then briefly illustrate with an example. Answering both with just a story leaves signal on the table.</div>
+      <div class="q">Q5: What distinguishes "process" from "experience" questions in the Googleyness round?</div>
+      <button class="opt">Process questions are about technical processes</button>
+      <button class="opt">Process questions require longer answers</button>
+      <button class="opt">Process questions want your framework; experience questions want a specific story</button>
+      <button class="opt">There is no difference</button>
+      <div class="explain">Experience: "Tell me about a time..." → deep STAR story. Process: "How do you approach..." → framework first, then brief example. Answering both with just a story leaves signal on the table.</div>
     </div>
 
     <div class="quiz" data-correct="1">
-      <div class="q">Q6: You see high load average but CPU utilization is low. What's the most likely cause?</div>
-      <button class="opt">A memory leak causing excessive garbage collection</button>
-      <button class="opt">Many processes in D-state (uninterruptible I/O wait)</button>
+      <div class="q">Q6: High load average but low CPU utilization. Most likely cause?</div>
+      <button class="opt">Memory leak causing GC</button>
+      <button class="opt">Many processes in D-state (I/O wait)</button>
       <button class="opt">Too many zombie processes</button>
-      <button class="opt">Network packet loss causing TCP retransmissions</button>
-      <div class="explain">Linux load average counts ALL processes in the run queue, including those in D-state (waiting on I/O). If many processes are blocked on disk I/O or NFS, load average rises without CPU consumption. Check with <code>vmstat</code> (wa column) or <code>cat /proc/loadavg</code> and compare with <code>mpstat</code> CPU idle%.</div>
+      <button class="opt">Network packet loss</button>
+      <div class="explain">Linux load average counts ALL processes in the run queue, including D-state. Many processes blocked on I/O inflate load average without consuming CPU. Verify with vmstat (wa column).</div>
     </div>
 
     <div class="quiz" data-correct="0">
-      <div class="q">Q7: In NALSD, you need to replicate 5 PB of data with a 4-hour RTO. What minimum bandwidth is required?</div>
+      <div class="q">Q7: Replicate 5 PB with 4-hour RTO. Minimum bandwidth needed?</div>
       <button class="opt">~2.8 Tbps — physically impossible on standard links</button>
-      <button class="opt">~280 Gbps — achievable with multiple 100GbE links</button>
-      <button class="opt">~28 Gbps — a single 40GbE link suffices</button>
+      <button class="opt">~280 Gbps — achievable with multiple 100GbE</button>
+      <button class="opt">~28 Gbps — a single 40GbE suffices</button>
       <button class="opt">~2.8 Gbps — standard enterprise bandwidth</button>
-      <div class="explain">5 PB = 5,000 TB = 40,000 Tb. Divide by 4 hours = 10,000 Tb/h = ~2,778 Gbps ≈ 2.8 Tbps. This exceeds what's physically achievable on standard links, which means the design must use incremental replication, pre-staged warm standby, or accept a longer RTO. This is the "physics check" that catches candidates in NALSD.</div>
+      <div class="explain">5 PB = 40,000 Tb. 40,000 Tb / 4h = 10,000 Tb/h ≈ 2.8 Tbps. This exceeds standard links — the design must use incremental replication or accept longer RTO.</div>
     </div>
 
     <div class="quiz" data-correct="2">
-      <div class="q">Q8: What is the correct SRE approach to "toil"?</div>
-      <button class="opt">Toil is unavoidable operational work that SREs must accept</button>
-      <button class="opt">Toil is any work that takes more than 30 minutes</button>
-      <button class="opt">Toil is manual, repetitive, automatable work that scales linearly with service growth — and should be systematically eliminated</button>
-      <button class="opt">Toil is work done by junior engineers that seniors should delegate</button>
-      <div class="explain">Google defines toil as work that is manual, repetitive, automatable, tactical, without enduring value, and scales linearly with service growth. The SRE charter targets keeping toil below 50% of an SRE's time. The goal is to automate toil away, freeing engineers for reliability engineering work.</div>
+      <div class="q">Q8: What is "toil" in SRE?</div>
+      <button class="opt">Any operational work</button>
+      <button class="opt">Work that takes more than 30 minutes</button>
+      <button class="opt">Manual, repetitive, automatable work that scales linearly with service growth</button>
+      <button class="opt">Work done by junior engineers</button>
+      <div class="explain">Google defines toil as manual, repetitive, automatable, tactical, without enduring value, and scaling linearly with growth. Target: keep below 50% of SRE time.</div>
     </div>
 
     <div class="quiz" data-correct="3">
-      <div class="q">Q9: Which concurrency pattern is most appropriate for checking health of 100,000 servers with a rate limit?</div>
-      <button class="opt">Sequential loop with sleep() between requests</button>
-      <button class="opt">Spawn 100,000 threads, one per server</button>
-      <button class="opt">multiprocessing.Pool with 100,000 workers</button>
-      <button class="opt">asyncio with a Semaphore for concurrency + token bucket for rate limiting</button>
-      <div class="explain">asyncio is ideal for I/O-bound concurrent work (network requests). A Semaphore limits concurrent in-flight requests (e.g., 50-100 at a time), while a separate token bucket enforces the rate limit (requests/second). This gives you high throughput with bounded resource usage. Spawning 100K threads would exhaust OS resources.</div>
+      <div class="q">Q9: Best concurrency pattern for checking 100K servers with rate limiting?</div>
+      <button class="opt">Sequential loop with sleep()</button>
+      <button class="opt">Spawn 100,000 threads</button>
+      <button class="opt">multiprocessing.Pool with 100K workers</button>
+      <button class="opt">asyncio with Semaphore + token bucket</button>
+      <div class="explain">asyncio is ideal for I/O-bound work. Semaphore limits concurrent requests, token bucket enforces rate. 100K threads would exhaust OS resources.</div>
     </div>
 
     <div class="quiz" data-correct="1">
-      <div class="q">Q10: In the behavioral round, what does "blamelessness" mean for SRE stories?</div>
-      <button class="opt">Never mention any mistakes or failures</button>
-      <button class="opt">Frame failures as system failures, focus on what the system allowed to happen, and describe what you changed to prevent recurrence</button>
-      <button class="opt">Always blame the process, never the people who designed it</button>
-      <button class="opt">Avoid discussing outages entirely in behavioral interviews</button>
-      <div class="explain">Blameless culture is core to Google SRE. In interviews, frame outages as system failures: "The deployment pipeline lacked a canary stage" not "Bob pushed bad code." Focus on contributing factors, what the system allowed to happen, and systemic changes you drove to prevent recurrence. This signals operational maturity.</div>
+      <div class="q">Q10: What does "blamelessness" mean in SRE behavioral stories?</div>
+      <button class="opt">Never mention failures</button>
+      <button class="opt">Frame failures as system failures and focus on systemic prevention</button>
+      <button class="opt">Always blame the process</button>
+      <button class="opt">Avoid discussing outages</button>
+      <div class="explain">Frame outages as system failures: "The pipeline lacked a canary stage" not "Bob pushed bad code." Focus on what the system allowed to happen and what you changed to prevent recurrence.</div>
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="q">Q11: <code>df -h</code> shows 40% free but you get "No space left on device". What's wrong?</div>
+      <button class="opt">Filesystem corruption</button>
+      <button class="opt">Disk quota exceeded</button>
+      <button class="opt">Inode exhaustion — check with <code>df -i</code></button>
+      <button class="opt">Kernel bug</button>
+      <div class="explain">Each file consumes one inode regardless of size. Millions of tiny files can exhaust inodes while leaving block space available. Always check both <code>df -h</code> AND <code>df -i</code>.</div>
+    </div>
+
+    <div class="quiz" data-correct="0">
+      <div class="q">Q12: What is the purpose of exponential backoff with FULL jitter in retry logic?</div>
+      <button class="opt">Decorrelate retry storms across clients to prevent thundering herd</button>
+      <button class="opt">Make retries happen faster</button>
+      <button class="opt">Ensure retries happen at exactly the same intervals</button>
+      <button class="opt">Reduce the total number of retries needed</button>
+      <div class="explain">Full jitter (random between 0 and calculated delay) decorrelates retries across multiple clients. Without jitter, all clients retry at the same time, creating a "thundering herd" that overwhelms the recovering service.</div>
+    </div>
+
+    <div class="quiz" data-correct="3">
+      <div class="q">Q13: You see 40% CPU steal time (%st) in top. What does this indicate?</div>
+      <button class="opt">Your process is stealing CPU from other processes</button>
+      <button class="opt">The CPU is overheating and throttling</button>
+      <button class="opt">A kernel bug is consuming CPU</button>
+      <button class="opt">The hypervisor is scheduling other VMs on your physical CPU cores</button>
+      <div class="explain">CPU steal time means the hypervisor took CPU time away from your VM to give to other VMs on the same physical host. It's the "noisy neighbor" problem — you can't fix it from inside the VM. Solution: dedicated instances or migration.</div>
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="q">Q14: A circuit breaker is in "OPEN" state. What happens to incoming requests?</div>
+      <button class="opt">They are queued until the dependency recovers</button>
+      <button class="opt">They fail immediately without calling the dependency</button>
+      <button class="opt">They are retried with exponential backoff</button>
+      <button class="opt">They are routed to a backup service</button>
+      <div class="explain">When a circuit breaker is OPEN, all requests fail immediately (fast-fail) without attempting to call the failing dependency. This prevents resource exhaustion from timeouts and gives the dependency time to recover. After a cooldown period, it transitions to HALF-OPEN to test recovery.</div>
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="q">Q15: Why does <code>tail -f</code> need to check the file's inode number?</div>
+      <button class="opt">To verify file permissions haven't changed</button>
+      <button class="opt">To calculate the file's checksum</button>
+      <button class="opt">To detect log rotation (new file created with same name but different inode)</button>
+      <button class="opt">To determine the file's encoding</button>
+      <div class="explain">When logrotate rotates a file, it typically renames the old file and creates a new one at the same path. The new file has a different inode number. By checking the inode, tail -f detects this rotation and reopens the new file. Without this check, it would keep reading the old (renamed) file.</div>
+    </div>
+
+    <div class="quiz" data-correct="0">
+      <div class="q">Q16: What is PSI (Pressure Stall Information) in Linux?</div>
+      <button class="opt">A kernel metric showing what percentage of time tasks are stalled waiting for CPU, memory, or I/O</button>
+      <button class="opt">A security feature that prevents privilege escalation</button>
+      <button class="opt">A network protocol for measuring packet loss</button>
+      <button class="opt">A filesystem integrity checking tool</button>
+      <div class="explain">PSI (/proc/pressure/) quantifies resource contention. It shows "some" (at least one task stalled) and "full" (ALL tasks stalled) percentages for CPU, memory, and I/O. It's more actionable than load average because it directly measures impact on task execution.</div>
+    </div>
+
+    <div class="quiz" data-correct="3">
+      <div class="q">Q17: p99 latency spiked but p50 is unchanged. Which is LEAST likely the cause?</div>
+      <button class="opt">GC pauses</button>
+      <button class="opt">DNS resolution timeouts</button>
+      <button class="opt">Connection pool exhaustion</button>
+      <button class="opt">General CPU overload</button>
+      <div class="explain">General CPU overload would affect ALL requests, increasing both p50 and p99. The "p99 spike with normal p50" pattern indicates a bimodal distribution — most requests are fine, a few are very slow. This points to intermittent issues like GC pauses, DNS timeouts, or pool exhaustion that only affect a subset of requests.</div>
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="q">Q18: What does <code>net.ipv4.tcp_tw_reuse=1</code> do?</div>
+      <button class="opt">Immediately destroys all TIME_WAIT connections</button>
+      <button class="opt">Allows reusing TIME_WAIT sockets for new outbound connections to the same destination</button>
+      <button class="opt">Prevents new TCP connections from being created</button>
+      <button class="opt">Reduces the TIME_WAIT timeout from 60s to 0s</button>
+      <div class="explain">tcp_tw_reuse allows the kernel to reuse a socket in TIME_WAIT state for a new outbound connection to the same IP:port, using TCP timestamps to ensure safety. It's safe for clients. Note: tcp_tw_recycle (now removed) was dangerous and should never be used.</div>
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="q">Q19: What's the key advantage of eBPF over strace for production tracing?</div>
+      <button class="opt">eBPF can trace more syscall types</button>
+      <button class="opt">eBPF provides prettier output</button>
+      <button class="opt">eBPF has near-zero overhead vs strace's 2-5x performance penalty</button>
+      <button class="opt">eBPF doesn't require root access</button>
+      <div class="explain">strace uses ptrace() which context-switches on every syscall, causing 2-5x overhead. eBPF programs run inside the kernel with JIT compilation and near-zero overhead. This makes eBPF safe for production tracing, while strace should be a last resort.</div>
+    </div>
+
+    <div class="quiz" data-correct="0">
+      <div class="q">Q20: In a connection pool, what should happen when a connection throws an exception?</div>
+      <button class="opt">Close and discard the connection — don't return it to the pool</button>
+      <button class="opt">Return it to the pool for reuse</button>
+      <button class="opt">Retry the operation on the same connection</button>
+      <button class="opt">Close all connections in the pool</button>
+      <div class="explain">A connection that threw an exception may be in an inconsistent state (partial response, broken protocol state). It should be closed and discarded, not returned to the pool. The pool will create a fresh connection when needed. Returning broken connections causes cascading errors for subsequent users of that connection.</div>
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="q">Q21: What does <code>%util</code> in iostat mean for NVMe drives?</div>
+      <button class="opt">The percentage of the drive's IOPS capacity being used</button>
+      <button class="opt">Almost nothing — it's misleading because NVMe handles thousands of parallel requests</button>
+      <button class="opt">The percentage of drive lifespan remaining</button>
+      <button class="opt">The percentage of write amplification</button>
+      <div class="explain">%util measures the percentage of time at least one I/O was in progress. For single-queue devices (HDD), 100% = saturated. But NVMe drives have deep parallel queues — they can be at 100% util while handling 10x more IOPS easily. For NVMe, focus on await and queue depth instead.</div>
+    </div>
+
+    <div class="quiz" data-correct="3">
+      <div class="q">Q22: A service has CLOSE_WAIT connections accumulating. Where is the bug?</div>
+      <button class="opt">In the remote service (not sending FIN)</button>
+      <button class="opt">In the network (dropping packets)</button>
+      <button class="opt">In the kernel (TCP stack bug)</button>
+      <button class="opt">In the local application (not calling close() after remote closed)</button>
+      <div class="explain">CLOSE_WAIT means: the remote side sent FIN (closed their end), but the local application hasn't called close() yet. This is always a local application bug — typically a missing close() in an error handling path, or a connection leak where the application lost the reference to the socket.</div>
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="q">Q23: What is the correct way to handle SIGTERM in a production service?</div>
+      <button class="opt">Ignore it and keep running</button>
+      <button class="opt">Call sys.exit(0) immediately</button>
+      <button class="opt">Stop accepting new work, finish in-flight requests, flush buffers, then exit</button>
+      <button class="opt">Send SIGKILL to all child processes</button>
+      <div class="explain">Graceful shutdown: stop accepting new work (drain), complete in-flight requests (within a timeout), flush metrics/logs, close connections cleanly, then exit. Kubernetes sends SIGTERM 30s before SIGKILL — you have 30s to shut down gracefully.</div>
+    </div>
+
+    <div class="quiz" data-correct="0">
+      <div class="q">Q24: What causes "conntrack table full" errors in Kubernetes?</div>
+      <button class="opt">Too many short-lived connections (especially DNS/UDP) filling the connection tracking table</button>
+      <button class="opt">Too many pods running on the node</button>
+      <button class="opt">Insufficient disk space for connection logs</button>
+      <button class="opt">Network interface card hardware failure</button>
+      <div class="explain">Linux conntrack tracks every connection for NAT/firewall purposes. In Kubernetes, every DNS query (UDP), service connection, and pod-to-pod communication creates a conntrack entry. High-churn workloads (many short-lived connections) can exhaust the table. Fix: increase nf_conntrack_max or reduce connection churn.</div>
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="
+q">Q25: What does the OOM killer use to select which process to kill?</div>
+      <button class="opt">The process with the highest CPU usage</button>
+      <button class="opt">The oldest process on the system</button>
+      <button class="opt">The process with the highest oom_score (based on RSS and oom_score_adj)</button>
+      <button class="opt">A random process</button>
+      <div class="explain">The OOM killer calculates oom_score (0-1000) based primarily on RSS (memory usage) and the admin-configurable oom_score_adj (-1000 to +1000). The process with the highest score gets killed. Set oom_score_adj=-1000 to protect critical processes.</div>
     </div>
   </div>
 </section>
 
-<!-- ============ SECTION 08: FLASHCARDS ============ -->
+<!-- ============ SECTION 11: FLASHCARDS ============ -->
 <section id="flash">
   <div class="wrap">
-    <span class="eyebrow">Section 08 — Spaced Repetition</span>
+    <span class="eyebrow">Section 11 — Spaced Repetition</span>
     <h2 class="sec">Flashcards: Tap to Flip</h2>
     <p class="lead">Core SRE vocabulary and concepts you must know cold. Tap any card to reveal the definition.</p>
     <div class="flip-grid">
       <button class="flip"><div class="flip-inner">
         <div class="flip-face flip-front">SLI<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">Service Level Indicator — a quantitative measure of service behavior (e.g., request latency, error rate, throughput). The raw measurement that feeds into SLOs.</div>
+        <div class="flip-face flip-back">Service Level Indicator — a quantitative measure of service behavior (e.g., request latency, error rate). The raw measurement feeding SLOs.</div>
       </div></button>
       <button class="flip"><div class="flip-inner">
         <div class="flip-face flip-front">SLO<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">Service Level Objective — a target value for an SLI (e.g., "99.9% of requests complete in <200ms"). The reliability target that determines your error budget.</div>
+        <div class="flip-face flip-back">Service Level Objective — a target value for an SLI (e.g., "99.9% of requests < 200ms"). Determines your error budget.</div>
       </div></button>
       <button class="flip"><div class="flip-inner">
         <div class="flip-face flip-front">Error Budget<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">The allowed amount of unreliability (1 - SLO). E.g., 99.9% SLO = 0.1% error budget = ~43 min/month of allowed downtime. When exhausted, freeze changes and focus on reliability.</div>
+        <div class="flip-face flip-back">The allowed unreliability (1 - SLO). 99.9% SLO = 0.1% budget = ~43 min/month. When exhausted, freeze changes.</div>
       </div></button>
       <button class="flip"><div class="flip-inner">
         <div class="flip-face flip-front">Toil<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">Manual, repetitive, automatable operational work that scales linearly with service growth and provides no enduring value. Google targets <50% toil for SREs.</div>
+        <div class="flip-face flip-back">Manual, repetitive, automatable work that scales linearly with service growth. Google targets < 50% toil for SREs.</div>
       </div></button>
       <button class="flip"><div class="flip-inner">
         <div class="flip-face flip-front">NALSD<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">Non-Abstract Large System Design — Google's SRE-specific system design approach that focuses on physical constraints (IOPS, bandwidth, latency), failure modes, and capacity math rather than abstract architecture.</div>
+        <div class="flip-face flip-back">Non-Abstract Large System Design — Google's SRE system design focusing on physical constraints, failure modes, and capacity math.</div>
       </div></button>
       <button class="flip"><div class="flip-inner">
         <div class="flip-face flip-front">Burn Rate<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">How fast you're consuming your error budget. A burn rate of 1x means you'll exhaust the budget exactly at period end. >1x means you'll run out early. Used for alerting thresholds.</div>
+        <div class="flip-face flip-back">How fast you consume error budget. 1x = exhaust at period end. > 1x = run out early. Used for alerting thresholds.</div>
       </div></button>
       <button class="flip"><div class="flip-inner">
         <div class="flip-face flip-front">Blast Radius<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">The scope of impact when something fails. Good design minimizes blast radius through isolation (regions, cells, shards). A key NALSD concept for failure mode analysis.</div>
+        <div class="flip-face flip-back">Scope of impact when something fails. Minimize through isolation (regions, cells, shards). Key NALSD concept.</div>
       </div></button>
       <button class="flip"><div class="flip-inner">
         <div class="flip-face flip-front">D-State<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">Uninterruptible Sleep — a Linux process state where the process is waiting on I/O and cannot be killed. Many D-state processes indicate storage/NFS issues and inflate load average.</div>
+        <div class="flip-face flip-back">Uninterruptible Sleep — process waiting on I/O, cannot be killed. Many D-state processes = storage/NFS issue.</div>
       </div></button>
       <button class="flip"><div class="flip-inner">
         <div class="flip-face flip-front">CFS<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">Completely Fair Scheduler — Linux's default CPU scheduler. Uses a red-black tree sorted by virtual runtime. Processes with less CPU time get priority. Nice values adjust weight.</div>
+        <div class="flip-face flip-back">Completely Fair Scheduler — Linux default CPU scheduler. Red-black tree sorted by virtual runtime. Less CPU time = higher priority.</div>
       </div></button>
       <button class="flip"><div class="flip-inner">
-        <div class="flip-face flip-front">Cgroups<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">Control Groups — kernel feature for hierarchical resource limiting (CPU, memory, I/O, PIDs). Foundation of container isolation. Prevents noisy neighbor problems.</div>
+        <div class="flip-face flip-front">Cgroups v2<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Hierarchical resource control (CPU, memory, I/O, PIDs). Foundation of containers. Prevents noisy neighbors.</div>
       </div></button>
       <button class="flip"><div class="flip-inner">
         <div class="flip-face flip-front">eBPF<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">Extended Berkeley Packet Filter — allows running sandboxed programs in the kernel without modifying kernel source. Used for observability, networking, and security tracing in modern SRE.</div>
-      </div></button>
-      <button class="flip"><div class="flip-inner">
-        <div class="flip-face flip-front">Blameless Postmortem<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">An incident review focused on contributing factors and systemic fixes, not individual blame. Documents timeline, impact, root cause, and action items. Core to Google's SRE culture.</div>
+        <div class="flip-face flip-back">Run sandboxed programs in kernel without modification. Near-zero overhead tracing, networking, security. The modern SRE superpower.</div>
       </div></button>
       <button class="flip"><div class="flip-inner">
         <div class="flip-face flip-front">Token Bucket<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">A rate limiting algorithm. Tokens are added at a fixed rate. Each request consumes a token. Burst capacity = bucket size. When empty, requests are rejected or queued.</div>
+        <div class="flip-face flip-back">Rate limiting algorithm. Tokens added at fixed rate, consumed per request. Bucket size = burst capacity. Empty = reject.</div>
       </div></button>
       <button class="flip"><div class="flip-inner">
         <div class="flip-face flip-front">Backpressure<span class="hint">tap to flip</span></div>
-        <div class="flip-face flip-back">A mechanism where a downstream system signals upstream to slow down when overwhelmed. Prevents cascading failures. Implemented via queue limits, HTTP 429, or flow control.</div>
+        <div class="flip-face flip-back">Downstream signals upstream to slow down when overwhelmed. Prevents cascading failures. Via queue limits, HTTP 429, flow control.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Circuit Breaker<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">States: CLOSED (normal) → OPEN (failing, fast-fail all) → HALF-OPEN (testing recovery). Prevents resource exhaustion from timeouts.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Page Cache<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Kernel caches file data in RAM. "Used" memory ≠ unavailable. Clean pages are reclaimable under pressure. Check MemAvailable, not MemFree.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">TIME_WAIT<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">TCP state after close. Lasts 2×MSL (60s). Prevents old packets from being accepted. Can cause port exhaustion. Fix: connection pooling.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">CLOSE_WAIT<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">TCP state: remote closed, local hasn't. Always a local application bug — missing close() call. Accumulation = connection leak.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">PSI<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Pressure Stall Information (/proc/pressure/). Shows % time tasks stalled on CPU, memory, I/O. More actionable than load average.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Copy-on-Write<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">After fork(), parent and child share memory pages. Pages are only copied when one process writes. Makes fork() fast and memory-efficient.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Conntrack<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Kernel connection tracking for NAT/firewall. Every connection = one entry. Table full = dropped packets. Critical in Kubernetes.</div>
       </div></button>
     </div>
   </div>
 </section>
 
-<!-- ============ SECTION 09: MOCK INTERVIEW ============ -->
+<!-- ============ SECTION 12: MOCK INTERVIEW ============ -->
 <section id="mock">
   <div class="wrap">
-    <span class="eyebrow">Section 09 — Dress Rehearsal</span>
+    <span class="eyebrow">Section 12 — Dress Rehearsal</span>
     <h2 class="sec">Mock Interview: Model Answers</h2>
-    <p class="lead">Practice answering these out loud. Click each question to reveal a model answer written to be spoken naturally. Cover both coding and behavioral rounds.</p>
+    <p class="lead">Practice answering these out loud. Click each question to reveal a model answer. Covers coding, Linux, behavioral, and troubleshooting rounds.</p>
 
-    <h3>Coding Round Mock Questions</h3>
+    <h3>Coding Round</h3>
 
-    <div class="mock"><div class="qq">How would you approach parsing a 50GB log file with a 512MB memory limit? <span class="tw">+</span></div>
-      <div class="aa"><p>"I'd treat the file as a stream rather than loading it into memory. In Python, I'd open the file and iterate line by line using a for loop over the file object — this uses the file as an iterator with O(1) memory per line. For the aggregation, I'd use a Counter or defaultdict to accumulate results, which stays bounded by the number of unique keys, not the file size. If even the aggregation could grow unbounded — say millions of unique endpoints — I'd use a heap to maintain only the top-N results. I'd also add error handling for malformed lines and use buffered I/O for performance. The key insight is separating the streaming read from the bounded aggregation."</p></div></div>
+    <div class="mock"><div class="qq">How would you parse a 50GB log file with 512MB memory limit? <span class="tw">+</span></div>
+      <div class="aa"><p>"I'd treat the file as a stream. In Python, iterating over a file object reads one line at a time with O(1) memory. For aggregation, I'd use a Counter bounded by unique keys, not file size. For top-N results, I'd use heapq.nlargest which is O(n log k). I'd add error handling for malformed lines — skip them with a warning rather than crashing. I'd also set a larger buffer size for I/O performance. The key insight is separating the streaming read from the bounded aggregation."</p></div></div>
 
-    <div class="mock"><div class="qq">Implement a rate limiter. Walk me through your design choices. <span class="tw">+</span></div>
-      <div class="aa"><p>"I'd implement a token bucket because it naturally handles burst traffic while enforcing a long-term rate. The bucket has two parameters: rate (tokens per second) and burst (maximum tokens). Tokens refill continuously at the rate, and each request consumes one token. If the bucket is empty, the request is rejected. For thread safety, I'd use a lock around the refill-and-consume operation. The refill is lazy — I calculate elapsed time since last access and add proportional tokens, capped at burst size. This avoids needing a background refill thread. The alternative is a sliding window counter, which is simpler but doesn't handle bursts as gracefully."</p></div></div>
+    <div class="mock"><div class="qq">Implement a rate limiter. Walk me through your design. <span class="tw">+</span></div>
+      <div class="aa"><p>"I'd use a token bucket because it handles burst traffic naturally. Two parameters: rate (tokens/second) and burst (max tokens). Tokens refill lazily — on each acquire(), I calculate elapsed time and add proportional tokens capped at burst. This avoids a background thread. For thread safety, I'd wrap refill-and-consume in a lock. The acquire() method returns True/False for non-blocking use, and wait() blocks until tokens are available. The alternative is a sliding window counter — simpler but doesn't handle bursts as gracefully."</p></div></div>
 
-    <div class="mock"><div class="qq">You need to check health of 100,000 servers. How do you structure this? <span class="tw">+</span></div>
-      <div class="aa"><p>"This is an I/O-bound problem, so I'd use asyncio rather than threads or multiprocessing. I'd create an async function that hits each server's health endpoint with a strict timeout — say 5 seconds. To avoid overwhelming the network or target servers, I'd use two controls: a Semaphore limiting concurrent in-flight requests to maybe 100, and a separate token bucket enforcing the requests-per-second rate limit. I'd collect results into a list of dataclass objects with host, status, latency, and any error message. Partial failures are expected — a timeout or connection error for one host shouldn't affect others. Finally, I'd aggregate results: how many healthy, how many timed out, how many errored, and flag any hosts with latency above a threshold."</p></div></div>
+    <div class="mock"><div class="qq">Write a script that implements tail -f with log rotation support. <span class="tw">+</span></div>
+      <div class="aa"><p>"I'd open the file, seek to the end, then enter a polling loop. On each iteration, I try readline(). If there's data, yield it. If not, I check for two conditions: rotation and truncation. For rotation, I compare the current file's inode (via os.stat) against the inode of my open file descriptor (via os.fstat). If they differ, the file was rotated — I close and reopen. For truncation, I check if the file size is less than my current position — if so, seek to 0. This mirrors how the real tail -F works. I'd use a configurable poll interval, defaulting to 100ms."</p></div></div>
 
-    <h3>Behavioral Round Mock Questions</h3>
+    <div class="mock"><div class="qq">Design a connection pool with health checking. What are the key considerations? <span class="tw">+</span></div>
+      <div class="aa"><p>"The pool needs four key behaviors. First, bounded size — a max_size parameter prevents resource exhaustion. Second, health checking — a background thread periodically tests idle connections and evicts unhealthy ones. Third, safe checkout/return — I'd use a context manager so connections are always returned even on exceptions. Critically, if a connection throws an exception during use, I close and discard it rather than returning it to the pool — it might be in an inconsistent state. Fourth, idle timeout — connections unused for too long get evicted because the server may have closed them. I'd use a queue internally for thread-safe FIFO access."</p></div></div>
+
+    <div class="mock"><div class="qq">How would you detect anomalies in a stream of events from millions of hosts? <span class="tw">+</span></div>
+      <div class="aa"><p>"I'd use a sliding window counter per host, implemented with a deque of time-bucketed counts. Each bucket represents one second, and the deque holds 300 buckets for a 5-minute window. When an event arrives, I advance the time, increment the current bucket, and compute the rate. For fleet-wide comparison, I'd maintain a global sliding window for the average rate. An anomaly is when a host's rate exceeds 3x the fleet average. The memory is bounded: one deque per host with fixed-size buckets. For millions of hosts, I might use approximate data structures like Count-Min Sketch if exact counts aren't needed."</p></div></div>
+
+    <h3>Linux Internals</h3>
+
+    <div class="mock"><div class="qq">Explain what happens in the kernel when you run <code>ls</code> in a terminal. <span class="tw">+</span></div>
+      <div class="aa"><p>"The shell calls fork() to create a child process — this uses copy-on-write so it's fast, no memory is actually copied yet. The child then calls execve('/bin/ls', ...) which replaces the process image: the kernel loads the ELF binary, sets up the new virtual address space, maps shared libraries via the dynamic linker, and jumps to the entry point. ls then calls opendir() which becomes a getdents64 syscall — the kernel reads directory entries from the filesystem's inode. For each entry, ls may call stat() to get metadata. The results are written to stdout via write() syscalls. Finally, ls calls exit(), the kernel cleans up resources, and sends SIGCHLD to the parent shell, which calls wait() to reap the child."</p></div></div>
+
+    <div class="mock"><div class="qq">A service is running in a container and getting OOM-killed. How do you investigate? <span class="tw">+</span></div>
+      <div class="aa"><p>"First, I'd check dmesg for the OOM message — it tells me which cgroup triggered the kill and the memory state at the time. Then I'd check the cgroup's memory limit: cat /sys/fs/cgroup/memory/docker/CONTAINER_ID/memory.limit_in_bytes. I'd compare this against the actual usage over time using memory.usage_in_bytes. To understand what's consuming memory, I'd look at memory.stat which breaks down cache vs RSS vs swap. If RSS is growing unboundedly, it's a leak in the application. If cache is high, the container might be doing heavy file I/O and the page cache is filling the cgroup's limit — in that case, the fix might be increasing the limit since cache is reclaimable. I'd also check if the application has internal metrics showing heap size or connection count growth."</p></div></div>
+
+    <div class="mock"><div class="qq">What is eBPF and when would you use it instead of traditional tools? <span class="tw">+</span></div>
+      <div class="aa"><p>"eBPF lets you run sandboxed programs inside the Linux kernel without modifying kernel source or loading modules. The programs are verified for safety by the kernel before execution and JIT-compiled for performance. I'd use it instead of strace when I need production-safe tracing — strace has 2-5x overhead via ptrace, while eBPF has near-zero overhead. Specific use cases: biolatency for disk I/O histograms, tcplife for connection lifetime analysis, execsnoop for tracking process execution, and custom bpftrace one-liners for ad-hoc investigation. For example, if I need to trace which files a service is opening in production without impacting latency, I'd use opensnoop (eBPF-based) rather than strace."</p></div></div>
+
+    <div class="mock"><div class="qq">Explain the difference between free memory and available memory in Linux. <span class="tw">+</span></div>
+      <div class="aa"><p>"Free memory is completely unused RAM — nothing is stored there. Available memory is free memory PLUS reclaimable memory — primarily clean page cache pages that the kernel can evict instantly if needed. On a healthy Linux system, free memory is often very low because the kernel aggressively uses spare RAM as page cache to speed up file access. This is not a problem — it's optimal behavior. The metric that matters is MemAvailable in /proc/meminfo, not MemFree. A system with 100MB free but 8GB available is healthy. A system with 100MB available is under memory pressure. The old 'free' command confused people by showing low free memory; modern versions show 'available' which is what you should monitor."</p></div></div>
+
+    <div class="mock"><div class="qq">How would you debug a process that's consuming 100% of one CPU core? <span class="tw">+</span></div>
+      <div class="aa"><p>"First, I'd identify what the CPU time is spent on using top — is it user time (us) or system time (sy)? If user time, the process is doing computation or spinning in a loop. If system time, it's making excessive syscalls. For user-time issues, I'd use perf top -p PID to see which functions are hot — this shows me whether it's a busy loop, an inefficient algorithm, or lock spinning (futex). For system-time issues, I'd use strace -c -p PID to get a syscall summary — maybe it's doing millions of tiny reads or futex calls. If it's a known application, I'd check for CPU profiling endpoints (like Go's pprof or Java's async-profiler). The key is distinguishing between 'doing useful work fast' and 'spinning wastefully' — the former might just need more capacity, the latter is a bug."</p></div></div>
+
+    <h3>Behavioral Round</h3>
 
     <div class="mock"><div class="qq">Tell me about the most severe outage you handled. <span class="tw">+</span></div>
-      <div class="aa"><p>"At my previous company, we had a cascading failure that took down our payment processing service during peak Black Friday traffic — affecting roughly 50,000 transactions per minute. I was the incident commander. My first action was mitigation: I coordinated draining traffic to our secondary region within 3 minutes, which restored service for 80% of users. Only then did we diagnose — the root cause was a connection pool exhaustion triggered by a slow downstream dependency that had deployed a change without our knowledge. After stabilization, I led the postmortem. We identified three systemic gaps: no circuit breaker on that dependency, no alerting on connection pool saturation, and no cross-team deploy notification. I drove all three action items to completion over the next sprint. The result was MTTR for similar incidents dropped from 45 minutes to under 5 minutes, and we established a cross-team deploy calendar that prevented blind-side failures."</p></div></div>
+      <div class="aa"><p>"At my previous company, we had a cascading failure that took down payment processing during Black Friday — affecting 50,000 transactions per minute. I was incident commander. My first action was mitigation: I coordinated draining traffic to our secondary region within 3 minutes, restoring service for 80% of users. Only then did we diagnose — the root cause was connection pool exhaustion triggered by a slow downstream dependency that deployed without notification. After stabilization, I led the postmortem. We identified three systemic gaps: no circuit breaker on that dependency, no alerting on connection pool saturation, and no cross-team deploy notification. I drove all three to completion. Result: MTTR for similar incidents dropped from 45 minutes to under 5 minutes, and we established a cross-team deploy calendar."</p></div></div>
 
     <div class="mock"><div class="qq">How do you influence teams without formal authority? <span class="tw">+</span></div>
-      <div class="aa"><p>"My approach has three pillars. First, I lead with data — I quantify the reliability impact in terms the other team cares about, whether that's user-facing errors, revenue impact, or engineering time lost to incidents. Second, I build credibility by offering help before asking for change — I might write the first draft of an SLO, build a dashboard for them, or help debug their on-call issues. Third, I find shared incentives — reliability improvements often align with the other team's goals if framed correctly. For example, I recently needed a platform team to add circuit breakers to their client library. Instead of filing a bug, I showed them data on how cascading failures from their service were causing pages for three downstream teams, wrote a design doc with the proposed solution, and offered to pair on the implementation. They shipped it in two weeks because it also reduced their own on-call burden."</p></div></div>
+      <div class="aa"><p>"Three pillars. First, lead with data — I quantify reliability impact in terms the other team cares about: user errors, revenue, or engineering time lost. Second, build credibility by offering help before asking for change — I might write the first draft of an SLO, build a dashboard, or help debug their on-call issues. Third, find shared incentives. For example, I needed a platform team to add circuit breakers. Instead of filing a bug, I showed them data on cascading failures affecting three downstream teams, wrote a design doc, and offered to pair on implementation. They shipped it in two weeks because it also reduced their own on-call burden."</p></div></div>
 
     <div class="mock"><div class="qq">Describe a time you received critical feedback. How did you respond? <span class="tw">+</span></div>
-      <div class="aa"><p>"During a performance review, my manager told me that while my technical contributions were strong, I wasn't making my work visible enough to leadership, and I tended to solve problems alone rather than bringing others along. My initial reaction was defensiveness — I felt the work should speak for itself. But I took a day to reflect and realized the feedback was accurate. I started three practices: writing brief weekly summaries of reliability wins for my skip-level, actively pulling junior engineers into my projects as collaborators rather than just reviewers, and presenting postmortem findings at our engineering all-hands. Within two quarters, I was recognized in our team's impact review, and two of the junior engineers I'd mentored took on independent on-call rotations. The feedback fundamentally changed how I think about impact — it's not just what you build, it's whether others can learn from and build upon your work."</p></div></div>
+      <div class="aa"><p>"My manager told me that while my technical contributions were strong, I wasn't making work visible to leadership and tended to solve problems alone. My initial reaction was defensiveness. But I reflected and realized the feedback was accurate. I started three practices: weekly summaries of reliability wins for my skip-level, actively pulling junior engineers into projects as collaborators, and presenting postmortem findings at engineering all-hands. Within two quarters, I was recognized in our impact review, and two junior engineers I'd mentored took on independent on-call rotations. The feedback changed how I think about impact — it's not just what you build, it's whether others can learn from and build upon your work."</p></div></div>
 
-    <div class="mock"><div class="qq">Tell me about a time you disagreed with a software engineer about a reliability concern. <span class="tw">+</span></div>
-      <div class="aa"><p>"A feature team wanted to launch a new real-time notification system without a circuit breaker or graceful degradation path. Their argument was that the feature was low-risk and the deadline was tight. I disagreed because the notification system depended on three external services, any of which could cause cascading latency. Rather than blocking the launch, I proposed a compromise: launch with a feature flag at 5% rollout, add basic timeout handling which I offered to implement myself, and define an SLO together so we'd have objective criteria for when to pause the rollout. They agreed because I wasn't saying 'no' — I was saying 'yes, safely.' We launched, caught a latency issue at 5% that would have been a full outage at 100%, fixed it, and rolled out fully the following week. The relationship with that team actually improved because they saw SRE as an enabler rather than a blocker."</p></div></div>
+    <div class="mock"><div class="qq">Tell me about a time you disagreed with a software engineer about reliability. <span class="tw">+</span></div>
+      <div class="aa"><p>"A feature team wanted to launch a real-time notification system without a circuit breaker or degradation path. Their argument: low-risk, tight deadline. I disagreed because it depended on three external services. Rather than blocking, I proposed a compromise: launch with a feature flag at 5% rollout, add basic timeout handling which I offered to implement, and define an SLO together for objective pause criteria. They agreed because I wasn't saying 'no' — I was saying 'yes, safely.' We caught a latency issue at 5% that would have been a full outage at 100%, fixed it, and rolled out fully the next week. The relationship improved because they saw SRE as an enabler."</p></div></div>
 
-    <div class="mock"><div class="qq">How do you handle being paged at 3AM for an alert you've never seen? <span class="tw">+</span></div>
-      <div class="aa"><p>"First, I check the alert description and runbook link — well-operated services should have runbooks for every alert. If there's a runbook, I follow it. If not, I assess impact: is this user-facing? What's the error rate? Is it getting worse? If impact is significant and growing, I escalate immediately — I'd rather wake someone with context than spend 30 minutes floundering alone. If impact is contained, I start systematic diagnosis: check recent deploys, check dependency health, check resource utilization. I document everything I find in the incident channel as I go. After resolution, I always file two things: a runbook for this alert if one didn't exist, and a postmortem if the incident was significant. The meta-principle is: at 3AM, your job is to mitigate and escalate, not to be a hero. Heroics at 3AM lead to mistakes."</p></div></div>
+    <div class="mock"><div class="qq">How do you handle being paged at 3AM for an unfamiliar alert? <span class="tw">+</span></div>
+      <div class="aa"><p>"First, check the alert description and runbook link — well-operated services should have runbooks. If there's one, follow it. If not, assess impact: is this user-facing? What's the error rate? Getting worse? If significant and growing, I escalate immediately — I'd rather wake someone with context than flounder alone. If contained, I start systematic diagnosis: recent deploys, dependency health, resource utilization. I document everything in the incident channel as I go. After resolution, I file two things: a runbook for this alert, and a postmortem if significant. The principle: at 3AM, mitigate and escalate — don't be a hero. Heroics at 3AM lead to mistakes."</p></div></div>
 
     <div class="mock"><div class="qq">What excites you about the SRE role at Google specifically? <span class="tw">+</span></div>
-      <div class="aa"><p>"Three things. First, scale — Google operates at a scale where the problems are genuinely novel. Techniques that work at thousands of servers break at millions, and I want to work on systems where the engineering challenges are at the frontier. Second, the SRE culture itself — Google literally wrote the book on SRE, and the principles of error budgets, blameless postmortems, and toil elimination aren't just aspirational there, they're operational reality with organizational support. Third, impact — when you improve reliability at Google's scale, you're improving the experience for billions of users. A 10ms latency reduction or a 0.01% availability improvement translates to millions of better user experiences per day. That kind of leverage is what motivates me as an engineer."</p></div></div>
+      <div class="aa"><p>"Three things. First, scale — Google operates where problems are genuinely novel. Techniques that work at thousands of servers break at millions. Second, the SRE culture — Google wrote the book on SRE, and error budgets, blameless postmortems, and toil elimination aren't aspirational there, they're operational reality with organizational support. Third, impact — improving reliability at Google's scale means improving experience for billions of users. A 10ms latency reduction translates to millions of better experiences daily. That leverage is what motivates me."</p></div></div>
+
+    <h3>Troubleshooting Round</h3>
+
+    <div class="mock"><div class="qq">The site is slow. CPU is normal. Walk me through your diagnosis. <span class="tw">+</span></div>
+      <div class="aa"><p>"CPU-normal slowness points to either I/O, network, or lock contention. I'd start with vmstat 1 5 — if the 'wa' column is high, it's disk I/O. If 'si/so' are non-zero, it's swap pressure. Next, ss -s to check connection states — a large SYN backlog or many TIME_WAIT connections indicates network issues. Then iostat -x 1 3 — if await is high, disk I/O is the bottleneck. If none of these show issues, I'd check for lock contention with perf top looking for futex_wait. I'd also check if the application has a thread pool that's exhausted — curl the metrics endpoint for queue depth. Each step gives me a specific signal that narrows the hypothesis space."</p></div></div>
+
+    <div class="mock"><div class="qq">p99 latency doubled after a deploy. What do you do? <span class="tw">+</span></div>
+      <div class="aa"><p>"First, assess: is this within error budget? If not, I'd recommend immediate rollback while we investigate — mitigation first. If we can afford to investigate, I'd correlate: diff the release for new dependencies or config changes. Check canary metrics if available — compare canary vs baseline latency distribution. Determine if the increase is uniform or concentrated in specific endpoints or regions. Pull distributed traces for slow requests to see where time is spent. Common causes after deploy: new dependency with higher latency, missing index on a new query, increased logging volume, or a concurrency regression. The rollback gives us time to investigate without burning error budget."</p></div></div>
+
+    <div class="mock"><div class="qq">A service can't reach its database. Diagnose layer by layer. <span class="tw">+</span></div>
+      <div class="aa"><p>"I'd go bottom-up through the network stack. Layer 1 — DNS: dig db-host.internal — does it resolve? Is the IP correct? Layer 2 — TCP: nc -zv db-host 5432 — can we establish a connection? If timeout, it's network/firewall. If connection refused, the DB isn't listening. Layer 3 — TLS: openssl s_client if encrypted — certificate valid? Not expired? Layer 4 — Auth: check credentials, IAM roles, pg_hba.conf. Layer 5 — Capacity: SELECT count(*) FROM pg_stat_activity — is the connection pool full? Layer 6 — Firewall: check security groups, network policies. I'd also check if this is affecting all instances or just one — that distinguishes between a DB-side issue and a network/config issue on one host."</p></div></div>
   </div>
 </section>
 
-<!-- ============ SECTION 10: CHEAT SHEET ============ -->
+<!-- ============ SECTION 13: CHEAT SHEET ============ -->
 <section id="cheat">
   <div class="wrap">
-    <span class="eyebrow">Section 10 — Quick Reference</span>
+    <span class="eyebrow">Section 13 — Quick Reference</span>
     <h2 class="sec">The Night-Before Cheat Sheet</h2>
-    <p class="lead">Condensed, scannable facts for last-minute review. Print this or keep it on a second screen.</p>
+    <p class="lead">Condensed, scannable facts for last-minute review.</p>
     <div class="grid two">
       <div class="card">
         <h3>Coding Round Checklist</h3>
-        <p><strong>Always:</strong> Stream files (never <code>.read()</code>), handle errors gracefully, use timeouts for network calls, explain your choices out loud, validate with test cases.</p>
-        <p><strong>Patterns:</strong> <code>Counter</code> for aggregation, <code>heapq</code> for top-N, <code>deque</code> for sliding windows, <code>asyncio.Semaphore</code> for concurrency, generators for streaming.</p>
-        <p><strong>Red flags to avoid:</strong> Loading entire files into memory, no error handling, no timeouts, over-optimizing before correctness, silent failures.</p>
+        <p><strong>Always:</strong> Stream files, handle errors, use timeouts, explain choices, validate with tests.</p>
+        <p><strong>Patterns:</strong> Counter, heapq, deque, asyncio.Semaphore, generators, dataclasses.</p>
+        <p><strong>Advanced:</strong> Retry with jitter, circuit breaker, graceful shutdown, connection pool, sliding window.</p>
+        <p><strong>Avoid:</strong> .read()/.readlines(), no error handling, no timeouts, over-optimizing before correctness.</p>
       </div>
       <div class="card">
         <h3>Behavioral Round Checklist</h3>
-        <p><strong>STAR(M):</strong> Situation → Task → Action → Result → Mitigation/Measurement</p>
-        <p><strong>SRE signals:</strong> Blameless framing, mitigation-first, quantified results, systemic prevention, calm under pressure.</p>
-        <p><strong>Two question types:</strong> Experience (give a deep story) vs. Process (give your framework first, then a brief example).</p>
-        <p><strong>Prepare 5-6 stories</strong> that cover: severe outage, disagreement, mentoring, feedback, ambiguity, cross-team influence.</p>
+        <p><strong>STAR(M):</strong> Situation → Task → Action → Result → Mitigation</p>
+        <p><strong>SRE signals:</strong> Blameless, mitigation-first, quantified, systemic prevention, calm.</p>
+        <p><strong>Two types:</strong> Experience (deep story) vs Process (framework first).</p>
+        <p><strong>Prepare:</strong> Severe outage, disagreement, mentoring, feedback, ambiguity, cross-team influence.</p>
       </div>
       <div class="card">
         <h3>Linux Commands (First Response)</h3>
-        <p><code>vmstat 1 5</code> — CPU vs I/O vs memory pressure<br>
-        <code>iostat -x 1 3</code> — Disk I/O wait and utilization<br>
+        <p><code>vmstat 1 5</code> — CPU/IO/memory at a glance<br>
+        <code>iostat -x 1 3</code> — Disk I/O detail<br>
         <code>ss -s</code> — Connection state summary<br>
-        <code>ss -lntp</code> — What's listening on which port<br>
-        <code>free -m</code> — Memory pressure overview<br>
-        <code>df -h && df -i</code> — Disk space AND inodes<br>
-        <code>dmesg -T | tail</code> — Recent kernel messages<br>
-        <code>cat /proc/PID/status</code> — Process state details<br>
-        <code>lsof -i :PORT</code> — What's using a port<br>
-        <code>sar -n DEV 1</code> — Network throughput</p>
+        <code>ss -lntp</code> — What's listening<br>
+        <code>free -m</code> — Memory overview<br>
+        <code>df -h && df -i</code> — Disk + inodes<br>
+        <code>dmesg -T | tail</code> — Kernel messages<br>
+        <code>cat /proc/PID/status</code> — Process state<br>
+        <code>cat /proc/PID/stack</code> — Why is it stuck?<br>
+        <code>cat /proc/pressure/</code> — PSI metrics<br>
+        <code>lsof +L1</code> — Deleted-but-open files<br>
+        <code>strace -c -p PID</code> — Syscall summary</p>
       </div>
       <div class="card">
-        <h3>SRE Concepts (Must Know Cold)</h3>
-        <p><strong>SLI:</strong> What you measure (latency, error rate)<br>
+        <h3>SRE Concepts</h3>
+        <p><strong>SLI:</strong> What you measure<br>
         <strong>SLO:</strong> Your target (99.9% < 200ms)<br>
-        <strong>Error Budget:</strong> 1 - SLO (your allowed unreliability)<br>
-        <strong>Burn Rate:</strong> How fast you consume error budget<br>
-        <strong>Toil:</strong> Manual, repetitive, automatable work (target <50%)<br>
-        <strong>MTTR:</strong> Mean Time To Recovery<br>
-        <strong>MTTD:</strong> Mean Time To Detection<br>
-        <strong>Blast Radius:</strong> Scope of failure impact<br>
-        <strong>Circuit Breaker:</strong> Stop calling a failing dependency<br>
-        <strong>Backpressure:</strong> Signal upstream to slow down</p>
+        <strong>Error Budget:</strong> 1 - SLO<br>
+        <strong>Burn Rate:</strong> Budget consumption speed<br>
+        <strong>Toil:</strong> Manual work, target < 50%<br>
+        <strong>MTTR/MTTD:</strong> Recovery/Detection time<br>
+        <strong>Blast Radius:</strong> Failure scope<br>
+        <strong>Circuit Breaker:</strong> Stop calling failures<br>
+        <strong>Backpressure:</strong> Signal to slow down<br>
+        <strong>Load Shedding:</strong> Reject excess traffic</p>
       </div>
       <div class="card">
         <h3>NALSD Numbers</h3>
-        <p><strong>Availability math:</strong><br>
-        99.9% = 43 min/month downtime<br>
-        99.99% = 4.3 min/month downtime<br>
-        99.999% = 26 sec/month downtime</p>
-        <p><strong>Storage/Network:</strong><br>
-        SSD: ~100K random IOPS<br>
+        <p>99.9% = 43 min/month<br>
+        99.99% = 4.3 min/month<br>
+        99.999% = 26 sec/month<br>
+        SSD: ~100K IOPS<br>
         HDD: ~200 MB/s sequential<br>
         10GbE: ~1.2 GB/s<br>
-        Cross-continent RTT: 100-200ms<br>
-        Intra-DC RTT: ~0.5ms</p>
+        Cross-continent: 100-200ms<br>
+        Intra-DC: ~0.5ms<br>
+        1M QPS = ~12 req/ms</p>
       </div>
       <div class="card">
-        <h3>Troubleshooting Framework</h3>
-        <p><strong>Order of operations:</strong><br>
-        1. Assess impact (scope, severity, trend)<br>
+        <h3>Troubleshooting Order</h3>
+        <p>1. Assess impact (scope, trend)<br>
         2. Mitigate (drain, rollback, failover)<br>
-        3. Hypothesize (2-3 ranked possibilities)<br>
-        4. Test (highest-signal, lowest-cost first)<br>
-        5. Fix (root cause after stabilization)<br>
-        6. Prevent (postmortem, systemic changes)</p>
-        <p><strong>Never:</strong> Jump to root cause before mitigating, scattershot commands without hypothesis, blame individuals.</p>
+        3. Hypothesize (2-3 ranked)<br>
+        4. Test (high-signal, low-cost)<br>
+        5. Fix (root cause)<br>
+        6. Prevent (postmortem, systemic)</p>
+        <p><strong>Never:</strong> Root-cause before mitigating, scattershot commands, blame individuals.</p>
       </div>
       <div class="card">
-        <h3>Google SRE Books to Reference</h3>
-        <p><strong>Site Reliability Engineering</strong> — The original Google SRE book. Principles, error budgets, postmortem culture.<br>
-        <strong>The SRE Workbook</strong> — Practical implementation of SRE principles. NALSD chapter is essential.<br>
-        <strong>Systems Performance (Brendan Gregg)</strong> — Linux performance analysis bible.<br>
-        <strong>Designing Data-Intensive Applications</strong> — Distributed systems fundamentals.<br>
-        <strong>The Linux Programming Interface</strong> — Deep kernel/syscall understanding.</p>
+        <h3>Python Production Patterns</h3>
+        <p><strong>Retry:</strong> Exponential backoff + full jitter<br>
+        <strong>Circuit Breaker:</strong> CLOSED → OPEN → HALF-OPEN<br>
+        <strong>Graceful Shutdown:</strong> SIGTERM → drain → cleanup → exit<br>
+        <strong>Connection Pool:</strong> Bounded, health-checked, evict stale<br>
+        <strong>Rate Limiter:</strong> Token bucket (burst-friendly)<br>
+        <strong>Sliding Window:</strong> Deque of time buckets<br>
+        <strong>Config Reload:</strong> Hash-based change detection<br>
+        <strong>tail -f:</strong> Inode check for rotation</p>
       </div>
       <div class="card">
         <h3>Day-of Reminders</h3>
-        <p><strong>Coding:</strong> Narrate everything. "I'm choosing X because..." Correctness first, then optimize. Write test cases. Handle edge cases explicitly.</p>
-        <p><strong>Behavioral:</strong> Be specific. Use numbers. Frame blamlessly. End with systemic prevention. For process questions, lead with framework.</p>
-        <p><strong>Troubleshooting:</strong> Mitigate first. State hypotheses before running commands. Explain what signal you expect from each command.</p>
-        <p><strong>NALSD:</strong> Always check the physics. Calculate bandwidth, IOPS, storage. Identify single points of failure. Design for graceful degradation.</p>
+        <p><strong>Coding:</strong> Narrate everything. Correctness first. Test cases. Edge cases.</p>
+        <p><strong>Behavioral:</strong> Be specific. Use numbers. Blameless. Systemic prevention. Framework for process Qs.</p>
+        <p><strong>Troubleshooting:</strong> Mitigate first. State hypotheses. Explain expected signal from each command.</p>
+        <p><strong>NALSD:</strong> Check the physics. Calculate bandwidth/IOPS/storage. SPOFs. Graceful degradation.</p>
+        <p><strong>Linux:</strong> Command → Intent → Signal. Never scattershot. Explain WHY each command.</p>
       </div>
     </div>
   </div>
@@ -1025,7 +2027,7 @@ class TokenBucket:
   <div class="wrap">
     <div class="big">You've Got This.</div>
     <p>The Google SRE interview tests operational maturity, not perfection. Stay calm, think systematically, mitigate first, and narrate your reasoning. The fact that you're preparing this thoroughly already puts you ahead.</p>
-    <p style="margin-top:22px;font-family:var(--mono);font-size:12px;color:var(--muted)">Sources: Google SRE Book (sre.google), Google SRE Workbook (NALSD chapter), candidate reports from LeetCode Discuss, Reddit r/sre, Glassdoor, Blind, and multiple 2024-2026 interview experience posts. Behavioral framework informed by Google's public Googleyness documentation and Prepfully mock interview insights.</p>
+    <p style="margin-top:22px;font-family:var(--mono);font-size:12px;color:var(--muted)">Sources: Google SRE Book (sre.google), Google SRE Workbook, Brendan Gregg's Systems Performance, Linux kernel documentation, candidate reports from LeetCode Discuss, Reddit r/sre, Glassdoor, Blind, and 2024-2026 interview experience posts. eBPF content from ebpf.io. TCP/networking from Linux kernel docs and Red Hat performance tuning guides.</p>
   </div>
 </footer>
 
