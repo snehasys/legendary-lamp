@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Senior SRE Interview Mastery — Complete Preparation Guide</title>
+<style>
+:root{
+  --bg:#0a0e17; --bg2:#0f1524; --panel:#141b2d; --panel2:#1a2338;
+  --ink:#e8edf7; --muted:#9aa8c4; --line:#25304a;
+  --green:#4285f4; --green-d:#3367d6; --green-soft:rgba(66,133,244,.14);
+  --cyan:#34a853; --amber:#fbbc04; --red:#ea4335; --red-soft:rgba(234,67,53,.12);
+  --blue:#5aa9ff; --purple:#b07bff;
+  --radius:16px; --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.7;font-size:16px;overflow-x:hidden;
+  background-image:radial-gradient(900px 500px at 85% -5%,rgba(66,133,244,.10),transparent 60%),radial-gradient(700px 400px at 5% 10%,rgba(52,168,83,.08),transparent 55%);}
+::selection{background:var(--green-soft);color:#fff}
+a{color:var(--green);text-decoration:none} a:hover{text-decoration:underline}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--green),var(--cyan));z-index:999;transition:width .1s}
+nav{position:sticky;top:0;z-index:900;backdrop-filter:blur(14px);background:rgba(10,14,23,.82);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:18px;height:60px}
+nav .brand{font-weight:800;letter-spacing:.5px;font-size:15px;white-space:nowrap}
+nav .brand span{color:var(--green)}
+nav .links{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav .links::-webkit-scrollbar{display:none}
+nav .links a{color:var(--muted);font-size:13px;font-weight:600;padding:8px 11px;border-radius:9px;white-space:nowrap;transition:.2s}
+nav .links a:hover{color:var(--ink);background:var(--panel2);text-decoration:none}
+header.hero{padding:96px 0 70px;position:relative;text-align:center}
+.tag{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--green);border:1px solid var(--green);padding:6px 14px;border-radius:999px;margin-bottom:26px;background:var(--green-soft)}
+.hero h1{font-size:clamp(2.2rem,6vw,3.6rem);line-height:1.1;font-weight:900;letter-spacing:-1px}
+.hero h1 .grad{background:linear-gradient(120deg,var(--green),var(--cyan) 60%,var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero p.sub{max-width:720px;margin:24px auto 0;color:var(--muted);font-size:1.12rem}
+.hero .cta{margin-top:36px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;padding:13px 22px;border-radius:12px;border:1px solid var(--line);transition:.2s;cursor:pointer}
+.btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.primary:hover{background:var(--green-d);text-decoration:none;transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--ink)} .btn.ghost:hover{background:var(--panel2);text-decoration:none}
+section{padding:64px 0;border-top:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:12px;display:block}
+h2.sec{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.lead{color:var(--muted);font-size:1.05rem;max-width:760px;margin-bottom:34px}
+h3{font-size:1.35rem;font-weight:700;margin:34px 0 12px;color:#fff}
+p{margin-bottom:16px;color:#d3dcee} strong{color:#fff}
+.card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:22px;position:relative}
+.grid{display:grid;gap:18px}
+.grid.two{grid-template-columns:1fr 1fr} .grid.three{grid-template-columns:repeat(3,1fr)}
+@media(max-width:820px){.grid.two,.grid.three{grid-template-columns:1fr}}
+.myth{border-left:4px solid var(--red);background:linear-gradient(90deg,var(--red-soft),transparent 70%);border-radius:10px;padding:16px 18px;margin-bottom:14px}
+.fact{border-left:4px solid var(--cyan);background:linear-gradient(90deg,rgba(52,168,83,.12),transparent 70%);border-radius:10px;padding:16px 18px}
+.myth .lbl,.fact .lbl{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;display:block;margin-bottom:6px}
+.myth .lbl{color:var(--red)} .fact .lbl{color:var(--cyan)}
+.tbl{width:100%;border-collapse:collapse;font-size:14.5px;overflow:hidden;border-radius:12px;border:1px solid var(--line)}
+.tbl th,.tbl td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
+.tbl th{background:var(--panel2);color:#fff;font-weight:700;font-size:13px;letter-spacing:.4px}
+.tbl tr:last-child td{border-bottom:none} .tbl tr:hover td{background:rgba(66,133,244,.05)}
+.tbl td:first-child{font-weight:700;color:#fff} .tbl .hl{color:var(--green);font-weight:700}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.callout{border-radius:12px;padding:16px 18px;margin:18px 0;font-size:14.5px;border:1px solid var(--line)}
+.callout .h{font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.callout.tip{background:var(--green-soft);border-color:rgba(66,133,244,.4)}
+.callout.warn{background:var(--red-soft);border-color:rgba(234,67,53,.4)}
+.callout.info{background:rgba(90,169,255,.1);border-color:rgba(90,169,255,.4)}
+.callout.said{background:rgba(251,188,4,.09);border-color:rgba(251,188,4,.4)}
+code{font-family:var(--mono);background:#0b1120;border:1px solid var(--line);padding:2px 7px;border-radius:6px;font-size:13px;color:var(--cyan)}
+pre{background:#0b1120;border:1px solid var(--line);border-radius:12px;padding:18px;overflow-x:auto;margin:16px 0}
+pre code{background:none;border:none;padding:0;color:#cfe3ff;font-size:13.5px;line-height:1.65;display:block}
+.cmt{color:#5f7599}
+.quiz{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-bottom:18px}
+.quiz .q{font-weight:700;font-size:1.08rem;margin-bottom:16px}
+.opt{display:block;width:100%;text-align:left;background:var(--bg2);border:1px solid var(--line);color:var(--ink);padding:13px 16px;border-radius:10px;margin-bottom:10px;cursor:pointer;transition:.15s;font-size:14.5px;font-family:inherit}
+.opt:hover{border-color:var(--green);background:var(--panel)}
+.opt.correct{border-color:var(--cyan);background:rgba(52,168,83,.15);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-soft);color:#fff}
+.explain{display:none;margin-top:12px;padding:14px 16px;border-radius:10px;background:rgba(90,169,255,.08);border:1px solid rgba(90,169,255,.35);font-size:14px}
+.explain.show{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.flip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.flip{background:none;border:none;padding:0;perspective:1200px;height:170px;cursor:pointer;font-family:inherit}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:18px;text-align:center}
+.flip-front{background:linear-gradient(150deg,var(--panel2),var(--panel));font-weight:800;font-size:1.05rem;color:#fff}
+.flip-front .hint{position:absolute;bottom:10px;font-size:10px;letter-spacing:1px;color:var(--muted);font-weight:600;text-transform:uppercase}
+.flip-back{background:linear-gradient(150deg,#0d1a2e,#0f1f35);transform:rotateY(180deg);border-color:var(--green);font-size:13.5px;color:#b8d4ff;line-height:1.55}
+.badge{display:inline-block;font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:6px;font-weight:700;letter-spacing:.5px}
+.b-green{background:rgba(52,168,83,.14);color:var(--cyan)} .b-red{background:var(--red-soft);color:var(--red)}
+.b-amber{background:rgba(251,188,4,.14);color:var(--amber)} .b-blue{background:rgba(90,169,255,.14);color:var(--blue)}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.chip{font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+.stat-row{display:flex;gap:16px;flex-wrap:wrap;margin:20px 0}
+.stat{flex:1;min-width:150px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:18px}
+.stat .n{font-size:1.9rem;font-weight:900;color:var(--green);font-family:var(--mono)} .stat .l{font-size:12.5px;color:var(--muted);margin-top:4px}
+footer{padding:50px 0 70px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:14px}
+footer .big{font-size:1.4rem;color:#fff;font-weight:800;margin-bottom:10px}
+.mock{border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.mock .qq{background:var(--panel2);padding:14px 18px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mock .qq:hover{background:#1e2942}
+.mock .aa{padding:0 18px;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease}
+.mock .aa.open{max-height:2000px;padding:16px 18px}
+.mock .qq .tw{color:var(--green);font-family:var(--mono);font-size:20px;transition:transform .3s}
+.mock .qq.open .tw{transform:rotate(45deg)}
+.tabs{display:flex;gap:4px;margin-bottom:22px;flex-wrap:wrap}
+.tab{padding:10px 18px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);font-weight:700;font-size:13px;cursor:pointer;transition:.2s}
+.tab.active{background:var(--green);color:#fff;border-color:var(--green)}
+.tab-content{display:none} .tab-content.active{display:block}
+.timeline{border-left:3px solid var(--green);padding-left:24px;margin:24px 0}
+.timeline .step{margin-bottom:24px;position:relative}
+.timeline .step::before{content:'';position:absolute;left:-30px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--green);border:2px solid var(--bg)}
+.timeline .step h4{font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px}
+.timeline .step p{color:var(--muted);font-size:14px;margin:0}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">Google <span>SRE</span> · L5 Prep</div>
+    <div class="links">
+      <a href="#overview">Overview</a>
+      <a href="#coding">Coding</a>
+      <a href="#linux">Linux</a>
+      <a href="#behavioral">Behavioral</a>
+      <a href="#nalsd">NALSD</a>
+      <a href="#troubleshoot">Troubleshoot</a>
+      <a href="#quiz">Quiz</a>
+      <a href="#flash">Flashcards</a>
+      <a href="#mock">Mock Q&A</a>
+      <a href="#cheat">Cheat Sheet</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">Senior SRE (L5) Interview Prep</span>
+    <h1>Master the Google<br><span class="grad">Senior SRE Interview</span></h1>
+    <p class="sub">A comprehensive, research-backed study guide covering the scripting/coding round, behavioral (Googleyness & Leadership) round, Linux internals, NALSD system design, and troubleshooting — with interactive quizzes, flashcards, and mock Q&A.</p>
+    <div class="cta">
+      <a class="btn primary" href="#coding">Start with Coding</a>
+      <a class="btn ghost" href="#cheat">Jump to Cheat Sheet</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ SECTION 01: OVERVIEW ============ -->
+<section id="overview">
+  <div class="wrap">
+    <span class="eyebrow">Section 01 — The Landscape</span>
+    <h2 class="sec">Google Senior SRE Interview: The Full Picture</h2>
+    <p class="lead">The Google SRE interview at L5 (Senior) level evaluates a rare hybrid of software engineering, systems thinking, and operational maturity. Here's what the loop looks like in 2025-2026.</p>
+
+    <div class="timeline">
+      <div class="step"><h4>1. Recruiter Screen (30-45 min)</h4><p>SRE vocabulary test: SLIs, SLOs, error budgets, toil reduction, blameless postmortems. They listen for operational language vs. feature-building language.</p></div>
+      <div class="step"><h4>2. Technical Phone Screen (45 min)</h4><p>Practical scripting/coding in Python or Go. Streaming I/O, concurrency, defensive coding. NOT standard LeetCode — they test production safety.</p></div>
+      <div class="step"><h4>3. Onsite: Practical Coding (45 min)</h4><p>Log parsing, rate limiting, concurrent API fetchers, resource monitoring scripts. Focus: "Would I trust this code on my production servers?"</p></div>
+      <div class="step"><h4>4. Onsite: NALSD (45 min)</h4><p>Non-Abstract Large System Design. Physical constraints, capacity math, failure modes, disaster recovery with real numbers (IOPS, bandwidth, storage).</p></div>
+      <div class="step"><h4>5. Onsite: Troubleshooting & Linux Internals (45 min)</h4><p>Live debugging scenario. Mitigation-first mindset. Kernel reasoning, hypothesis-driven diagnosis.</p></div>
+      <div class="step"><h4>6. Onsite: Googleyness & Leadership (45 min)</h4><p>Behavioral round: incident leadership, blameless culture, collaboration under pressure, navigating ambiguity.</p></div>
+    </div>
+
+    <div class="callout info"><div class="h">Key Insight: SRE vs SWE</div>
+    The SRE interview optimizes for <strong>survivability and mitigation</strong>, not architectural correctness. When given a broken system, stabilize first, then debug. Root-cause obsession before mitigation = instant reject signal.</div>
+
+    <div class="tbl-scroll">
+    <table class="tbl">
+      <thead><tr><th>Dimension</th><th>Google SRE Interview</th><th>Google SWE Interview</th></tr></thead>
+      <tbody>
+        <tr><td>Coding</td><td>Concurrency, streaming, safe parsing, defensive error handling</td><td>Data structures, algorithms, Big-O optimization</td></tr>
+        <tr><td>System Design</td><td>NALSD: constraints, physics, failure modes, capacity math</td><td>Abstract: API design, feature scale, data models</td></tr>
+        <tr><td>Linux/Kernel</td><td>Deep understanding required (scheduling, I/O, memory, eBPF)</td><td>Usually minimal</td></tr>
+        <tr><td>Troubleshooting</td><td>Core focus. "Mitigation-First" mindset evaluated</td><td>Rare</td></tr>
+        <tr><td>Behavioral</td><td>Scored on blamelessness, incident leadership, error budgets</td><td>General teamwork, conflict resolution</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="n">4-5</div><div class="l">Onsite rounds for L5</div></div>
+      <div class="stat"><div class="n">45 min</div><div class="l">Per round (strict)</div></div>
+      <div class="stat"><div class="n">~15%</div><div class="l">Onsite pass rate (estimated)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 02: CODING / SCRIPTING ============ -->
+<section id="coding">
+  <div class="wrap">
+    <span class="eyebrow">Section 02 — The Coding Round</span>
+    <h2 class="sec">Practical Scripting & Coding</h2>
+    <p class="lead">Google SRE coding is NOT LeetCode-hard. It tests automation thinking, production safety, and whether your code can survive a hostile environment. Think: "Would I trust this as a cron job on production?"</p>
+
+    <div class="tabs" id="coding-tabs">
+      <div class="tab active" data-tab="patterns">Core Patterns</div>
+      <div class="tab" data-tab="examples">Example Problems</div>
+      <div class="tab" data-tab="solutions">Solution Templates</div>
+    </div>
+
+    <div class="tab-content active" id="tab-patterns">
+      <h3>The 6 Coding Patterns Google SRE Tests</h3>
+      <div class="grid two">
+        <div class="card">
+          <h3>1. Streaming I/O</h3>
+          <p>Process multi-GB files without exceeding memory limits. Use iterators, generators, and line-by-line processing. <strong>Never</strong> load entire files into memory.</p>
+          <div class="chip-row"><span class="chip">file iterators</span><span class="chip">generators</span><span class="chip">O(1) memory</span></div>
+        </div>
+        <div class="card">
+          <h3>2. Concurrency & Rate Limiting</h3>
+          <p>Hit 100+ endpoints with strict timeouts and rate limits. Use asyncio, thread pools, or goroutines. Enforce backpressure.</p>
+          <div class="chip-row"><span class="chip">asyncio</span><span class="chip">semaphores</span><span class="chip">token bucket</span></div>
+        </div>
+        <div class="card">
+          <h3>3. Log Parsing & Aggregation</h3>
+          <p>Parse structured/unstructured logs. Extract patterns with regex. Aggregate by time windows, status codes, endpoints.</p>
+          <div class="chip-row"><span class="chip">regex</span><span class="chip">Counter</span><span class="chip">defaultdict</span></div>
+        </div>
+        <div class="card">
+          <h3>4. Defensive Error Handling</h3>
+          <p>Handle malformed input, network timeouts, partial failures. Never crash silently. Always have retry logic with exponential backoff.</p>
+          <div class="chip-row"><span class="chip">try/except</span><span class="chip">retries</span><span class="chip">circuit breaker</span></div>
+        </div>
+        <div class="card">
+          <h3>5. Data Structure Selection</h3>
+          <p>Choose the right structure for the job: heaps for top-N, deques for sliding windows, sets for deduplication, tries for prefix matching.</p>
+          <div class="chip-row"><span class="chip">heapq</span><span class="chip">deque</span><span class="chip">bisect</span></div>
+        </div>
+        <div class="card">
+          <h3>6. System Utility Recreation</h3>
+          <p>Implement <code>find</code>, <code>tail</code>, <code>ps</code>, <code>grep</code> from scratch. Shows you understand what these tools do at the OS level.</p>
+          <div class="chip-row"><span class="chip">os.walk</span><span class="chip">file seek</span><span class="chip">/proc</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-examples">
+      <h3>Real Google SRE Coding Questions (Reported 2024-2026)</h3>
+
+      <div class="card">
+        <h3>Problem 1: Memory-Efficient Log Analysis</h3>
+        <div class="myth"><span class="lbl">The Prompt</span>"Write a Python script that reads a 50GB log file, extracts HTTP 5xx errors, and outputs a summary of the top 10 failing endpoints — without exceeding 512MB of RAM."</div>
+        <p><strong>What they're testing:</strong> Streaming I/O (iterators vs loading into memory), regex parsing, Counter/heap for top-N, memory awareness.</p>
+        <p><strong>Key signals:</strong> Do you use <code>for line in file</code> (streaming) or <code>file.read()</code> (memory bomb)? Do you mention memory profiling? Do you handle malformed lines?</p>
+      </div>
+
+      <div class="card">
+        <h3>Problem 2: Concurrent Health Checker</h3>
+        <div class="myth"><span class="lbl">The Prompt</span>"Write a concurrent API fetcher that checks health of 100,000 servers. Enforce a strict 5-second timeout per request and a rate limit of 50 requests per second."</div>
+        <p><strong>What they're testing:</strong> Concurrency (asyncio/threading), rate limiting (token bucket or semaphore), timeout handling, error aggregation.</p>
+        <p><strong>Key signals:</strong> Do you use a semaphore for concurrency control? Do you handle connection errors gracefully? Do you report partial results?</p>
+      </div>
+
+      <div class="card">
+        <h3>Problem 3: Rolling Window Anomaly Detection</h3>
+        <div class="myth"><span class="lbl">The Prompt</span>"Given a stream of events from millions of hosts, detect anomalies in rolling 5-minute windows. An anomaly is when a host's error rate exceeds 3x the fleet average."</div>
+        <p><strong>What they're testing:</strong> Streaming data structures (deque for windows), statistical reasoning, memory-bounded computation, real-time processing.</p>
+      </div>
+
+      <div class="card">
+        <h3>Problem 4: Implement a Token Bucket Rate Limiter</h3>
+        <div class="myth"><span class="lbl">The Prompt</span>"Implement a token bucket rate limiter that supports burst traffic. It should allow N requests per second with a burst capacity of B."</div>
+        <p><strong>What they're testing:</strong> Understanding of rate limiting algorithms, time-based logic, thread safety, clean API design.</p>
+      </div>
+
+      <div class="card">
+        <h3>Problem 5: File Metadata Aggregator</h3>
+        <div class="myth"><span class="lbl">The Prompt</span>"Write a script that traverses a directory tree, groups files by extension, and reports total size per extension. Handle symlinks without infinite loops."</div>
+        <p><strong>What they're testing:</strong> <code>os.walk</code>, symlink detection, aggregation patterns, edge case handling (broken symlinks, permission errors).</p>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-solutions">
+      <h3>Solution Templates (Python)</h3>
+
+      <div class="card">
+        <h3>Template: Streaming Log Parser (O(1) Memory)</h3>
+<pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="cmt">"""Parse a multi-GB log file with bounded memory."""</span>
+import re
+from collections import Counter
+import heapq
+
+def parse_logs(filepath, top_n=10):
+    <span class="cmt"># Pattern for common log format</span>
+    pattern = re.compile(
+        r'(?P&lt;ip&gt;\S+) .* "(?P&lt;method&gt;\w+) (?P&lt;path&gt;\S+) .*" (?P&lt;status&gt;\d{3}) (?P&lt;size&gt;\d+)'
+    )
+    error_counts = Counter()
+
+    <span class="cmt"># Stream line-by-line — never loads full file into memory</span>
+    with open(filepath, 'r', buffering=8192) as f:
+        for line in f:  <span class="cmt"># iterator, O(1) memory per line</span>
+            match = pattern.search(line)
+            if not match:
+                continue  <span class="cmt"># skip malformed lines gracefully</span>
+            status = int(match.group('status'))
+            if 500 &lt;= status &lt; 600:
+                endpoint = match.group('path').split('?')[0]  <span class="cmt"># strip query params</span>
+                error_counts[endpoint] += 1
+
+    <span class="cmt"># Top-N using heap — O(n log k) instead of full sort</span>
+    return heapq.nlargest(top_n, error_counts.items(), key=lambda x: x[1])
+</code></pre>
+        <div class="callout tip"><div class="h">Key Interview Signal</div>Narrate your choices: "I'm using a file iterator because it processes one line at a time, keeping memory constant regardless of file size. I'm using heapq.nlargest for top-N because it's O(n log k) — more efficient than sorting the entire Counter."</div>
+      </div>
+
+      <div class="card">
+        <h3>Template: Concurrent Health Checker with Rate Limiting</h3>
+<pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="cmt">"""Check health of N servers with concurrency + rate limiting."""</span>
+import asyncio
+import aiohttp
+from dataclasses import dataclass
+from typing import List
+
+@dataclass
+class HealthResult:
+    host: str
+    healthy: bool
+    latency_ms: float = 0
+    error: str = ""
+
+async def check_health(
+    hosts: List[str],
+    timeout_sec: float = 5.0,
+    max_concurrent: int = 50,
+    requests_per_sec: int = 50
+) -&gt; List[HealthResult]:
+    results = []
+    semaphore = asyncio.Semaphore(max_concurrent)
+    <span class="cmt"># Token bucket via asyncio — refill every 1/rate seconds</span>
+    rate_limiter = asyncio.Semaphore(requests_per_sec)
+
+    async def refill_tokens():
+        while True:
+            await asyncio.sleep(1.0 / requests_per_sec)
+            try:
+                rate_limiter.release()
+            except ValueError:
+                pass  <span class="cmt"># already at max</span>
+
+    async def check_one(session, host):
+        await rate_limiter.acquire()
+        async with semaphore:
+            try:
+                start = asyncio.get_event_loop().time()
+                async with session.get(
+                    f"http://{host}/healthz",
+                    timeout=aiohttp.ClientTimeout(total=timeout_sec)
+                ) as resp:
+                    latency = (asyncio.get_event_loop().time() - start) * 1000
+                    results.append(HealthResult(
+                        host=host,
+                        healthy=(resp.status == 200),
+                        latency_ms=latency
+                    ))
+            except (asyncio.TimeoutError, aiohttp.ClientError) as e:
+                results.append(HealthResult(
+                    host=host, healthy=False, error=str(e)
+                ))
+
+    async with aiohttp.ClientSession() as session:
+        refiller = asyncio.create_task(refill_tokens())
+        tasks = [check_one(session, h) for h in hosts]
+        await asyncio.gather(*tasks)
+        refiller.cancel()
+
+    return results
+</code></pre>
+        <div class="callout tip"><div class="h">Key Interview Signal</div>"I'm separating concurrency control (semaphore limits in-flight requests) from rate limiting (token bucket limits requests per second). The timeout is enforced per-request via aiohttp's ClientTimeout, and I'm catching both timeout and connection errors to ensure partial failures don't crash the entire check."</div>
+      </div>
+
+      <div class="card">
+        <h3>Template: Token Bucket Rate Limiter (Thread-Safe)</h3>
+<pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="cmt">"""Thread-safe token bucket rate limiter."""</span>
+import time
+import threading
+
+class TokenBucket:
+    def __init__(self, rate: float, burst: int):
+        self.rate = rate        <span class="cmt"># tokens per second</span>
+        self.burst = burst      <span class="cmt"># max tokens (burst capacity)</span>
+        self.tokens = burst     <span class="cmt"># start full</span>
+        self.last_refill = time.monotonic()
+        self.lock = threading.Lock()
+
+    def _refill(self):
+        now = time.monotonic()
+        elapsed = now - self.last_refill
+        new_tokens = elapsed * self.rate
+        self.tokens = min(self.burst, self.tokens + new_tokens)
+        self.last_refill = now
+
+    def acquire(self, tokens: int = 1) -&gt; bool:
+        """Try to consume tokens. Returns True if allowed."""
+        with self.lock:
+            self._refill()
+            if self.tokens &gt;= tokens:
+                self.tokens -= tokens
+                return True
+            return False
+
+    def wait(self, tokens: int = 1):
+        """Block until tokens are available."""
+        while not self.acquire(tokens):
+            time.sleep(1.0 / self.rate)
+</code></pre>
+      </div>
+    </div>
+
+    <div class="callout warn"><div class="h">Common Coding Round Traps</div>
+    <strong>1.</strong> Loading entire file into memory with <code>.read()</code> or <code>.readlines()</code> — instant fail signal.<br>
+    <strong>2.</strong> No error handling — production code must handle malformed input gracefully.<br>
+    <strong>3.</strong> Ignoring timeouts in network code — shows you haven't operated production systems.<br>
+    <strong>4.</strong> Over-optimizing algorithm before getting a working solution — correctness first, then optimize.<br>
+    <strong>5.</strong> Not explaining your choices — narration is 50% of the signal.</div>
+  </div>
+</section>
+
+<!-- ============ SECTION 03: LINUX INTERNALS ============ -->
+<section id="linux">
+  <div class="wrap">
+    <span class="eyebrow">Section 03 — Linux & Systems</span>
+    <h2 class="sec">Linux Internals & Kernel Reasoning</h2>
+    <p class="lead">Google SRE interviews test mechanistic understanding of Linux — not command memorization. They want to know WHY you chose a command, WHAT signal you expect, and HOW the kernel handles the operation.</p>
+
+    <div class="grid two">
+      <div class="card">
+        <h3>Process Management</h3>
+        <p><strong>Process states:</strong> Running (R), Sleeping (S), Uninterruptible Sleep (D), Zombie (Z), Stopped (T). The D-state is critical — it means the process is waiting on I/O and cannot be killed (even with SIGKILL).</p>
+        <p><strong>Key concepts:</strong> fork/exec model, copy-on-write, process groups, sessions, orphan processes, zombie reaping.</p>
+        <p><strong>Interview hot topic:</strong> "Why would a process be stuck in D-state?" — Answer: Waiting on uninterruptible I/O (disk, NFS mount). Indicates storage/network issue, not a process bug.</p>
+      </div>
+      <div class="card">
+        <h3>Memory Management</h3>
+        <p><strong>Virtual memory:</strong> Each process gets its own virtual address space. The kernel maps virtual pages to physical frames via page tables. The MMU handles translation.</p>
+        <p><strong>Key concepts:</strong> Page cache, slab allocator, OOM killer, memory reclaim, swap, RSS vs VSZ, memory-mapped files, huge pages.</p>
+        <p><strong>Interview hot topic:</strong> "The OOM killer triggered — how do you investigate?" — Check <code>dmesg</code> for OOM messages, identify the killed process, check <code>/proc/meminfo</code> for memory pressure.</p>
+      </div>
+      <div class="card">
+        <h3>File Systems & I/O</h3>
+        <p><strong>Inodes:</strong> Store metadata (permissions, timestamps, block pointers) — NOT the filename. Filenames live in directory entries that map name → inode number.</p>
+        <p><strong>Key concepts:</strong> VFS layer, page cache, direct I/O, write-back vs write-through, journaling, inode exhaustion, file descriptors.</p>
+        <p><strong>Interview hot topic:</strong> "Disk is full but <code>df</code> shows space" — Deleted files still held open by processes. Use <code>lsof +D /path</code> to find them.</p>
+      </div>
+      <div class="card">
+        <h3>Networking Internals</h3>
+        <p><strong>TCP handshake:</strong> SYN → SYN-ACK → ACK. The SYN backlog queue is finite — if saturated, new connections are dropped (SYN flood or misconfiguration).</p>
+        <p><strong>Key concepts:</strong> Socket states, TIME_WAIT, connection pooling, TCP tuning (backlog, keepalive), DNS resolution, iptables/nftables, network namespaces.</p>
+        <p><strong>Interview hot topic:</strong> "Intermittent connection timeouts" — Check SYN backlog (<code>ss -s</code>), check application thread pool, check DNS TTL, check for packet loss (<code>mtr</code>).</p>
+      </div>
+      <div class="card">
+        <h3>Scheduling & CPU</h3>
+        <p><strong>CFS (Completely Fair Scheduler):</strong> Uses a red-black tree of tasks sorted by virtual runtime. Tasks with less CPU time get priority. Nice values adjust weight.</p>
+        <p><strong>Key concepts:</strong> Context switches, CPU affinity, cgroups CPU limits, load average (1/5/15 min), runqueue depth, CPU steal time (VMs).</p>
+        <p><strong>Interview hot topic:</strong> "High load average but low CPU%" — Many processes in D-state (I/O wait) inflate load average without consuming CPU.</p>
+      </div>
+      <div class="card">
+        <h3>Cgroups & Containers</h3>
+        <p><strong>Cgroups v2:</strong> Hierarchical resource control — CPU, memory, I/O, PIDs. Prevents noisy neighbor problems. Containers use cgroups + namespaces for isolation.</p>
+        <p><strong>Key concepts:</strong> Memory limits (hard/soft), CPU shares vs quotas, I/O weight, PID limits, OOM within cgroup, namespace types (PID, NET, MNT, UTS, IPC, USER).</p>
+        <p><strong>Interview hot topic:</strong> "How do cgroups prevent noisy neighbors?" — Memory cgroup enforces hard limits; CPU cgroup uses CFS bandwidth throttling; I/O cgroup uses BFQ weights.</p>
+      </div>
+    </div>
+
+    <h3>The Command → Intent → Signal Framework</h3>
+    <p>Google doesn't evaluate command knowledge. They evaluate <strong>judgment through command choice</strong>. Before touching the keyboard, strong SREs ask: Is this live or historical? Am I looking for symptoms or root cause? What's the lowest-cost, highest-signal command?</p>
+
+    <div class="tbl-scroll">
+    <table class="tbl">
+      <thead><tr><th>Scenario</th><th>First Command</th><th>Why (Signal)</th><th>Red Flag Alternative</th></tr></thead>
+      <tbody>
+        <tr><td>Service is slow, CPU normal</td><td><code>ss -s</code> or <code>iostat 1</code></td><td>Check network backlog or disk I/O wait — the two hidden latency sources</td><td>Immediately grepping all logs</td></tr>
+        <tr><td>High load average</td><td><code>vmstat 1 5</code></td><td>Distinguishes CPU-bound (us/sy) from I/O-bound (wa) from memory pressure (si/so)</td><td>Running <code>top</code> and staring</td></tr>
+        <tr><td>Process stuck</td><td><code>cat /proc/PID/status</code></td><td>Shows state (D = I/O wait), voluntary/involuntary context switches</td><td>Immediately sending SIGKILL</td></tr>
+        <tr><td>Disk full</td><td><code>df -h && df -i</code></td><td>Checks both block usage AND inode usage — inode exhaustion is a common gotcha</td><td>Only checking <code>df -h</code></td></tr>
+        <tr><td>Can't connect to service</td><td><code>ss -lntp | grep PORT</code></td><td>Confirms if the service is actually listening before debugging network path</td><td>Running <code>ping</code> (wrong layer)</td></tr>
+        <tr><td>Memory pressure</td><td><code>free -m</code> then <code>slabtop</code></td><td>Distinguishes user-space leaks from kernel slab growth (dentries, inodes)</td><td>Restarting the service immediately</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="callout tip"><div class="h">Interview Narration Pattern</div>
+    "I'll start with [command] because it gives me [specific signal] with minimal system impact. Based on what I see, I'll either drill into [path A] if the signal suggests [hypothesis 1], or pivot to [path B] if it points to [hypothesis 2]."</div>
+  </div>
+</section>
+
+<!-- ============ SECTION 04: BEHAVIORAL / GOOGLEYNESS ============ -->
+<section id="behavioral">
+  <div class="wrap">
+    <span class="eyebrow">Section 04 — Googleyness & Leadership</span>
+    <h2 class="sec">The Behavioral Round: What Google Actually Scores</h2>
+    <p class="lead">Google's Googleyness & Leadership round evaluates six specific attributes. It's not a casual chat — it's a scored signal that goes directly to the Hiring Committee. For SRE specifically, they weight incident leadership, blameless culture, and calm under pressure.</p>
+
+    <h3>The Six Googleyness Attributes</h3>
+    <div class="grid three">
+      <div class="card">
+        <span class="badge b-blue">1</span>
+        <h3>Thrives in Ambiguity</h3>
+        <p>Can you make progress when the path isn't fully defined? Do you ask useful questions, establish assumptions, and move forward — or stall until every unknown is removed?</p>
+      </div>
+      <div class="card">
+        <span class="badge b-blue">2</span>
+        <h3>Values Feedback</h3>
+        <p>Can you reconsider your thinking when new information appears? The signal is intellectual humility and openness to learning — not automatic agreement.</p>
+      </div>
+      <div class="card">
+        <span class="badge b-blue">3</span>
+        <h3>Challenges Status Quo</h3>
+        <p>Do you demonstrate independent judgment? Can you question assumptions and propose better approaches when the existing way is no longer optimal?</p>
+      </div>
+      <div class="card">
+        <span class="badge b-blue">4</span>
+        <h3>Puts User First</h3>
+        <p>Are your technical decisions connected to user impact? Can you explain what changed for the user and why that outcome mattered?</p>
+      </div>
+      <div class="card">
+        <span class="badge b-blue">5</span>
+        <h3>Does the Right Thing</h3>
+        <p>Judgment and integrity. The correct decision that carried some cost — time, effort, disagreement, or personal discomfort. Ownership and accountability.</p>
+      </div>
+      <div class="card">
+        <span class="badge b-blue">6</span>
+        <h3>Cares About the Team</h3>
+        <p>Do you improve the effectiveness of those around you? Mentoring, conflict resolution, creating opportunities for others, helping teammates succeed.</p>
+      </div>
+    </div>
+
+    <h3>Two Types of Questions (Critical Distinction)</h3>
+    <div class="grid two">
+      <div class="card">
+        <h3>Experience Questions</h3>
+        <p>"Tell me about a time you..." — These want a <strong>specific story</strong> from your past. Use STAR method. Depth is the signal. One concrete example > three vague ones.</p>
+        <div class="callout tip"><div class="h">Example</div>"Tell me about the most severe outage you handled."</div>
+      </div>
+      <div class="card">
+        <h3>Process Questions</h3>
+        <p>"How do you..." — These want your <strong>framework for a category of situations</strong>. Start with your approach/principles, THEN illustrate with a brief example.</p>
+        <div class="callout tip"><div class="h">Example</div>"How do you influence people you haven't worked with before?"</div>
+      </div>
+    </div>
+
+    <div class="callout warn"><div class="h">The #1 Mistake</div>
+    Answering process questions with only a story. "One story shows me one situation. For a process question, I'm trying to understand how you would operate across many situations." — Google Interviewer feedback from mock interviews. Start with your framework, then use a brief example to illustrate.</div>
+
+    <h3>The SRE-STAR(M) Method for Behavioral Answers</h3>
+    <p>For SRE roles, extend the standard STAR method with <strong>M = Mitigation/Measurement</strong>:</p>
+    <div class="tbl-scroll">
+    <table class="tbl">
+      <thead><tr><th>Letter</th><th>Component</th><th>SRE-Specific Focus</th><th>Time Allocation</th></tr></thead>
+      <tbody>
+        <tr><td>S</td><td>Situation</td><td>Set the operational context: scale, impact, urgency</td><td>~20%</td></tr>
+        <tr><td>T</td><td>Task</td><td>Your specific responsibility in the incident/project</td><td>~10%</td></tr>
+        <tr><td>A</td><td>Action</td><td>What YOU did — mitigation first, then root cause, then prevention</td><td>~40%</td></tr>
+        <tr><td>R</td><td>Result</td><td>Quantified outcome: MTTR reduced, error budget preserved, users impacted</td><td>~15%</td></tr>
+        <tr><td>M</td><td>Mitigation/Measurement</td><td>What systemic change prevented recurrence? What did you measure?</td><td>~15%</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Top 20 Googleyness Questions (Frequently Reported)</h3>
+    <div class="card">
+      <p><strong>Incident & Operations:</strong></p>
+      <p>1. Tell me about the most severe outage you handled.<br>
+      2. Describe a time you had to make a critical decision with incomplete data.<br>
+      3. Tell me about a time you disagreed with a SWE about a reliability concern.<br>
+      4. How do you handle being paged at 3AM for an alert you've never seen?<br>
+      5. Describe a time you had to pivot midway through a project.</p>
+
+      <p><strong>Leadership & Influence:</strong></p>
+      <p>6. Tell me about a time you influenced a team without formal authority.<br>
+      7. Describe a situation where you mentored a junior team member.<br>
+      8. Tell me about a time you proposed an idea but your team disagreed.<br>
+      9. How do you handle unreasonable demands from your manager?<br>
+      10. Describe a time you worked outside your role definition.</p>
+
+      <p><strong>Collaboration & Conflict:</strong></p>
+      <p>11. Tell me about a time you had a conflict with a colleague and how you resolved it.<br>
+      12. Describe working with someone difficult. How did you handle it?<br>
+      13. Tell me about cross-team collaboration that went well (or poorly).<br>
+      14. How do you ensure accessibility and inclusion in your work?<br>
+      15. What would you do if a junior team member was delaying tasks?</p>
+
+      <p><strong>Growth & Self-Awareness:</strong></p>
+      <p>16. Tell me about critical feedback you received. How did you respond?<br>
+      17. Describe your biggest professional accomplishment.<br>
+      18. Tell me about a time your work was deprioritized mid-project.<br>
+      19. How do you manage multiple priorities in a dynamic environment?<br>
+      20. What excites you about the SRE role at Google specifically?</p>
+    </div>
+
+    <div class="callout tip"><div class="h">SRE-Specific Behavioral Signals</div>
+    <strong>Blamelessness:</strong> Never blame individuals in your stories. Frame failures as system failures.<br>
+    <strong>Mitigation-first:</strong> In outage stories, always mention stabilizing the system BEFORE root-causing.<br>
+    <strong>Quantification:</strong> Use numbers — "reduced MTTR from 45 min to 8 min," "saved 20 engineering hours/week of toil."<br>
+    <strong>Systemic thinking:</strong> End stories with what you changed to prevent recurrence, not just how you fixed it once.</div>
+  </div>
+</section>
+
+<!-- ============ SECTION 05: NALSD ============ -->
+<section id="nalsd">
+  <div class="wrap">
+    <span class="eyebrow">Section 05 — System Design</span>
+    <h2 class="sec">NALSD: Non-Abstract Large System Design</h2>
+    <p class="lead">The NALSD round is the defining round of Google SRE interviews. Unlike abstract system design, you work with real physical constraints — bandwidth, IOPS, storage, latency budgets. You must produce a "Bill of Materials" with actual numbers.</p>
+
+    <h3>The NALSD Framework (8 Steps)</h3>
+    <div class="timeline">
+      <div class="step"><h4>1. Clarify Requirements & Constraints</h4><p>Ask: What's the SLO? What's the data volume? What's the latency budget? What's the recovery time objective (RTO)?</p></div>
+      <div class="step"><h4>2. Estimate Load Characteristics</h4><p>QPS, storage growth rate, read/write ratio, peak-to-average ratio. Use back-of-envelope math.</p></div>
+      <div class="step"><h4>3. Choose Architecture Pattern</h4><p>Active-active vs active-passive, sharding strategy, replication model, consistency requirements.</p></div>
+      <div class="step"><h4>4. Capacity Math (Bill of Materials)</h4><p>Calculate: How many servers? How much storage? What network bandwidth? What IOPS per disk?</p></div>
+      <div class="step"><h4>5. Identify Failure Modes</h4><p>Single points of failure, blast radius, cascading failures, split-brain scenarios, data loss windows.</p></div>
+      <div class="step"><h4>6. Design for Degradation</h4><p>What happens at 2x load? At 10x? What do you shed first? How does the system degrade gracefully?</p></div>
+      <div class="step"><h4>7. Observability & Alerting</h4><p>SLIs to measure, burn-rate alerting, dashboards, what gets paged vs. what gets a ticket.</p></div>
+      <div class="step"><h4>8. Operational Concerns</h4><p>Deployment strategy, rollback plan, capacity planning, disaster recovery, cost optimization.</p></div>
+    </div>
+
+    <h3>Back-of-Envelope Numbers You Must Know</h3>
+    <div class="tbl-scroll">
+    <table class="tbl">
+      <thead><tr><th>Resource</th><th>Typical Value</th><th>When It Matters</th></tr></thead>
+      <tbody>
+        <tr><td>SSD Random Read IOPS</td><td>~100,000</td><td>Database sizing, cache tier design</td></tr>
+        <tr><td>HDD Sequential Read</td><td>~200 MB/s</td><td>Backup/restore time estimation</td></tr>
+        <tr><td>Network (10GbE)</td><td>~1.2 GB/s</td><td>Cross-region replication bandwidth</td></tr>
+        <tr><td>Memory Bandwidth</td><td>~50 GB/s (DDR4)</td><td>In-memory cache throughput</td></tr>
+        <tr><td>1 Million QPS</td><td>~12 requests/ms</td><td>Per-server capacity planning</td></tr>
+        <tr><td>99.9% availability</td><td>~8.7 hours downtime/year</td><td>Error budget calculation</td></tr>
+        <tr><td>99.99% availability</td><td>~52 minutes downtime/year</td><td>Multi-region justification</td></tr>
+        <tr><td>Cross-continent RTT</td><td>~100-200ms</td><td>Global load balancing decisions</td></tr>
+        <tr><td>Intra-datacenter RTT</td><td>~0.5ms</td><td>Service mesh overhead</td></tr>
+        <tr><td>1 PB storage (HDD)</td><td>~$20,000/month (cloud)</td><td>Cost-aware design decisions</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Common NALSD Questions</h3>
+    <div class="grid two">
+      <div class="card">
+        <h3>Design a Global Metrics Pipeline</h3>
+        <p>Must address: fan-in from millions of hosts, sharding by metric name, backpressure when ingestion exceeds capacity, cardinality explosions, HA ingestion, query latency SLO.</p>
+      </div>
+      <div class="card">
+        <h3>Design Disaster Recovery for 5PB</h3>
+        <p>Must address: RTO/RPO constraints, bandwidth math (can you replicate 5PB in 4 hours?), incremental vs full backup, cost of hot standby vs cold restore.</p>
+      </div>
+      <div class="card">
+        <h3>Design a Feature Flag System</h3>
+        <p>Must address: atomic rollout, blast-radius control (1% → 10% → 100%), auditability, rollback safety, config distribution consistency, staleness tolerance.</p>
+      </div>
+      <div class="card">
+        <h3>90-Day Plan for a Flaky Service</h3>
+        <p>Must address: immediate stabilization (Week 1), SLO definition (Week 2-3), observability gaps (Week 3-4), toil reduction (Week 5-8), systemic fixes (Week 8-12).</p>
+      </div>
+    </div>
+
+    <div class="callout warn"><div class="h">NALSD Trap: The Physics Check</div>
+    A candidate designed active-passive DR for 5PB with a 4-hour RTO. The interviewer asked: "What's the bandwidth needed to replicate 5PB in 4 hours?" Answer: 5PB / 4h = 1.25 PB/h = ~2.8 Tbps. That's physically impossible on standard links. The candidate failed for not checking the physics. <strong>Always validate your design against physical limits.</strong></div>
+  </div>
+</section>
+
+<!-- ============ SECTION 06: TROUBLESHOOTING ============ -->
+<section id="troubleshoot">
+  <div class="wrap">
+    <span class="eyebrow">Section 06 — Troubleshooting</span>
+    <h2 class="sec">The Troubleshooting Round</h2>
+    <p class="lead">This round mirrors real incidents. You're given a vague symptom and must systematically narrow down the cause. The #1 rule: MITIGATE FIRST, then diagnose. Interviewers fail candidates who jump to root cause before stabilizing.</p>
+
+    <h3>The Troubleshooting Framework</h3>
+    <div class="grid two">
+      <div class="card">
+        <h3>Step 1: Assess Impact</h3>
+        <p>How many users affected? Which regions? Is it getting worse? What's the error budget burn rate? This determines urgency and whether to page more people.</p>
+      </div>
+      <div class="card">
+        <h3>Step 2: Mitigate</h3>
+        <p>Can we drain traffic? Roll back a deploy? Increase capacity? Failover to another region? <strong>Stabilize the patient before diagnosing the disease.</strong></p>
+      </div>
+      <div class="card">
+        <h3>Step 3: Hypothesize</h3>
+        <p>Form 2-3 hypotheses ranked by likelihood. "Given the symptoms, it could be: (1) deploy regression, (2) dependency failure, (3) capacity exhaustion."</p>
+      </div>
+      <div class="card">
+        <h3>Step 4: Test & Narrow</h3>
+        <p>Choose the highest-signal, lowest-cost test for each hypothesis. Eliminate possibilities systematically. Don't scattershot commands.</p>
+      </div>
+    </div>
+
+    <h3>Classic Troubleshooting Scenarios</h3>
+    <div class="card">
+      <h3>Scenario: "The site is slow. CPU is normal."</h3>
+      <p><strong>Strong answer flow:</strong></p>
+      <p>1. <code>tail -n 200 /var/log/app.log</code> — check for recent errors/timeouts<br>
+      2. <code>ss -s</code> — check connection states (TIME_WAIT accumulation? SYN backlog?)<br>
+      3. <code>iostat -x 1 3</code> — check disk I/O wait (the silent latency killer)<br>
+      4. <code>vmstat 1 5</code> — check for memory pressure (si/so columns)<br>
+      5. Only then form hypotheses: "Based on high await in iostat, I suspect disk I/O contention. Let me check which process is generating the I/O with <code>iotop</code>."</p>
+    </div>
+
+    <div class="card">
+      <h3>Scenario: "p99 latency doubled after a deploy"</h3>
+      <p><strong>Strong answer flow:</strong></p>
+      <p>1. <strong>Mitigate:</strong> "First, is this within error budget? If not, I'd recommend immediate rollback while we investigate."<br>
+      2. <strong>Correlate:</strong> "What changed in the deploy? I'd diff the release, check for new dependencies, config changes."<br>
+      3. <strong>Canary analysis:</strong> "If we have canary metrics, compare canary vs baseline latency distribution."<br>
+      4. <strong>Drill down:</strong> "Check if latency increase is uniform or concentrated in specific endpoints/regions."<br>
+      5. <strong>Trace:</strong> "Pull distributed traces for slow requests — where is the time being spent?"</p>
+    </div>
+
+    <div class="card">
+      <h3>Scenario: "A service can't reach its database"</h3>
+      <p><strong>Layer-by-layer diagnosis:</strong></p>
+      <p>1. <strong>DNS:</strong> <code>dig db-host.internal</code> — Does it resolve? Is the IP correct?<br>
+      2. <strong>Network:</strong> <code>nc -zv db-host 5432</code> — Can we establish a TCP connection?<br>
+      3. <strong>TLS:</strong> <code>openssl s_client -connect db-host:5432</code> — Certificate valid? Not expired?<br>
+      4. <strong>Auth:</strong> Check connection string, credentials, IAM roles<br>
+      5. <strong>Capacity:</strong> <code>SELECT count(*) FROM pg_stat_activity</code> — Connection pool exhausted?<br>
+      6. <strong>Firewall:</strong> Check security groups, iptables rules, network policies</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 07: QUIZ ============ -->
+<section id="quiz">
+  <div class="wrap">
+    <span class="eyebrow">Section 07 — Test Yourself</span>
+    <h2 class="sec">Rapid-Fire Quiz</h2>
+    <p class="lead">Test your knowledge across all interview dimensions. Each question mirrors real Google SRE interview patterns.</p>
+
+    <div class="quiz" data-correct="2">
+      <div class="q">Q1: A process is in D-state (uninterruptible sleep). What does this mean?</div>
+      <button class="opt">The process has crashed and needs to be restarted</button>
+      <button class="opt">The process is waiting for a signal from another process</button>
+      <button class="opt">The process is waiting on I/O that cannot be interrupted (even by SIGKILL)</button>
+      <button class="opt">The process is in a deadlock with another process</button>
+      <div class="explain">D-state means the process is in uninterruptible sleep, typically waiting on disk I/O or an NFS mount. It cannot be killed because the kernel needs the I/O operation to complete to maintain filesystem consistency. Many D-state processes usually indicate a storage or network filesystem issue.</div>
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="q">Q2: You're writing a Python script to process a 50GB log file. Which approach is correct for memory efficiency?</div>
+      <button class="opt"><code>data = open('log.txt').read(); lines = data.split('\n')</code></button>
+      <button class="opt"><code>with open('log.txt') as f: for line in f:</code></button>
+      <button class="opt"><code>lines = open('log.txt').readlines()</code></button>
+      <button class="opt"><code>import mmap; data = mmap.mmap(f.fileno(), 0)</code></button>
+      <div class="explain">Using <code>for line in f</code> treats the file object as an iterator, reading one line at a time with O(1) memory usage regardless of file size. The other options either load the entire file into memory (.read(), .readlines()) or use mmap which maps the entire file into virtual address space (works but isn't the idiomatic Python approach for line-by-line processing).</div>
+    </div>
+
+    <div class="quiz" data-correct="0">
+      <div class="q">Q3: Your service has a 99.9% availability SLO. How much downtime does that allow per month?</div>
+      <button class="opt">~43 minutes per month</button>
+      <button class="opt">~4.3 minutes per month</button>
+      <button class="opt">~8.7 hours per month</button>
+      <button class="opt">~7.2 minutes per month</button>
+      <div class="explain">99.9% availability = 0.1% downtime. 30 days × 24 hours × 60 minutes = 43,200 minutes/month. 0.1% of 43,200 = 43.2 minutes. This is your error budget — once consumed, you should freeze deployments and focus on reliability.</div>
+    </div>
+
+    <div class="quiz" data-correct="3">
+      <div class="q">Q4: In a Google SRE troubleshooting interview, what should you do FIRST when told "the site is down"?</div>
+      <button class="opt">Start checking logs for error messages</button>
+      <button class="opt">Ask what was the last deployment</button>
+      <button class="opt">Run a full system diagnostic (top, vmstat, iostat)</button>
+      <button class="opt">Assess impact scope and attempt mitigation before diagnosis</button>
+      <div class="explain">The "Mitigation-First" mindset is the #1 signal Google evaluates. Before debugging, assess: How many users are affected? Can we mitigate (drain traffic, rollback, failover)? Stabilize the patient before diagnosing the disease. Jumping straight to root-cause analysis is a common failure pattern.</div>
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="q">Q5: What distinguishes a "process question" from an "experience question" in the Googleyness round?</div>
+      <button class="opt">Process questions are about technical processes; experience questions are about soft skills</button>
+      <button class="opt">Process questions require longer answers; experience questions are brief</button>
+      <button class="opt">Process questions ask "how do you approach X" (wanting your framework); experience questions ask "tell me about a time" (wanting a specific story)</button>
+      <button class="opt">There is no difference; they should be answered the same way</button>
+      <div class="explain">This is the most common mistake in Googleyness rounds. Experience questions want depth in ONE specific story (use STAR). Process questions want your FRAMEWORK for a category of situations — start with principles/approach, then briefly illustrate with an example. Answering both with just a story leaves signal on the table.</div>
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="q">Q6: You see high load average but CPU utilization is low. What's the most likely cause?</div>
+      <button class="opt">A memory leak causing excessive garbage collection</button>
+      <button class="opt">Many processes in D-state (uninterruptible I/O wait)</button>
+      <button class="opt">Too many zombie processes</button>
+      <button class="opt">Network packet loss causing TCP retransmissions</button>
+      <div class="explain">Linux load average counts ALL processes in the run queue, including those in D-state (waiting on I/O). If many processes are blocked on disk I/O or NFS, load average rises without CPU consumption. Check with <code>vmstat</code> (wa column) or <code>cat /proc/loadavg</code> and compare with <code>mpstat</code> CPU idle%.</div>
+    </div>
+
+    <div class="quiz" data-correct="0">
+      <div class="q">Q7: In NALSD, you need to replicate 5 PB of data with a 4-hour RTO. What minimum bandwidth is required?</div>
+      <button class="opt">~2.8 Tbps — physically impossible on standard links</button>
+      <button class="opt">~280 Gbps — achievable with multiple 100GbE links</button>
+      <button class="opt">~28 Gbps — a single 40GbE link suffices</button>
+      <button class="opt">~2.8 Gbps — standard enterprise bandwidth</button>
+      <div class="explain">5 PB = 5,000 TB = 40,000 Tb. Divide by 4 hours = 10,000 Tb/h = ~2,778 Gbps ≈ 2.8 Tbps. This exceeds what's physically achievable on standard links, which means the design must use incremental replication, pre-staged warm standby, or accept a longer RTO. This is the "physics check" that catches candidates in NALSD.</div>
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="q">Q8: What is the correct SRE approach to "toil"?</div>
+      <button class="opt">Toil is unavoidable operational work that SREs must accept</button>
+      <button class="opt">Toil is any work that takes more than 30 minutes</button>
+      <button class="opt">Toil is manual, repetitive, automatable work that scales linearly with service growth — and should be systematically eliminated</button>
+      <button class="opt">Toil is work done by junior engineers that seniors should delegate</button>
+      <div class="explain">Google defines toil as work that is manual, repetitive, automatable, tactical, without enduring value, and scales linearly with service growth. The SRE charter targets keeping toil below 50% of an SRE's time. The goal is to automate toil away, freeing engineers for reliability engineering work.</div>
+    </div>
+
+    <div class="quiz" data-correct="3">
+      <div class="q">Q9: Which concurrency pattern is most appropriate for checking health of 100,000 servers with a rate limit?</div>
+      <button class="opt">Sequential loop with sleep() between requests</button>
+      <button class="opt">Spawn 100,000 threads, one per server</button>
+      <button class="opt">multiprocessing.Pool with 100,000 workers</button>
+      <button class="opt">asyncio with a Semaphore for concurrency + token bucket for rate limiting</button>
+      <div class="explain">asyncio is ideal for I/O-bound concurrent work (network requests). A Semaphore limits concurrent in-flight requests (e.g., 50-100 at a time), while a separate token bucket enforces the rate limit (requests/second). This gives you high throughput with bounded resource usage. Spawning 100K threads would exhaust OS resources.</div>
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="q">Q10: In the behavioral round, what does "blamelessness" mean for SRE stories?</div>
+      <button class="opt">Never mention any mistakes or failures</button>
+      <button class="opt">Frame failures as system failures, focus on what the system allowed to happen, and describe what you changed to prevent recurrence</button>
+      <button class="opt">Always blame the process, never the people who designed it</button>
+      <button class="opt">Avoid discussing outages entirely in behavioral interviews</button>
+      <div class="explain">Blameless culture is core to Google SRE. In interviews, frame outages as system failures: "The deployment pipeline lacked a canary stage" not "Bob pushed bad code." Focus on contributing factors, what the system allowed to happen, and systemic changes you drove to prevent recurrence. This signals operational maturity.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 08: FLASHCARDS ============ -->
+<section id="flash">
+  <div class="wrap">
+    <span class="eyebrow">Section 08 — Spaced Repetition</span>
+    <h2 class="sec">Flashcards: Tap to Flip</h2>
+    <p class="lead">Core SRE vocabulary and concepts you must know cold. Tap any card to reveal the definition.</p>
+    <div class="flip-grid">
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">SLI<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Service Level Indicator — a quantitative measure of service behavior (e.g., request latency, error rate, throughput). The raw measurement that feeds into SLOs.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">SLO<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Service Level Objective — a target value for an SLI (e.g., "99.9% of requests complete in <200ms"). The reliability target that determines your error budget.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Error Budget<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">The allowed amount of unreliability (1 - SLO). E.g., 99.9% SLO = 0.1% error budget = ~43 min/month of allowed downtime. When exhausted, freeze changes and focus on reliability.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Toil<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Manual, repetitive, automatable operational work that scales linearly with service growth and provides no enduring value. Google targets <50% toil for SREs.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">NALSD<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Non-Abstract Large System Design — Google's SRE-specific system design approach that focuses on physical constraints (IOPS, bandwidth, latency), failure modes, and capacity math rather than abstract architecture.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Burn Rate<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">How fast you're consuming your error budget. A burn rate of 1x means you'll exhaust the budget exactly at period end. >1x means you'll run out early. Used for alerting thresholds.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Blast Radius<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">The scope of impact when something fails. Good design minimizes blast radius through isolation (regions, cells, shards). A key NALSD concept for failure mode analysis.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">D-State<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Uninterruptible Sleep — a Linux process state where the process is waiting on I/O and cannot be killed. Many D-state processes indicate storage/NFS issues and inflate load average.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">CFS<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Completely Fair Scheduler — Linux's default CPU scheduler. Uses a red-black tree sorted by virtual runtime. Processes with less CPU time get priority. Nice values adjust weight.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Cgroups<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Control Groups — kernel feature for hierarchical resource limiting (CPU, memory, I/O, PIDs). Foundation of container isolation. Prevents noisy neighbor problems.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">eBPF<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">Extended Berkeley Packet Filter — allows running sandboxed programs in the kernel without modifying kernel source. Used for observability, networking, and security tracing in modern SRE.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Blameless Postmortem<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">An incident review focused on contributing factors and systemic fixes, not individual blame. Documents timeline, impact, root cause, and action items. Core to Google's SRE culture.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Token Bucket<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">A rate limiting algorithm. Tokens are added at a fixed rate. Each request consumes a token. Burst capacity = bucket size. When empty, requests are rejected or queued.</div>
+      </div></button>
+      <button class="flip"><div class="flip-inner">
+        <div class="flip-face flip-front">Backpressure<span class="hint">tap to flip</span></div>
+        <div class="flip-face flip-back">A mechanism where a downstream system signals upstream to slow down when overwhelmed. Prevents cascading failures. Implemented via queue limits, HTTP 429, or flow control.</div>
+      </div></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 09: MOCK INTERVIEW ============ -->
+<section id="mock">
+  <div class="wrap">
+    <span class="eyebrow">Section 09 — Dress Rehearsal</span>
+    <h2 class="sec">Mock Interview: Model Answers</h2>
+    <p class="lead">Practice answering these out loud. Click each question to reveal a model answer written to be spoken naturally. Cover both coding and behavioral rounds.</p>
+
+    <h3>Coding Round Mock Questions</h3>
+
+    <div class="mock"><div class="qq">How would you approach parsing a 50GB log file with a 512MB memory limit? <span class="tw">+</span></div>
+      <div class="aa"><p>"I'd treat the file as a stream rather than loading it into memory. In Python, I'd open the file and iterate line by line using a for loop over the file object — this uses the file as an iterator with O(1) memory per line. For the aggregation, I'd use a Counter or defaultdict to accumulate results, which stays bounded by the number of unique keys, not the file size. If even the aggregation could grow unbounded — say millions of unique endpoints — I'd use a heap to maintain only the top-N results. I'd also add error handling for malformed lines and use buffered I/O for performance. The key insight is separating the streaming read from the bounded aggregation."</p></div></div>
+
+    <div class="mock"><div class="qq">Implement a rate limiter. Walk me through your design choices. <span class="tw">+</span></div>
+      <div class="aa"><p>"I'd implement a token bucket because it naturally handles burst traffic while enforcing a long-term rate. The bucket has two parameters: rate (tokens per second) and burst (maximum tokens). Tokens refill continuously at the rate, and each request consumes one token. If the bucket is empty, the request is rejected. For thread safety, I'd use a lock around the refill-and-consume operation. The refill is lazy — I calculate elapsed time since last access and add proportional tokens, capped at burst size. This avoids needing a background refill thread. The alternative is a sliding window counter, which is simpler but doesn't handle bursts as gracefully."</p></div></div>
+
+    <div class="mock"><div class="qq">You need to check health of 100,000 servers. How do you structure this? <span class="tw">+</span></div>
+      <div class="aa"><p>"This is an I/O-bound problem, so I'd use asyncio rather than threads or multiprocessing. I'd create an async function that hits each server's health endpoint with a strict timeout — say 5 seconds. To avoid overwhelming the network or target servers, I'd use two controls: a Semaphore limiting concurrent in-flight requests to maybe 100, and a separate token bucket enforcing the requests-per-second rate limit. I'd collect results into a list of dataclass objects with host, status, latency, and any error message. Partial failures are expected — a timeout or connection error for one host shouldn't affect others. Finally, I'd aggregate results: how many healthy, how many timed out, how many errored, and flag any hosts with latency above a threshold."</p></div></div>
+
+    <h3>Behavioral Round Mock Questions</h3>
+
+    <div class="mock"><div class="qq">Tell me about the most severe outage you handled. <span class="tw">+</span></div>
+      <div class="aa"><p>"At my previous company, we had a cascading failure that took down our payment processing service during peak Black Friday traffic — affecting roughly 50,000 transactions per minute. I was the incident commander. My first action was mitigation: I coordinated draining traffic to our secondary region within 3 minutes, which restored service for 80% of users. Only then did we diagnose — the root cause was a connection pool exhaustion triggered by a slow downstream dependency that had deployed a change without our knowledge. After stabilization, I led the postmortem. We identified three systemic gaps: no circuit breaker on that dependency, no alerting on connection pool saturation, and no cross-team deploy notification. I drove all three action items to completion over the next sprint. The result was MTTR for similar incidents dropped from 45 minutes to under 5 minutes, and we established a cross-team deploy calendar that prevented blind-side failures."</p></div></div>
+
+    <div class="mock"><div class="qq">How do you influence teams without formal authority? <span class="tw">+</span></div>
+      <div class="aa"><p>"My approach has three pillars. First, I lead with data — I quantify the reliability impact in terms the other team cares about, whether that's user-facing errors, revenue impact, or engineering time lost to incidents. Second, I build credibility by offering help before asking for change — I might write the first draft of an SLO, build a dashboard for them, or help debug their on-call issues. Third, I find shared incentives — reliability improvements often align with the other team's goals if framed correctly. For example, I recently needed a platform team to add circuit breakers to their client library. Instead of filing a bug, I showed them data on how cascading failures from their service were causing pages for three downstream teams, wrote a design doc with the proposed solution, and offered to pair on the implementation. They shipped it in two weeks because it also reduced their own on-call burden."</p></div></div>
+
+    <div class="mock"><div class="qq">Describe a time you received critical feedback. How did you respond? <span class="tw">+</span></div>
+      <div class="aa"><p>"During a performance review, my manager told me that while my technical contributions were strong, I wasn't making my work visible enough to leadership, and I tended to solve problems alone rather than bringing others along. My initial reaction was defensiveness — I felt the work should speak for itself. But I took a day to reflect and realized the feedback was accurate. I started three practices: writing brief weekly summaries of reliability wins for my skip-level, actively pulling junior engineers into my projects as collaborators rather than just reviewers, and presenting postmortem findings at our engineering all-hands. Within two quarters, I was recognized in our team's impact review, and two of the junior engineers I'd mentored took on independent on-call rotations. The feedback fundamentally changed how I think about impact — it's not just what you build, it's whether others can learn from and build upon your work."</p></div></div>
+
+    <div class="mock"><div class="qq">Tell me about a time you disagreed with a software engineer about a reliability concern. <span class="tw">+</span></div>
+      <div class="aa"><p>"A feature team wanted to launch a new real-time notification system without a circuit breaker or graceful degradation path. Their argument was that the feature was low-risk and the deadline was tight. I disagreed because the notification system depended on three external services, any of which could cause cascading latency. Rather than blocking the launch, I proposed a compromise: launch with a feature flag at 5% rollout, add basic timeout handling which I offered to implement myself, and define an SLO together so we'd have objective criteria for when to pause the rollout. They agreed because I wasn't saying 'no' — I was saying 'yes, safely.' We launched, caught a latency issue at 5% that would have been a full outage at 100%, fixed it, and rolled out fully the following week. The relationship with that team actually improved because they saw SRE as an enabler rather than a blocker."</p></div></div>
+
+    <div class="mock"><div class="qq">How do you handle being paged at 3AM for an alert you've never seen? <span class="tw">+</span></div>
+      <div class="aa"><p>"First, I check the alert description and runbook link — well-operated services should have runbooks for every alert. If there's a runbook, I follow it. If not, I assess impact: is this user-facing? What's the error rate? Is it getting worse? If impact is significant and growing, I escalate immediately — I'd rather wake someone with context than spend 30 minutes floundering alone. If impact is contained, I start systematic diagnosis: check recent deploys, check dependency health, check resource utilization. I document everything I find in the incident channel as I go. After resolution, I always file two things: a runbook for this alert if one didn't exist, and a postmortem if the incident was significant. The meta-principle is: at 3AM, your job is to mitigate and escalate, not to be a hero. Heroics at 3AM lead to mistakes."</p></div></div>
+
+    <div class="mock"><div class="qq">What excites you about the SRE role at Google specifically? <span class="tw">+</span></div>
+      <div class="aa"><p>"Three things. First, scale — Google operates at a scale where the problems are genuinely novel. Techniques that work at thousands of servers break at millions, and I want to work on systems where the engineering challenges are at the frontier. Second, the SRE culture itself — Google literally wrote the book on SRE, and the principles of error budgets, blameless postmortems, and toil elimination aren't just aspirational there, they're operational reality with organizational support. Third, impact — when you improve reliability at Google's scale, you're improving the experience for billions of users. A 10ms latency reduction or a 0.01% availability improvement translates to millions of better user experiences per day. That kind of leverage is what motivates me as an engineer."</p></div></div>
+  </div>
+</section>
+
+<!-- ============ SECTION 10: CHEAT SHEET ============ -->
+<section id="cheat">
+  <div class="wrap">
+    <span class="eyebrow">Section 10 — Quick Reference</span>
+    <h2 class="sec">The Night-Before Cheat Sheet</h2>
+    <p class="lead">Condensed, scannable facts for last-minute review. Print this or keep it on a second screen.</p>
+    <div class="grid two">
+      <div class="card">
+        <h3>Coding Round Checklist</h3>
+        <p><strong>Always:</strong> Stream files (never <code>.read()</code>), handle errors gracefully, use timeouts for network calls, explain your choices out loud, validate with test cases.</p>
+        <p><strong>Patterns:</strong> <code>Counter</code> for aggregation, <code>heapq</code> for top-N, <code>deque</code> for sliding windows, <code>asyncio.Semaphore</code> for concurrency, generators for streaming.</p>
+        <p><strong>Red flags to avoid:</strong> Loading entire files into memory, no error handling, no timeouts, over-optimizing before correctness, silent failures.</p>
+      </div>
+      <div class="card">
+        <h3>Behavioral Round Checklist</h3>
+        <p><strong>STAR(M):</strong> Situation → Task → Action → Result → Mitigation/Measurement</p>
+        <p><strong>SRE signals:</strong> Blameless framing, mitigation-first, quantified results, systemic prevention, calm under pressure.</p>
+        <p><strong>Two question types:</strong> Experience (give a deep story) vs. Process (give your framework first, then a brief example).</p>
+        <p><strong>Prepare 5-6 stories</strong> that cover: severe outage, disagreement, mentoring, feedback, ambiguity, cross-team influence.</p>
+      </div>
+      <div class="card">
+        <h3>Linux Commands (First Response)</h3>
+        <p><code>vmstat 1 5</code> — CPU vs I/O vs memory pressure<br>
+        <code>iostat -x 1 3</code> — Disk I/O wait and utilization<br>
+        <code>ss -s</code> — Connection state summary<br>
+        <code>ss -lntp</code> — What's listening on which port<br>
+        <code>free -m</code> — Memory pressure overview<br>
+        <code>df -h && df -i</code> — Disk space AND inodes<br>
+        <code>dmesg -T | tail</code> — Recent kernel messages<br>
+        <code>cat /proc/PID/status</code> — Process state details<br>
+        <code>lsof -i :PORT</code> — What's using a port<br>
+        <code>sar -n DEV 1</code> — Network throughput</p>
+      </div>
+      <div class="card">
+        <h3>SRE Concepts (Must Know Cold)</h3>
+        <p><strong>SLI:</strong> What you measure (latency, error rate)<br>
+        <strong>SLO:</strong> Your target (99.9% < 200ms)<br>
+        <strong>Error Budget:</strong> 1 - SLO (your allowed unreliability)<br>
+        <strong>Burn Rate:</strong> How fast you consume error budget<br>
+        <strong>Toil:</strong> Manual, repetitive, automatable work (target <50%)<br>
+        <strong>MTTR:</strong> Mean Time To Recovery<br>
+        <strong>MTTD:</strong> Mean Time To Detection<br>
+        <strong>Blast Radius:</strong> Scope of failure impact<br>
+        <strong>Circuit Breaker:</strong> Stop calling a failing dependency<br>
+        <strong>Backpressure:</strong> Signal upstream to slow down</p>
+      </div>
+      <div class="card">
+        <h3>NALSD Numbers</h3>
+        <p><strong>Availability math:</strong><br>
+        99.9% = 43 min/month downtime<br>
+        99.99% = 4.3 min/month downtime<br>
+        99.999% = 26 sec/month downtime</p>
+        <p><strong>Storage/Network:</strong><br>
+        SSD: ~100K random IOPS<br>
+        HDD: ~200 MB/s sequential<br>
+        10GbE: ~1.2 GB/s<br>
+        Cross-continent RTT: 100-200ms<br>
+        Intra-DC RTT: ~0.5ms</p>
+      </div>
+      <div class="card">
+        <h3>Troubleshooting Framework</h3>
+        <p><strong>Order of operations:</strong><br>
+        1. Assess impact (scope, severity, trend)<br>
+        2. Mitigate (drain, rollback, failover)<br>
+        3. Hypothesize (2-3 ranked possibilities)<br>
+        4. Test (highest-signal, lowest-cost first)<br>
+        5. Fix (root cause after stabilization)<br>
+        6. Prevent (postmortem, systemic changes)</p>
+        <p><strong>Never:</strong> Jump to root cause before mitigating, scattershot commands without hypothesis, blame individuals.</p>
+      </div>
+      <div class="card">
+        <h3>Google SRE Books to Reference</h3>
+        <p><strong>Site Reliability Engineering</strong> — The original Google SRE book. Principles, error budgets, postmortem culture.<br>
+        <strong>The SRE Workbook</strong> — Practical implementation of SRE principles. NALSD chapter is essential.<br>
+        <strong>Systems Performance (Brendan Gregg)</strong> — Linux performance analysis bible.<br>
+        <strong>Designing Data-Intensive Applications</strong> — Distributed systems fundamentals.<br>
+        <strong>The Linux Programming Interface</strong> — Deep kernel/syscall understanding.</p>
+      </div>
+      <div class="card">
+        <h3>Day-of Reminders</h3>
+        <p><strong>Coding:</strong> Narrate everything. "I'm choosing X because..." Correctness first, then optimize. Write test cases. Handle edge cases explicitly.</p>
+        <p><strong>Behavioral:</strong> Be specific. Use numbers. Frame blamlessly. End with systemic prevention. For process questions, lead with framework.</p>
+        <p><strong>Troubleshooting:</strong> Mitigate first. State hypotheses before running commands. Explain what signal you expect from each command.</p>
+        <p><strong>NALSD:</strong> Always check the physics. Calculate bandwidth, IOPS, storage. Identify single points of failure. Design for graceful degradation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="big">You've Got This.</div>
+    <p>The Google SRE interview tests operational maturity, not perfection. Stay calm, think systematically, mitigate first, and narrate your reasoning. The fact that you're preparing this thoroughly already puts you ahead.</p>
+    <p style="margin-top:22px;font-family:var(--mono);font-size:12px;color:var(--muted)">Sources: Google SRE Book (sre.google), Google SRE Workbook (NALSD chapter), candidate reports from LeetCode Discuss, Reddit r/sre, Glassdoor, Blind, and multiple 2024-2026 interview experience posts. Behavioral framework informed by Google's public Googleyness documentation and Prepfully mock interview insights.</p>
+  </div>
+</footer>
+
+<script>
+// progress bar
+const prog=document.getElementById('progress');
+addEventListener('scroll',()=>{const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;prog.style.width=p+'%';});
+// quiz
+document.querySelectorAll('.quiz').forEach(q=>{
+  const correct=+q.dataset.correct;const opts=[...q.querySelectorAll('.opt')];const exp=q.querySelector('.explain');
+  opts.forEach((o,i)=>o.addEventListener('click',()=>{
+    if(q.dataset.done)return;q.dataset.done=1;
+    opts[correct].classList.add('correct');
+    if(i!==correct)o.classList.add('wrong');
+    exp.classList.add('show');
+  }));
+});
+// flashcards
+document.querySelectorAll('.flip').forEach(f=>f.addEventListener('click',()=>f.classList.toggle('flipped')));
+// mock accordions
+document.querySelectorAll('.mock .qq').forEach(q=>q.addEventListener('click',()=>{q.classList.toggle('open');q.nextElementSibling.classList.toggle('open');}));
+// active nav highlight
+const secs=[...document.querySelectorAll('section[id]')];const navlinks=[...document.querySelectorAll('nav .links a')];
+addEventListener('scroll',()=>{let cur='';secs.forEach(s=>{if(scrollY>=s.offsetTop-120)cur=s.id;});
+  navlinks.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+cur?'#e8edf7':'';a.style.background=a.getAttribute('href')==='#'+cur?'var(--panel2)':'';});});
+// tabs
+document.querySelectorAll('.tabs').forEach(tabGroup=>{
+  const tabs=tabGroup.querySelectorAll('.tab');
+  tabs.forEach(tab=>tab.addEventListener('click',()=>{
+    tabs.forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const section=tabGroup.parentElement;
+    section.querySelectorAll('.tab-content').forEach(tc=>tc.classList.remove('active'));
+    const target=section.querySelector('#tab-'+tab.dataset.tab);
+    if(target)target.classList.add('active');
+  }));
+});
+</script>
+</body>
+</html>
