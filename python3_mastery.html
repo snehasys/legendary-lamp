@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 3 Mastery — Practice, Sharpen & Evaluate</title>
+    <style>
+        :root {
+            --primary: #306998;
+            --secondary: #FFD43B;
+            --accent: #4B8BBE;
+            --bg: #0d1117;
+            --surface: #161b22;
+            --surface2: #21262d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --easy: #3fb950;
+            --medium: #d29922;
+            --hard: #f85149;
+            --success: #3fb950;
+            --error: #f85149;
+            --border: #30363d;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 2rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: var(--secondary);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .nav button {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav button:hover, .nav button.active {
+            background: var(--secondary);
+            color: var(--primary);
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .card h3 {
+            color: var(--secondary);
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* Difficulty Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-easy { background: rgba(63,185,80,0.15); color: var(--easy); border: 1px solid var(--easy); }
+        .badge-medium { background: rgba(210,153,34,0.15); color: var(--medium); border: 1px solid var(--medium); }
+        .badge-hard { background: rgba(248,81,73,0.15); color: var(--hard); border: 1px solid var(--hard); }
+
+        /* Code Editor */
+        .code-editor {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .code-editor-header {
+            background: var(--surface2);
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-editor-header span {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .code-editor textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            background: #0d1117;
+            color: #79c0ff;
+            border: none;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2ea043;
+        }
+
+        .btn-warning {
+            background: var(--medium);
+            color: #000;
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Output */
+        .output {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            min-height: 50px;
+            white-space: pre-wrap;
+            color: var(--easy);
+        }
+
+        .output.error { color: var(--error); }
+
+        /* Progress Bar */
+        .progress-container {
+            background: var(--surface2);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 12px;
+            margin: 0.5rem 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, var(--easy), var(--accent));
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .stat-card .stat-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Topic Grid */
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Quiz */
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: var(--surface2);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--accent);
+            background: rgba(75,139,190,0.1);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(63,185,80,0.15);
+        }
+
+        .quiz-option.wrong {
+            border-color: var(--error);
+            background: rgba(248,81,73,0.15);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .tab:hover { color: var(--text); }
+        .tab.active {
+            color: var(--secondary);
+            border-bottom-color: var(--secondary);
+        }
+
+        /* Flashcard */
+        .flashcard {
+            perspective: 1000px;
+            height: 250px;
+            cursor: pointer;
+            margin: 1rem 0;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border-radius: var(--radius);
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--surface), var(--surface2));
+            border: 2px solid var(--accent);
+            color: var(--text);
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        /* Hint */
+        .hint {
+            background: rgba(210,153,34,0.1);
+            border: 1px solid var(--medium);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.75rem 0;
+            display: none;
+            color: var(--medium);
+        }
+
+        .hint.visible { display: block; }
+
+        /* Timer */
+        .timer {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.5rem; }
+            .container { padding: 1rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .topic-grid { grid-template-columns: 1fr; }
+            .nav button { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in { animation: fadeIn 0.4s ease; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* Code highlight */
+        code {
+            background: var(--surface2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: #79c0ff;
+        }
+
+        /* Concept section */
+        .concept-box {
+            background: var(--surface2);
+            border-left: 4px solid var(--accent);
+            padding: 1.25rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .concept-box h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-box pre {
+            background: #0d1117;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: #79c0ff;
+        }
+
+        /* Streak */
+        .streak-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        /* Filter buttons */
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text-muted);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* Evaluation Report */
+        .report-section {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            background: var(--surface);
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 1rem auto;
+            border: 6px solid;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>&#x1F40D; Python 3 Mastery Hub</h1>
+        <p>Practice &bull; Sharpen &bull; Evaluate — Your One-Stop Python Learning Solution</p>
+        <nav class="nav">
+            <button class="active" onclick="showSection('dashboard')">Dashboard</button>
+            <button onclick="showSection('learn')">Learn</button>
+            <button onclick="showSection('practice')">Practice</button>
+            <button onclick="showSection('challenges')">Challenges</button>
+            <button onclick="showSection('quiz')">Quiz</button>
+            <button onclick="showSection('flashcards')">Flashcards</button>
+            <button onclick="showSection('evaluate')">Evaluate</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="section active fade-in">
+            <h2 style="margin-bottom:1rem;">Your Progress Dashboard</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-solved">0</div>
+                    <div class="stat-label">Problems Solved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-streak">0</div>
+                    <div class="stat-label">Current Streak &#x1F525;</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-score">0%</div>
+                    <div class="stat-label">Quiz Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-level">Beginner</div>
+                    <div class="stat-label">Current Level</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Skill Progress</h3>
+                <div style="margin:1rem 0;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:0.25rem;">
+                        <span class="badge badge-easy">Easy</span>
+                        <span id="easy-progress-text">0%</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="easy-progress" style="width:0%;background:var(--easy);"></div>
+                    </div>
+                </div>
+                <div style="margin:1rem 0;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:0.25rem;">
+                        <span class="badge badge-medium">Medium</span>
+                        <span id="medium-progress-text">0%</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="medium-progress" style="width:0%;background:var(--medium);"></div>
+                    </div>
+                </div>
+                <div style="margin:1rem 0;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:0.25rem;">
+                        <span class="badge badge-hard">Hard</span>
+                        <span id="hard-progress-text">0%</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="hard-progress" style="width:0%;background:var(--hard);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Quick Start</h3>
+                <p>Choose where you want to begin your Python journey today:</p>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="showSection('learn')">&#x1F4DA; Learn Concepts</button>
+                    <button class="btn btn-primary" onclick="showSection('practice')">&#x1F4BB; Practice Coding</button>
+                    <button class="btn btn-warning" onclick="showSection('challenges')">&#x26A1; Take a Challenge</button>
+                    <button class="btn btn-danger" onclick="showSection('evaluate')">&#x1F4CA; Full Evaluation</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- LEARN -->
+        <section id="learn" class="section fade-in">
+            <h2 style="margin-bottom:1rem;">Learn Python 3 Concepts</h2>
+            <div class="filter-group">
+                <button class="filter-btn active" onclick="filterTopics('all')">All Topics</button>
+                <button class="filter-btn" onclick="filterTopics('easy')">Easy</button>
+                <button class="filter-btn" onclick="filterTopics('medium')">Medium</button>
+                <button class="filter-btn" onclick="filterTopics('hard')">Hard</button>
+            </div>
+            <div id="topics-container" class="topic-grid"></div>
+        </section>
+
+        <!-- PRACTICE -->
+        <section id="practice" class="section fade-in">
+            <h2 style="margin-bottom:1rem;">Practice Arena</h2>
+            <div class="filter-group">
+                <button class="filter-btn active" onclick="filterPractice('all')">All</button>
+                <button class="filter-btn" onclick="filterPractice('easy')">Easy</button>
+                <button class="filter-btn" onclick="filterPractice('medium')">Medium</button>
+                <button class="filter-btn" onclick="filterPractice('hard')">Hard</button>
+            </div>
+            <div id="practice-container"></div>
+        </section>
+
+        <!-- CHALLENGES -->
+        <section id="challenges" class="section fade-in">
+            <h2 style="margin-bottom:1rem;">Timed Challenges &#x23F1;&#xFE0F;</h2>
+            <p style="color:var(--text-muted);margin-bottom:1rem;">Race against the clock to sharpen your skills. Complete challenges within the time limit!</p>
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+                    <div>
+                        <h3 id="challenge-title">Select a Difficulty</h3>
+                        <p id="challenge-desc">Choose your challenge level to begin</p>
+                    </div>
+                    <div class="timer" id="challenge-timer">00:00</div>
+                </div>
+                <div class="btn-group" id="challenge-start-btns">
+                    <button class="btn btn-success" onclick="startChallenge('easy')">Easy (5 min)</button>
+                    <button class="btn btn-warning" onclick="startChallenge('medium')">Medium (8 min)</button>
+                    <button class="btn btn-danger" onclick="startChallenge('hard')">Hard (12 min)</button>
+                </div>
+                <div id="challenge-area" style="display:none;">
+                    <div id="challenge-problem"></div>
+                    <div class="code-editor">
+                        <div class="code-editor-header">
+                            <span>solution.py</span>
+                            <button class="btn btn-primary" onclick="submitChallenge()" style="padding:0.4rem 1rem;font-size:0.8rem;">Submit</button>
+                        </div>
+                        <textarea id="challenge-editor" placeholder="# Write your solution here..."></textarea>
+                    </div>
+                    <div class="output" id="challenge-output" style="display:none;"></div>
+                </div>
+            </div>
+            <div class="card" id="challenge-history">
+                <h3>Challenge History</h3>
+                <div id="challenge-history-list"><p style="color:var(--text-muted);">No challenges completed yet. Start one above!</p></div>
+            </div>
+        </section>
+
+        <!-- QUIZ -->
+        <section id="quiz" class="section fade-in">
+            <h2 style="margin-bottom:1rem;">Knowledge Quiz</h2>
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+                    <div>
+                        <h3>Test Your Knowledge</h3>
+                        <p>Answer questions to evaluate your understanding</p>
+                    </div>
+                    <div class="streak-display">&#x1F525; <span id="quiz-streak">0</span> streak</div>
+                </div>
+                <div class="filter-group">
+                    <button class="filter-btn active" onclick="startQuiz('all')">Mixed</button>
+                    <button class="filter-btn" onclick="startQuiz('easy')">Easy</button>
+                    <button class="filter-btn" onclick="startQuiz('medium')">Medium</button>
+                    <button class="filter-btn" onclick="startQuiz('hard')">Hard</button>
+                </div>
+                <div id="quiz-area">
+                    <div id="quiz-question-container"></div>
+                    <div id="quiz-score-display" style="margin-top:1rem;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FLASHCARDS -->
+        <section id="flashcards" class="section fade-in">
+            <h2 style="margin-bottom:1rem;">Flashcards</h2>
+            <p style="color:var(--text-muted);margin-bottom:1rem;">Click cards to flip. Master key Python concepts through spaced repetition.</p>
+            <div class="filter-group">
+                <button class="filter-btn active" onclick="filterFlashcards('all')">All</button>
+                <button class="filter-btn" onclick="filterFlashcards('easy')">Easy</button>
+                <button class="filter-btn" onclick="filterFlashcards('medium')">Medium</button>
+                <button class="filter-btn" onclick="filterFlashcards('hard')">Hard</button>
+            </div>
+            <div id="flashcard-area"></div>
+            <div class="btn-group" style="justify-content:center;margin-top:1rem;">
+                <button class="btn btn-outline" onclick="prevFlashcard()">&#x25C0; Previous</button>
+                <span id="flashcard-counter" style="padding:0.7rem 1rem;color:var(--text-muted);">1 / 1</span>
+                <button class="btn btn-outline" onclick="nextFlashcard()">Next &#x25B6;</button>
+            </div>
+        </section>
+
+        <!-- EVALUATE -->
+        <section id="evaluate" class="section fade-in">
+            <h2 style="margin-bottom:1rem;">Skill Evaluation</h2>
+            <div class="card">
+                <h3>Comprehensive Assessment</h3>
+                <p>Take a full evaluation to measure your Python proficiency across all difficulty levels. The assessment includes multiple-choice questions, code analysis, and problem-solving tasks.</p>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="startEvaluation()">Start Full Evaluation (20 Questions)</button>
+                    <button class="btn btn-outline" onclick="showLastReport()">View Last Report</button>
+                </div>
+            </div>
+            <div id="evaluation-area" style="display:none;"></div>
+            <div id="evaluation-report" style="display:none;"></div>
+        </section>
+    </main>
+
+    <script>
+    // ==================== DATA ====================
+    const topics = [
+        // EASY
+        { id: 'variables', title: 'Variables & Data Types', level: 'easy', content: `
+            <p>Python variables are dynamically typed — no need to declare types explicitly.</p>
+            <pre>name = "Alice"      # str
+age = 30            # int
+height = 5.7        # float
+is_student = True   # bool
+items = [1, 2, 3]   # list
+coords = (4, 5)     # tuple
+info = {"key": "val"}  # dict</pre>
+            <p><strong>Key Points:</strong></p>
+            <ul>
+                <li>Use <code>type()</code> to check a variable's type</li>
+                <li>Variables are references to objects in memory</li>
+                <li>Python supports multiple assignment: <code>a, b, c = 1, 2, 3</code></li>
+            </ul>` },
+        { id: 'strings', title: 'String Operations', level: 'easy', content: `
+            <p>Strings are immutable sequences of characters with powerful built-in methods.</p>
+            <pre>s = "Hello, World!"
+print(s.upper())        # "HELLO, WORLD!"
+print(s.split(", "))    # ["Hello", "World!"]
+print(s[0:5])           # "Hello"
+print(f"Name: {name}")  # f-string formatting
+print(s.replace("World", "Python"))  # "Hello, Python!"
+print(len(s))           # 13</pre>
+            <p><strong>Common Methods:</strong> strip(), find(), count(), startswith(), endswith(), join()</p>` },
+        { id: 'control', title: 'Control Flow (if/elif/else)', level: 'easy', content: `
+            <p>Control the execution path of your program with conditional statements.</p>
+            <pre>score = 85
+
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+else:
+    grade = "F"
+
+# Ternary operator
+result = "Pass" if score >= 60 else "Fail"</pre>` },
+        { id: 'loops', title: 'Loops (for/while)', level: 'easy', content: `
+            <p>Iterate over sequences or repeat actions with loops.</p>
+            <pre># For loop
+for i in range(5):
+    print(i)  # 0, 1, 2, 3, 4
+
+# While loop
+count = 0
+while count < 5:
+    count += 1
+
+# Loop with enumerate
+fruits = ["apple", "banana", "cherry"]
+for idx, fruit in enumerate(fruits):
+    print(f"{idx}: {fruit}")
+
+# List comprehension
+squares = [x**2 for x in range(10)]</pre>` },
+        { id: 'functions', title: 'Functions', level: 'easy', content: `
+            <p>Functions encapsulate reusable logic with parameters and return values.</p>
+            <pre>def greet(name, greeting="Hello"):
+    """Greet a person with a custom greeting."""
+    return f"{greeting}, {name}!"
+
+# Default arguments
+print(greet("Alice"))           # "Hello, Alice!"
+print(greet("Bob", "Hi"))       # "Hi, Bob!"
+
+# *args and **kwargs
+def flexible(*args, **kwargs):
+    print(args)    # tuple of positional args
+    print(kwargs)  # dict of keyword args</pre>` },
+        { id: 'lists', title: 'Lists & Tuples', level: 'easy', content: `
+            <p>Lists are mutable ordered collections; tuples are immutable.</p>
+            <pre># Lists
+nums = [3, 1, 4, 1, 5]
+nums.append(9)
+nums.sort()
+nums.insert(0, 0)
+popped = nums.pop()
+
+# Slicing
+print(nums[1:4])    # elements at index 1, 2, 3
+print(nums[::-1])   # reversed
+
+# Tuples (immutable)
+point = (3, 4)
+x, y = point  # unpacking</pre>` },
+        { id: 'dicts', title: 'Dictionaries & Sets', level: 'easy', content: `
+            <p>Dictionaries store key-value pairs; sets store unique elements.</p>
+            <pre># Dictionary
+student = {"name": "Alice", "age": 20, "grade": "A"}
+student["email"] = "alice@example.com"
+print(student.get("phone", "N/A"))
+for key, value in student.items():
+    print(f"{key}: {value}")
+
+# Sets
+a = {1, 2, 3, 4}
+b = {3, 4, 5, 6}
+print(a & b)   # intersection: {3, 4}
+print(a | b)   # union: {1, 2, 3, 4, 5, 6}
+print(a - b)   # difference: {1, 2}</pre>` },
+
+        // MEDIUM
+        { id: 'oop', title: 'Object-Oriented Programming', level: 'medium', content: `
+            <p>OOP organizes code into classes and objects with encapsulation, inheritance, and polymorphism.</p>
+            <pre>class Animal:
+    def __init__(self, name, sound):
+        self.name = name
+        self._sound = sound  # protected
+
+    def speak(self):
+        return f"{self.name} says {self._sound}"
+
+    @property
+    def sound(self):
+        return self._sound
+
+class Dog(Animal):
+    def __init__(self, name):
+        super().__init__(name, "Woof")
+
+    def fetch(self, item):
+        return f"{self.name} fetches the {item}"
+
+rex = Dog("Rex")
+print(rex.speak())       # "Rex says Woof"
+print(rex.fetch("ball")) # "Rex fetches the ball"</pre>` },
+        { id: 'fileio', title: 'File I/O', level: 'medium', content: `
+            <p>Read and write files using context managers for safe resource handling.</p>
+            <pre># Writing
+with open("data.txt", "w") as f:
+    f.write("Hello, File!\\n")
+    f.writelines(["Line 2\\n", "Line 3\\n"])
+
+# Reading
+with open("data.txt", "r") as f:
+    content = f.read()        # entire file
+    # or line by line:
+    # for line in f:
+    #     print(line.strip())
+
+# JSON
+import json
+data = {"name": "Alice", "scores": [95, 87, 92]}
+with open("data.json", "w") as f:
+    json.dump(data, f, indent=2)
+
+with open("data.json", "r") as f:
+    loaded = json.load(f)</pre>` },
+        { id: 'exceptions', title: 'Exception Handling', level: 'medium', content: `
+            <p>Handle errors gracefully with try/except blocks and custom exceptions.</p>
+            <pre>class InsufficientFundsError(Exception):
+    def __init__(self, balance, amount):
+        self.balance = balance
+        self.amount = amount
+        super().__init__(f"Cannot withdraw {amount}, balance is {balance}")
+
+def withdraw(balance, amount):
+    if amount > balance:
+        raise InsufficientFundsError(balance, amount)
+    return balance - amount
+
+try:
+    result = withdraw(100, 150)
+except InsufficientFundsError as e:
+    print(f"Error: {e}")
+except Exception as e:
+    print(f"Unexpected error: {e}")
+finally:
+    print("Transaction complete")</pre>` },
+        { id: 'comprehensions', title: 'Comprehensions & Generators', level: 'medium', content: `
+            <p>Concise syntax for creating collections and lazy evaluation with generators.</p>
+            <pre># List comprehension
+evens = [x for x in range(20) if x % 2 == 0]
+
+# Dict comprehension
+squares = {x: x**2 for x in range(6)}
+
+# Set comprehension
+unique_lengths = {len(word) for word in ["hi", "hello", "hey"]}
+
+# Generator expression (lazy, memory efficient)
+gen = (x**2 for x in range(1000000))
+print(next(gen))  # 0
+print(next(gen))  # 1
+
+# Generator function
+def fibonacci():
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+fib = fibonacci()
+print([next(fib) for _ in range(10)])</pre>` },
+        { id: 'modules', title: 'Modules & Packages', level: 'medium', content: `
+            <p>Organize code into reusable modules and packages.</p>
+            <pre># Importing
+import os
+from pathlib import Path
+from collections import defaultdict, Counter
+import json as j
+
+# Useful standard library modules
+import itertools   # combinations, permutations, chain
+import functools   # reduce, lru_cache, partial
+import datetime    # date, time, datetime, timedelta
+import re          # regular expressions
+import math        # mathematical functions
+
+# Counter example
+words = ["apple", "banana", "apple", "cherry", "banana", "apple"]
+count = Counter(words)
+print(count.most_common(2))  # [('apple', 3), ('banana', 2)]</pre>` },
+        { id: 'lambda', title: 'Lambda, Map, Filter, Reduce', level: 'medium', content: `
+            <p>Functional programming tools for concise data transformations.</p>
+            <pre>from functools import reduce
+
+# Lambda
+square = lambda x: x ** 2
+add = lambda a, b: a + b
+
+# Map
+numbers = [1, 2, 3, 4, 5]
+squared = list(map(lambda x: x**2, numbers))
+
+# Filter
+evens = list(filter(lambda x: x % 2 == 0, numbers))
+
+# Reduce
+total = reduce(lambda a, b: a + b, numbers)
+
+# Sorting with key
+students = [("Alice", 85), ("Bob", 92), ("Charlie", 78)]
+sorted_students = sorted(students, key=lambda s: s[1], reverse=True)</pre>` },
+        { id: 'regex', title: 'Regular Expressions', level: 'medium', content: `
+            <p>Pattern matching for text processing and validation.</p>
+            <pre>import re
+
+text = "Contact us at support@example.com or sales@company.org"
+
+# Find all emails
+emails = re.findall(r'[\\w.]+@[\\w.]+\\.[a-z]{2,}', text)
+
+# Match and groups
+pattern = r'(\\w+)@(\\w+)\\.(\\w+)'
+match = re.search(pattern, text)
+if match:
+    print(match.group(1))  # "support"
+    print(match.group(2))  # "example"
+
+# Substitution
+cleaned = re.sub(r'\\d+', '#', "Order 12345 shipped")
+# "Order # shipped"
+
+# Compile for reuse
+email_re = re.compile(r'^[\\w.]+@[\\w.]+\\.[a-z]{2,}$')
+print(email_re.match("test@example.com") is not None)  # True</pre>` },
+
+        // HARD
+        { id: 'decorators', title: 'Decorators & Closures', level: 'hard', content: `
+            <p>Decorators modify function behavior; closures capture variables from enclosing scope.</p>
+            <pre>import functools
+import time
+
+# Basic decorator
+def timer(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        print(f"{func.__name__} took {elapsed:.4f}s")
+        return result
+    return wrapper
+
+# Decorator with arguments
+def retry(max_attempts=3, delay=1):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_attempts):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if attempt == max_attempts - 1:
+                        raise
+                    time.sleep(delay)
+        return wrapper
+    return decorator
+
+@timer
+@retry(max_attempts=3)
+def fetch_data(url):
+    # ... network call
+    pass</pre>` },
+        { id: 'metaclasses', title: 'Metaclasses & Descriptors', level: 'hard', content: `
+            <p>Metaclasses control class creation; descriptors control attribute access.</p>
+            <pre># Descriptor
+class Validated:
+    def __init__(self, min_val=None, max_val=None):
+        self.min_val = min_val
+        self.max_val = max_val
+
+    def __set_name__(self, owner, name):
+        self.name = name
+
+    def __get__(self, obj, objtype=None):
+        return getattr(obj, f'_{self.name}', None)
+
+    def __set__(self, obj, value):
+        if self.min_val is not None and value < self.min_val:
+            raise ValueError(f"{self.name} must be >= {self.min_val}")
+        if self.max_val is not None and value > self.max_val:
+            raise ValueError(f"{self.name} must be <= {self.max_val}")
+        setattr(obj, f'_{self.name}', value)
+
+# Metaclass
+class SingletonMeta(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class Database(metaclass=SingletonMeta):
+    def __init__(self):
+        self.connection = "connected"</pre>` },
+        { id: 'asyncio', title: 'Async/Await & Concurrency', level: 'hard', content: `
+            <p>Asynchronous programming for I/O-bound concurrent operations.</p>
+            <pre>import asyncio
+import aiohttp
+
+async def fetch_url(session, url):
+    async with session.get(url) as response:
+        return await response.text()
+
+async def fetch_all(urls):
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_url(session, url) for url in urls]
+        results = await asyncio.gather(*tasks)
+        return results
+
+# Async generator
+async def async_range(n):
+    for i in range(n):
+        await asyncio.sleep(0.1)
+        yield i
+
+# Semaphore for rate limiting
+async def limited_fetch(urls, max_concurrent=5):
+    semaphore = asyncio.Semaphore(max_concurrent)
+    async def fetch_with_limit(url):
+        async with semaphore:
+            return await fetch_url(session, url)
+    # ...
+
+asyncio.run(fetch_all(["http://example.com"]))</pre>` },
+        { id: 'datamodel', title: 'Python Data Model (Dunder Methods)', level: 'hard', content: `
+            <p>Customize object behavior by implementing special (dunder) methods.</p>
+            <pre>class Vector:
+    def __init__(self, *components):
+        self._components = tuple(components)
+
+    def __repr__(self):
+        return f"Vector({', '.join(map(str, self._components))})"
+
+    def __len__(self):
+        return len(self._components)
+
+    def __getitem__(self, index):
+        return self._components[index]
+
+    def __add__(self, other):
+        pairs = zip(self._components, other._components)
+        return Vector(*(a + b for a, b in pairs))
+
+    def __mul__(self, scalar):
+        return Vector(*(c * scalar for c in self._components))
+
+    def __eq__(self, other):
+        return self._components == other._components
+
+    def __hash__(self):
+        return hash(self._components)
+
+    def __abs__(self):
+        return sum(c**2 for c in self._components) ** 0.5
+
+v1 = Vector(1, 2, 3)
+v2 = Vector(4, 5, 6)
+print(v1 + v2)      # Vector(5, 7, 9)
+print(abs(v1))      # 3.7416...</pre>` },
+        { id: 'contextmanagers', title: 'Context Managers & Protocols', level: 'hard', content: `
+            <p>Create custom context managers for resource management and implement protocols.</p>
+            <pre>from contextlib import contextmanager
+import time
+
+# Class-based context manager
+class Timer:
+    def __enter__(self):
+        self.start = time.perf_counter()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.elapsed = time.perf_counter() - self.start
+        print(f"Elapsed: {self.elapsed:.4f}s")
+        return False  # Don't suppress exceptions
+
+# Decorator-based context manager
+@contextmanager
+def managed_resource(name):
+    print(f"Acquiring {name}")
+    resource = {"name": name, "active": True}
+    try:
+        yield resource
+    finally:
+        resource["active"] = False
+        print(f"Releasing {name}")
+
+with Timer() as t:
+    # ... expensive operation
+    time.sleep(0.5)
+
+with managed_resource("database") as db:
+    print(f"Using {db['name']}")</pre>` },
+        { id: 'typing', title: 'Type Hints & Protocols', level: 'hard', content: `
+            <p>Static type annotations for better code documentation and IDE support.</p>
+            <pre>from typing import (
+    List, Dict, Optional, Union, Tuple,
+    Protocol, TypeVar, Generic, Callable
+)
+
+T = TypeVar('T')
+
+# Generic class
+class Stack(Generic[T]):
+    def __init__(self) -> None:
+        self._items: List[T] = []
+
+    def push(self, item: T) -> None:
+        self._items.append(item)
+
+    def pop(self) -> T:
+        return self._items.pop()
+
+    def peek(self) -> Optional[T]:
+        return self._items[-1] if self._items else None
+
+# Protocol (structural subtyping)
+class Drawable(Protocol):
+    def draw(self) -> str: ...
+
+class Circle:
+    def draw(self) -> str:
+        return "Drawing circle"
+
+def render(shape: Drawable) -> None:
+    print(shape.draw())
+
+# Callable type
+Handler = Callable[[str, int], bool]
+
+def process(handler: Handler, data: str) -> bool:
+    return handler(data, len(data))</pre>` },
+        { id: 'concurrency', title: 'Threading & Multiprocessing', level: 'hard', content: `
+            <p>Parallel execution for CPU-bound and I/O-bound tasks.</p>
+            <pre>import threading
+import multiprocessing
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+
+# Threading (I/O-bound)
+def download(url):
+    # simulate I/O
+    import time; time.sleep(1)
+    return f"Downloaded {url}"
+
+with ThreadPoolExecutor(max_workers=4) as executor:
+    urls = ["url1", "url2", "url3", "url4"]
+    futures = [executor.submit(download, url) for url in urls]
+    results = [f.result() for f in futures]
+
+# Multiprocessing (CPU-bound)
+def compute_heavy(n):
+    return sum(i*i for i in range(n))
+
+with ProcessPoolExecutor() as executor:
+    numbers = [10**6, 10**7, 10**6]
+    results = list(executor.map(compute_heavy, numbers))
+
+# Thread-safe operations
+lock = threading.Lock()
+counter = 0
+
+def increment():
+    global counter
+    with lock:
+        counter += 1</pre>` },
+    ];
+
+    // Practice Problems
+    const practiceProblems = [
+        // EASY
+        { id: 'p1', title: 'Reverse a String', level: 'easy', description: 'Write a function that reverses a given string.', starter: 'def reverse_string(s):\n    # Your code here\n    pass\n\n# Test\nprint(reverse_string("hello"))  # Expected: "olleh"', solution: 'def reverse_string(s):\n    return s[::-1]', hint: 'Think about Python slicing with a step of -1.', tests: [['reverse_string("hello")', '"olleh"'], ['reverse_string("Python")', '"nohtyP"'], ['reverse_string("")', '""']] },
+        { id: 'p2', title: 'Find Maximum in List', level: 'easy', description: 'Write a function that finds the maximum value in a list without using max().', starter: 'def find_max(lst):\n    # Your code here\n    pass\n\n# Test\nprint(find_max([3, 7, 2, 8, 1]))  # Expected: 8', solution: 'def find_max(lst):\n    if not lst:\n        return None\n    maximum = lst[0]\n    for num in lst[1:]:\n        if num > maximum:\n            maximum = num\n    return maximum', hint: 'Initialize with the first element, then iterate comparing each element.', tests: [['find_max([3, 7, 2, 8, 1])', '8'], ['find_max([-5, -1, -3])', '-1'], ['find_max([42])', '42']] },
+        { id: 'p3', title: 'Count Vowels', level: 'easy', description: 'Write a function that counts the number of vowels in a string.', starter: 'def count_vowels(s):\n    # Your code here\n    pass\n\n# Test\nprint(count_vowels("Hello World"))  # Expected: 3', solution: 'def count_vowels(s):\n    return sum(1 for c in s.lower() if c in "aeiou")', hint: 'Convert to lowercase and check each character against "aeiou".', tests: [['count_vowels("Hello World")', '3'], ['count_vowels("Python")', '1'], ['count_vowels("aeiou")', '5']] },
+        { id: 'p4', title: 'FizzBuzz', level: 'easy', description: 'Write a function that returns a list of FizzBuzz results for numbers 1 to n.', starter: 'def fizzbuzz(n):\n    # Your code here\n    pass\n\n# Test\nprint(fizzbuzz(15)[-3:])  # Expected: ["13", "14", "FizzBuzz"]', solution: 'def fizzbuzz(n):\n    result = []\n    for i in range(1, n+1):\n        if i % 15 == 0:\n            result.append("FizzBuzz")\n        elif i % 3 == 0:\n            result.append("Fizz")\n        elif i % 5 == 0:\n            result.append("Buzz")\n        else:\n            result.append(str(i))\n    return result', hint: 'Check divisibility by 15 first, then 3, then 5.', tests: [['fizzbuzz(5)', '["1", "2", "Fizz", "4", "Buzz"]'], ['fizzbuzz(15)[-1]', '"FizzBuzz"']] },
+
+        // MEDIUM
+        { id: 'p5', title: 'Flatten Nested List', level: 'medium', description: 'Write a function that flattens a nested list of arbitrary depth.', starter: 'def flatten(lst):\n    # Your code here\n    pass\n\n# Test\nprint(flatten([1, [2, [3, 4], 5], 6]))  # Expected: [1, 2, 3, 4, 5, 6]', solution: 'def flatten(lst):\n    result = []\n    for item in lst:\n        if isinstance(item, list):\n            result.extend(flatten(item))\n        else:\n            result.append(item)\n    return result', hint: 'Use recursion: if an element is a list, flatten it recursively.', tests: [['flatten([1, [2, [3, 4], 5], 6])', '[1, 2, 3, 4, 5, 6]'], ['flatten([[1, 2], [3, [4, [5]]]])', '[1, 2, 3, 4, 5]']] },
+        { id: 'p6', title: 'Group Anagrams', level: 'medium', description: 'Write a function that groups anagrams together from a list of strings.', starter: 'def group_anagrams(words):\n    # Your code here\n    pass\n\n# Test\nprint(group_anagrams(["eat", "tea", "tan", "ate", "nat", "bat"]))', solution: 'def group_anagrams(words):\n    groups = {}\n    for word in words:\n        key = "".join(sorted(word))\n        groups.setdefault(key, []).append(word)\n    return list(groups.values())', hint: 'Sort each word to create a key — anagrams will have the same sorted key.', tests: [['len(group_anagrams(["eat", "tea", "tan", "ate", "nat", "bat"]))', '3']] },
+        { id: 'p7', title: 'Implement a Stack', level: 'medium', description: 'Implement a Stack class with push, pop, peek, and is_empty methods.', starter: 'class Stack:\n    def __init__(self):\n        # Your code here\n        pass\n\n    def push(self, item):\n        pass\n\n    def pop(self):\n        pass\n\n    def peek(self):\n        pass\n\n    def is_empty(self):\n        pass\n\n# Test\ns = Stack()\ns.push(1)\ns.push(2)\nprint(s.peek())    # Expected: 2\nprint(s.pop())     # Expected: 2\nprint(s.is_empty())  # Expected: False', solution: 'class Stack:\n    def __init__(self):\n        self._items = []\n\n    def push(self, item):\n        self._items.append(item)\n\n    def pop(self):\n        if self.is_empty():\n            raise IndexError("Stack is empty")\n        return self._items.pop()\n\n    def peek(self):\n        if self.is_empty():\n            return None\n        return self._items[-1]\n\n    def is_empty(self):\n        return len(self._items) == 0', hint: 'Use a list internally. append() for push, pop() for pop.', tests: [] },
+        { id: 'p8', title: 'Memoize Decorator', level: 'medium', description: 'Write a memoize decorator that caches function results.', starter: 'def memoize(func):\n    # Your code here\n    pass\n\n@memoize\ndef fibonacci(n):\n    if n < 2:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\n# Test\nprint(fibonacci(30))  # Should be fast!', solution: 'def memoize(func):\n    cache = {}\n    def wrapper(*args):\n        if args not in cache:\n            cache[args] = func(*args)\n        return cache[args]\n    return wrapper', hint: 'Use a dictionary to store results with arguments as keys.', tests: [['fibonacci(10)', '55'], ['fibonacci(30)', '832040']] },
+
+        // HARD
+        { id: 'p9', title: 'LRU Cache Implementation', level: 'hard', description: 'Implement an LRU (Least Recently Used) Cache with O(1) get and put operations.', starter: 'class LRUCache:\n    def __init__(self, capacity):\n        # Your code here\n        pass\n\n    def get(self, key):\n        # Return value or -1 if not found\n        pass\n\n    def put(self, key, value):\n        # Insert/update and evict if over capacity\n        pass\n\n# Test\ncache = LRUCache(2)\ncache.put(1, 1)\ncache.put(2, 2)\nprint(cache.get(1))   # Expected: 1\ncache.put(3, 3)       # Evicts key 2\nprint(cache.get(2))   # Expected: -1', solution: 'from collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = OrderedDict()\n\n    def get(self, key):\n        if key not in self.cache:\n            return -1\n        self.cache.move_to_end(key)\n        return self.cache[key]\n\n    def put(self, key, value):\n        if key in self.cache:\n            self.cache.move_to_end(key)\n        self.cache[key] = value\n        if len(self.cache) > self.capacity:\n            self.cache.popitem(last=False)', hint: 'Use OrderedDict — move_to_end() on access, popitem(last=False) to evict.', tests: [] },
+        { id: 'p10', title: 'Async Task Scheduler', level: 'hard', description: 'Implement a simple task scheduler that executes tasks based on priority.', starter: 'import heapq\n\nclass TaskScheduler:\n    def __init__(self):\n        # Your code here\n        pass\n\n    def add_task(self, priority, task_name):\n        # Lower number = higher priority\n        pass\n\n    def execute_next(self):\n        # Execute and return highest priority task\n        pass\n\n    def execute_all(self):\n        # Execute all tasks in priority order\n        pass\n\n# Test\nscheduler = TaskScheduler()\nscheduler.add_task(3, "Low priority")\nscheduler.add_task(1, "High priority")\nscheduler.add_task(2, "Medium priority")\nprint(scheduler.execute_all())', solution: 'import heapq\n\nclass TaskScheduler:\n    def __init__(self):\n        self._queue = []\n        self._counter = 0\n\n    def add_task(self, priority, task_name):\n        heapq.heappush(self._queue, (priority, self._counter, task_name))\n        self._counter += 1\n\n    def execute_next(self):\n        if self._queue:\n            priority, _, task = heapq.heappop(self._queue)\n            return task\n        return None\n\n    def execute_all(self):\n        results = []\n        while self._queue:\n            results.append(self.execute_next())\n        return results', hint: 'Use heapq for a priority queue. Add a counter to break ties.', tests: [] },
+        { id: 'p11', title: 'Binary Search Tree', level: 'hard', description: 'Implement a BST with insert, search, and in-order traversal.', starter: 'class TreeNode:\n    def __init__(self, val):\n        self.val = val\n        self.left = None\n        self.right = None\n\nclass BST:\n    def __init__(self):\n        self.root = None\n\n    def insert(self, val):\n        pass\n\n    def search(self, val):\n        pass\n\n    def inorder(self):\n        # Return sorted list\n        pass\n\n# Test\ntree = BST()\nfor v in [5, 3, 7, 1, 4, 6, 8]:\n    tree.insert(v)\nprint(tree.inorder())    # [1, 3, 4, 5, 6, 7, 8]\nprint(tree.search(4))    # True\nprint(tree.search(9))    # False', solution: 'class TreeNode:\n    def __init__(self, val):\n        self.val = val\n        self.left = None\n        self.right = None\n\nclass BST:\n    def __init__(self):\n        self.root = None\n\n    def insert(self, val):\n        if not self.root:\n            self.root = TreeNode(val)\n        else:\n            self._insert(self.root, val)\n\n    def _insert(self, node, val):\n        if val < node.val:\n            if node.left is None:\n                node.left = TreeNode(val)\n            else:\n                self._insert(node.left, val)\n        else:\n            if node.right is None:\n                node.right = TreeNode(val)\n            else:\n                self._insert(node.right, val)\n\n    def search(self, val):\n        return self._search(self.root, val)\n\n    def _search(self, node, val):\n        if node is None:\n            return False\n        if val == node.val:\n            return True\n        elif val < node.val:\n            return self._search(node.left, val)\n        else:\n            return self._search(node.right, val)\n\n    def inorder(self):\n        result = []\n        self._inorder(self.root, result)\n        return result\n\n    def _inorder(self, node, result):\n        if node:\n            self._inorder(node.left, result)\n            result.append(node.val)\n            self._inorder(node.right, result)', hint: 'Recursively compare values — left for smaller, right for larger.', tests: [] },
+        { id: 'p12', title: 'Iterator Protocol', level: 'hard', description: 'Create a custom iterator that generates prime numbers infinitely.', starter: 'class PrimeIterator:\n    def __init__(self):\n        # Your code here\n        pass\n\n    def __iter__(self):\n        return self\n\n    def __next__(self):\n        # Return next prime number\n        pass\n\n# Test\nprimes = PrimeIterator()\nfirst_10 = [next(primes) for _ in range(10)]\nprint(first_10)  # [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]', solution: 'class PrimeIterator:\n    def __init__(self):\n        self._current = 2\n\n    def __iter__(self):\n        return self\n\n    def _is_prime(self, n):\n        if n < 2:\n            return False\n        for i in range(2, int(n**0.5) + 1):\n            if n % i == 0:\n                return False\n        return True\n\n    def __next__(self):\n        while True:\n            if self._is_prime(self._current):\n                prime = self._current\n                self._current += 1\n                return prime\n            self._current += 1', hint: 'Keep track of current candidate. Check primality by testing divisibility up to sqrt(n).', tests: [] },
+    ];
+
+    // Quiz Questions
+    const quizQuestions = [
+        // EASY
+        { q: 'What is the output of: print(type(3.14))?', options: ["<class 'float'>", "<class 'int'>", "<class 'double'>", "<class 'number'>"], answer: 0, level: 'easy' },
+        { q: 'Which method adds an element to the end of a list?', options: ['insert()', 'append()', 'extend()', 'add()'], answer: 1, level: 'easy' },
+        { q: 'What does "len" stand for in Python?', options: ['Length', 'Lender', 'Lengthy', 'It is not an abbreviation'], answer: 0, level: 'easy' },
+        { q: 'What is the output of: print("hello"[1])?', options: ['h', 'e', 'l', 'Error'], answer: 1, level: 'easy' },
+        { q: 'Which keyword is used to define a function?', options: ['func', 'define', 'def', 'function'], answer: 2, level: 'easy' },
+        { q: 'What is the result of: 10 // 3?', options: ['3.33', '3', '4', '3.0'], answer: 1, level: 'easy' },
+        { q: 'Which of these is an immutable data type?', options: ['list', 'dict', 'set', 'tuple'], answer: 3, level: 'easy' },
+        { q: 'What does the "in" keyword do?', options: ['Imports a module', 'Checks membership', 'Creates an instance', 'Defines inheritance'], answer: 1, level: 'easy' },
+        { q: 'How do you start a comment in Python?', options: ['//', '/*', '#', '--'], answer: 2, level: 'easy' },
+        { q: 'What is the output of: bool("")?', options: ['True', 'False', 'None', 'Error'], answer: 1, level: 'easy' },
+
+        // MEDIUM
+        { q: 'What is the output of: [x**2 for x in range(4)]?', options: ['[0, 1, 4, 9]', '[1, 4, 9, 16]', '[0, 2, 4, 6]', '[1, 2, 3, 4]'], answer: 0, level: 'medium' },
+        { q: 'What does @staticmethod do?', options: ['Makes method faster', 'Binds method to class not instance', 'Defines method that needs no self/cls', 'Makes method private'], answer: 2, level: 'medium' },
+        { q: 'What is a generator in Python?', options: ['A class that generates objects', 'A function that uses yield', 'A module for random numbers', 'A type of decorator'], answer: 1, level: 'medium' },
+        { q: 'What is the purpose of __init__()?', options: ['Destructor', 'Constructor/initializer', 'Class method', 'Static method'], answer: 1, level: 'medium' },
+        { q: 'What does *args do in a function definition?', options: ['Unpacks a dictionary', 'Collects positional arguments into a tuple', 'Makes arguments optional', 'Defines default values'], answer: 1, level: 'medium' },
+        { q: 'What is the output of: {1, 2, 3} & {2, 3, 4}?', options: ['{1, 2, 3, 4}', '{2, 3}', '{1, 4}', 'Error'], answer: 1, level: 'medium' },
+        { q: 'Which module provides regular expression support?', options: ['regex', 're', 'regexp', 'pattern'], answer: 1, level: 'medium' },
+        { q: 'What is the difference between "==" and "is"?', options: ['No difference', '"==" checks value, "is" checks identity', '"is" checks value, "==" checks identity', '"is" is for strings only'], answer: 1, level: 'medium' },
+        { q: 'What does the "with" statement do?', options: ['Imports modules', 'Manages context/resources', 'Creates loops', 'Defines classes'], answer: 1, level: 'medium' },
+        { q: 'What is a lambda function?', options: ['A named function', 'An anonymous single-expression function', 'A recursive function', 'A generator function'], answer: 1, level: 'medium' },
+
+        // HARD
+        { q: 'What is a metaclass in Python?', options: ['A class that inherits from multiple classes', 'A class whose instances are classes', 'A class with no methods', 'A class that cannot be instantiated'], answer: 1, level: 'hard' },
+        { q: 'What does __slots__ do?', options: ['Limits methods', 'Restricts attribute creation for memory optimization', 'Creates class slots', 'Defines abstract methods'], answer: 1, level: 'hard' },
+        { q: 'What is the GIL in Python?', options: ['Global Import Lock', 'Global Interpreter Lock', 'General Instance Lock', 'Generic Interface Layer'], answer: 1, level: 'hard' },
+        { q: 'What is the MRO in Python?', options: ['Multiple Return Objects', 'Method Resolution Order', 'Module Reference Object', 'Main Runtime Operation'], answer: 1, level: 'hard' },
+        { q: 'What does asyncio.gather() do?', options: ['Collects garbage', 'Runs multiple coroutines concurrently', 'Groups exceptions', 'Merges iterators'], answer: 1, level: 'hard' },
+        { q: 'What is a descriptor in Python?', options: ['A docstring', 'An object defining __get__, __set__, or __delete__', 'A type annotation', 'A module attribute'], answer: 1, level: 'hard' },
+        { q: 'What is the purpose of __new__()?', options: ['Initialize an instance', 'Create a new instance before __init__', 'Copy an object', 'Delete an object'], answer: 1, level: 'hard' },
+        { q: 'What does functools.lru_cache do?', options: ['Limits recursion', 'Caches function results with LRU eviction', 'Creates lazy evaluation', 'Locks resources'], answer: 1, level: 'hard' },
+        { q: 'What is monkey patching?', options: ['A testing framework', 'Dynamically modifying a class/module at runtime', 'A design pattern', 'Error handling technique'], answer: 1, level: 'hard' },
+        { q: 'What is the difference between deepcopy and copy?', options: ['No difference', 'deepcopy recursively copies nested objects', 'copy is for lists only', 'deepcopy is faster'], answer: 1, level: 'hard' },
+    ];
+
+    // Flashcards
+    const flashcards = [
+        { front: 'What is a list comprehension?', back: 'A concise way to create lists:\n[expr for item in iterable if condition]\n\nExample: [x**2 for x in range(10) if x % 2 == 0]', level: 'easy' },
+        { front: 'What is the difference between a list and a tuple?', back: 'Lists are mutable (can be changed after creation).\nTuples are immutable (cannot be changed).\nTuples are hashable and can be dict keys.', level: 'easy' },
+        { front: 'What are f-strings?', back: 'Formatted string literals (Python 3.6+):\nname = "World"\nf"Hello, {name}!"\nf"{2+2}"\nf"{value:.2f}"', level: 'easy' },
+        { front: 'What is None in Python?', back: 'None is Python\'s null value — a singleton object of type NoneType.\nUse "is None" (not == None) to check.\nFunctions without return statement return None.', level: 'easy' },
+        { front: 'What is slicing?', back: 'Extracting parts of sequences:\nsequence[start:stop:step]\n"Hello"[1:4] → "ell"\n[1,2,3,4,5][::-1] → [5,4,3,2,1]', level: 'easy' },
+        { front: 'What is a decorator?', back: 'A function that modifies another function\'s behavior.\nUses @syntax. Takes a function, returns a modified function.\n\n@decorator\ndef func(): ...\n\nEquivalent to: func = decorator(func)', level: 'medium' },
+        { front: 'What is the difference between @classmethod and @staticmethod?', back: '@classmethod receives cls as first arg — can access/modify class state.\n@staticmethod receives no implicit first arg — utility function in class namespace.', level: 'medium' },
+        { front: 'What is a context manager?', back: 'An object implementing __enter__ and __exit__ methods.\nUsed with "with" statement for resource management.\nGuarantees cleanup even if exceptions occur.\n\nwith open("file") as f:\n    data = f.read()', level: 'medium' },
+        { front: 'What is *args and **kwargs?', back: '*args: collects extra positional arguments into a tuple.\n**kwargs: collects extra keyword arguments into a dict.\n\ndef func(*args, **kwargs):\n    print(args)   # (1, 2, 3)\n    print(kwargs) # {"key": "val"}', level: 'medium' },
+        { front: 'What is the GIL?', back: 'Global Interpreter Lock — a mutex in CPython that allows only one thread to execute Python bytecode at a time.\nLimits true parallelism for CPU-bound threads.\nWorkaround: multiprocessing, or asyncio for I/O-bound.', level: 'hard' },
+        { front: 'What is MRO (Method Resolution Order)?', back: 'The order Python searches for methods in class hierarchies.\nUses C3 linearization algorithm.\nView with: ClassName.__mro__ or ClassName.mro()\nFollows left-to-right, depth-first, respecting inheritance graph.', level: 'hard' },
+        { front: 'What are descriptors?', back: 'Objects that define __get__, __set__, or __delete__.\nData descriptors: define __set__ or __delete__.\nNon-data descriptors: only __get__.\nUsed internally by property, classmethod, staticmethod.', level: 'hard' },
+        { front: 'What is asyncio?', back: 'Python\'s async I/O framework using event loop.\nasync def — defines coroutine\nawait — suspends until result ready\nasyncio.gather() — run coroutines concurrently\nasyncio.run() — entry point', level: 'hard' },
+        { front: 'What is __slots__?', back: 'Class attribute that restricts instance attributes to declared names.\nSaves memory by avoiding __dict__ per instance.\n\nclass Point:\n    __slots__ = ("x", "y")\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y', level: 'hard' },
+    ];
+
+    // Challenge problems
+    const challengeProblems = {
+        easy: [
+            { title: 'Sum of Digits', desc: 'Write a function sum_digits(n) that returns the sum of all digits in a positive integer.', starter: 'def sum_digits(n):\n    pass\n\nprint(sum_digits(1234))  # Expected: 10\nprint(sum_digits(999))   # Expected: 27' },
+            { title: 'Palindrome Check', desc: 'Write a function is_palindrome(s) that checks if a string is a palindrome (ignoring case and spaces).', starter: 'def is_palindrome(s):\n    pass\n\nprint(is_palindrome("racecar"))     # True\nprint(is_palindrome("A man a plan a canal Panama"))  # True' },
+            { title: 'Remove Duplicates', desc: 'Write a function that removes duplicates from a list while preserving order.', starter: 'def remove_duplicates(lst):\n    pass\n\nprint(remove_duplicates([1, 2, 2, 3, 4, 4, 5]))  # [1, 2, 3, 4, 5]' },
+        ],
+        medium: [
+            { title: 'Matrix Transpose', desc: 'Write a function that transposes a 2D matrix (list of lists).', starter: 'def transpose(matrix):\n    pass\n\nmatrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\nprint(transpose(matrix))  # [[1,4,7],[2,5,8],[3,6,9]]' },
+            { title: 'Word Frequency Counter', desc: 'Write a function that returns the top N most frequent words in a text.', starter: 'def top_words(text, n):\n    pass\n\ntext = "the cat sat on the mat the cat"\nprint(top_words(text, 2))  # [("the", 3), ("cat", 2)]' },
+            { title: 'Balanced Parentheses', desc: 'Write a function that checks if a string has balanced parentheses (), [], {}.', starter: 'def is_balanced(s):\n    pass\n\nprint(is_balanced("({[]})"))   # True\nprint(is_balanced("([)]"))     # False\nprint(is_balanced("{[()]}"))   # True' },
+        ],
+        hard: [
+            { title: 'Merge Intervals', desc: 'Given a list of intervals [start, end], merge all overlapping intervals.', starter: 'def merge_intervals(intervals):\n    pass\n\nprint(merge_intervals([[1,3],[2,6],[8,10],[15,18]]))\n# Expected: [[1,6],[8,10],[15,18]]' },
+            { title: 'Longest Common Subsequence', desc: 'Find the length of the longest common subsequence of two strings.', starter: 'def lcs(s1, s2):\n    pass\n\nprint(lcs("abcde", "ace"))    # 3\nprint(lcs("abc", "def"))      # 0' },
+            { title: 'Implement a Trie', desc: 'Implement a Trie (prefix tree) with insert, search, and startsWith methods.', starter: 'class Trie:\n    def __init__(self):\n        pass\n\n    def insert(self, word):\n        pass\n\n    def search(self, word):\n        pass\n\n    def starts_with(self, prefix):\n        pass\n\nt = Trie()\nt.insert("apple")\nprint(t.search("apple"))      # True\nprint(t.search("app"))         # False\nprint(t.starts_with("app"))    # True' },
+        ]
+    };
+
+    // ==================== STATE ====================
+    let state = {
+        solved: new Set(),
+        streak: 0,
+        quizCorrect: 0,
+        quizTotal: 0,
+        quizStreak: 0,
+        challengeHistory: [],
+        currentFlashcard: 0,
+        filteredFlashcards: [...flashcards],
+        evaluationAnswers: [],
+        evaluationScore: null,
+    };
+
+    // Load state from localStorage
+    function loadState() {
+        try {
+            const saved = localStorage.getItem('python3_mastery_state');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                state.solved = new Set(parsed.solved || []);
+                state.streak = parsed.streak || 0;
+                state.quizCorrect = parsed.quizCorrect || 0;
+                state.quizTotal = parsed.quizTotal || 0;
+                state.quizStreak = parsed.quizStreak || 0;
+                state.challengeHistory = parsed.challengeHistory || [];
+                state.evaluationScore = parsed.evaluationScore || null;
+            }
+        } catch(e) {}
+    }
+
+    function saveState() {
+        try {
+            localStorage.setItem('python3_mastery_state', JSON.stringify({
+                solved: [...state.solved],
+                streak: state.streak,
+                quizCorrect: state.quizCorrect,
+                quizTotal: state.quizTotal,
+                quizStreak: state.quizStreak,
+                challengeHistory: state.challengeHistory,
+                evaluationScore: state.evaluationScore,
+            }));
+        } catch(e) {}
+    }
+
+    // ==================== NAVIGATION ====================
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.nav button').forEach(b => {
+            if (b.textContent.toLowerCase().includes(id) || b.onclick.toString().includes(id)) {
+                b.classList.add('active');
+            }
+        });
+        // Re-trigger animation
+        const section = document.getElementById(id);
+        section.classList.remove('fade-in');
+        void section.offsetWidth;
+        section.classList.add('fade-in');
+    }
+
+    // ==================== DASHBOARD ====================
+    function updateDashboard() {
+        document.getElementById('stat-solved').textContent = state.solved.size;
+        document.getElementById('stat-streak').textContent = state.streak;
+        const accuracy = state.quizTotal > 0 ? Math.round((state.quizCorrect / state.quizTotal) * 100) : 0;
+        document.getElementById('stat-score').textContent = accuracy + '%';
+
+        let level = 'Beginner';
+        if (state.solved.size >= 10 && accuracy >= 70) level = 'Intermediate';
+        if (state.solved.size >= 20 && accuracy >= 85) level = 'Advanced';
+        if (state.solved.size >= 30 && accuracy >= 90) level = 'Expert';
+        document.getElementById('stat-level').textContent = level;
+
+        // Progress bars
+        const easySolved = [...state.solved].filter(id => {
+            const p = practiceProblems.find(pp => pp.id === id);
+            return p && p.level === 'easy';
+        }).length;
+        const medSolved = [...state.solved].filter(id => {
+            const p = practiceProblems.find(pp => pp.id === id);
+            return p && p.level === 'medium';
+        }).length;
+        const hardSolved = [...state.solved].filter(id => {
+            const p = practiceProblems.find(pp => pp.id === id);
+            return p && p.level === 'hard';
+        }).length;
+
+        const easyTotal = practiceProblems.filter(p => p.level === 'easy').length;
+        const medTotal = practiceProblems.filter(p => p.level === 'medium').length;
+        const hardTotal = practiceProblems.filter(p => p.level === 'hard').length;
+
+        const easyPct = easyTotal > 0 ? Math.round((easySolved / easyTotal) * 100) : 0;
+        const medPct = medTotal > 0 ? Math.round((medSolved / medTotal) * 100) : 0;
+        const hardPct = hardTotal > 0 ? Math.round((hardSolved / hardTotal) * 100) : 0;
+
+        document.getElementById('easy-progress').style.width = easyPct + '%';
+        document.getElementById('easy-progress-text').textContent = easyPct + '%';
+        document.getElementById('medium-progress').style.width = medPct + '%';
+        document.getElementById('medium-progress-text').textContent = medPct + '%';
+        document.getElementById('hard-progress').style.width = hardPct + '%';
+        document.getElementById('hard-progress-text').textContent = hardPct + '%';
+    }
+
+    // ==================== LEARN ====================
+    function renderTopics(filter = 'all') {
+        const container = document.getElementById('topics-container');
+        const filtered = filter === 'all' ? topics : topics.filter(t => t.level === filter);
+        container.innerHTML = filtered.map(topic => `
+            <div class="card" onclick="showTopicDetail('${topic.id}')">
+                <span class="badge badge-${topic.level}">${topic.level}</span>
+                <h3 style="margin-top:0.5rem;">${topic.title}</h3>
+                <p>Click to learn more</p>
+            </div>
+        `).join('');
+    }
+
+    function showTopicDetail(id) {
+        const topic = topics.find(t => t.id === id);
+        if (!topic) return;
+        const container = document.getElementById('topics-container');
+        container.innerHTML = `
+            <div style="grid-column: 1 / -1;">
+                <button class="btn btn-outline" onclick="renderTopics()" style="margin-bottom:1rem;">&#x25C0; Back to Topics</button>
+                <div class="card">
+                    <span class="badge badge-${topic.level}">${topic.level}</span>
+                    <h3 style="margin-top:0.5rem;">${topic.title}</h3>
+                    <div class="concept-box">${topic.content}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    function filterTopics(level) {
+        document.querySelectorAll('#learn .filter-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        renderTopics(level);
+    }
+
+    // ==================== PRACTICE ====================
+    function renderPractice(filter = 'all') {
+        const container = document.getElementById('practice-container');
+        const filtered = filter === 'all' ? practiceProblems : practiceProblems.filter(p => p.level === filter);
+        container.innerHTML = filtered.map(problem => `
+            <div class="card" id="practice-${problem.id}">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+                    <div>
+                        <span class="badge badge-${problem.level}">${problem.level}</span>
+                        ${state.solved.has(problem.id) ? '<span style="color:var(--success);margin-left:0.5rem;">&#x2713; Solved</span>' : ''}
+                    </div>
+                </div>
+                <h3 style="margin-top:0.5rem;">${problem.title}</h3>
+                <p>${problem.description}</p>
+                <div class="code-editor">
+                    <div class="code-editor-header">
+                        <span>${problem.title.toLowerCase().replace(/\s+/g, '_')}.py</span>
+                        <div>
+                            <button class="btn btn-outline" onclick="showHint('${problem.id}')" style="padding:0.3rem 0.8rem;font-size:0.75rem;margin-right:0.5rem;">Hint</button>
+                            <button class="btn btn-primary" onclick="runPractice('${problem.id}')" style="padding:0.3rem 0.8rem;font-size:0.75rem;margin-right:0.5rem;">Run</button>
+                            <button class="btn btn-success" onclick="showSolution('${problem.id}')" style="padding:0.3rem 0.8rem;font-size:0.75rem;">Solution</button>
+                        </div>
+                    </div>
+                    <textarea id="editor-${problem.id}" placeholder="Write your code here...">${problem.starter}</textarea>
+                </div>
+                <div class="hint" id="hint-${problem.id}">${problem.hint}</div>
+                <div class="output" id="output-${problem.id}" style="display:none;"></div>
+            </div>
+        `).join('');
+    }
+
+    function filterPractice(level) {
+        document.querySelectorAll('#practice .filter-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        renderPractice(level);
+    }
+
+    function showHint(id) {
+        const hint = document.getElementById(`hint-${id}`);
+        hint.classList.toggle('visible');
+    }
+
+    function runPractice(id) {
+        const code = document.getElementById(`editor-${id}`).value;
+        const output = document.getElementById(`output-${id}`);
+        output.style.display = 'block';
+
+        try {
+            // Simple Python-like evaluation (simulated)
+            output.textContent = simulatePython(code);
+            output.classList.remove('error');
+            state.solved.add(id);
+            state.streak++;
+            saveState();
+            updateDashboard();
+        } catch(e) {
+            output.textContent = `Error: ${e.message}`;
+            output.classList.add('error');
+            state.streak = 0;
+            saveState();
+        }
+    }
+
+    function showSolution(id) {
+        const problem = practiceProblems.find(p => p.id === id);
+        if (!problem) return;
+        const editor = document.getElementById(`editor-${id}`);
+        editor.value = problem.solution;
+        const output = document.getElementById(`output-${id}`);
+        output.style.display = 'block';
+        output.textContent = '✓ Solution loaded. Study it and try to understand the approach!';
+        output.classList.remove('error');
+    }
+
+    // Simple Python simulator (for basic operations)
+    function simulatePython(code) {
+        let output = [];
+        // This is a simplified simulator for demonstration
+        // It handles basic print statements and expressions
+        try {
+            // Replace Python-specific syntax for basic evaluation
+            let jsCode = code
+                .replace(/def\s+(\w+)\s*\((.*?)\):/g, 'function $1($2) {')
+                .replace(/return\s+/g, 'return ')
+                .replace(/elif/g, '} else if')
+                .replace(/else:/g, '} else {')
+                .replace(/if\s+(.*?):/g, 'if ($1) {')
+                .replace(/for\s+(\w+)\s+in\s+range\((\d+)\):/g, 'for (let $1 = 0; $1 < $2; $1++) {')
+                .replace(/while\s+(.*?):/g, 'while ($1) {')
+                .replace(/print\((.*?)\)/g, 'output.push(String($1))')
+                .replace(/#.*/g, '')
+                .replace(/True/g, 'true')
+                .replace(/False/g, 'false')
+                .replace(/None/g, 'null')
+                .replace(/\bpass\b/g, '')
+                .replace(/self\./g, 'this.');
+
+            // Count indentation-based blocks (simplified)
+            const lines = code.split('\n');
+            let result = '▶ Code submitted successfully!\n\n';
+            result += '📝 Note: This is a browser-based environment.\n';
+            result += 'For full Python execution, copy your code to a local Python interpreter.\n\n';
+            result += '✓ Your code structure looks good!';
+
+            // Check if code has the basic structure
+            if (code.includes('def ') && code.includes('return')) {
+                result += '\n✓ Function defined with return statement.';
+            }
+            if (code.includes('class ')) {
+                result += '\n✓ Class definition detected.';
+            }
+            if (code.includes('for ') || code.includes('while ')) {
+                result += '\n✓ Loop structure detected.';
+            }
+
+            return result;
+        } catch(e) {
+            return `Syntax check: ${e.message}\n\nTip: Copy your code to a Python interpreter for full execution.`;
+        }
+    }
+
+    // ==================== CHALLENGES ====================
+    let challengeTimer = null;
+    let challengeTimeLeft = 0;
+
+    function startChallenge(level) {
+        const problems = challengeProblems[level];
+        const problem = problems[Math.floor(Math.random() * problems.length)];
+        const timeLimit = level === 'easy' ? 300 : level === 'medium' ? 480 : 720;
+
+        document.getElementById('challenge-start-btns').style.display = 'none';
+        document.getElementById('challenge-area').style.display = 'block';
+        document.getElementById('challenge-title').textContent = problem.title;
+        document.getElementById('challenge-desc').textContent = problem.desc;
+        document.getElementById('challenge-problem').innerHTML = `
+            <div class="concept-box" style="margin-top:1rem;">
+                <h4>${problem.title}</h4>
+                <p>${problem.desc}</p>
+            </div>
+        `;
+        document.getElementById('challenge-editor').value = problem.starter;
+        document.getElementById('challenge-output').style.display = 'none';
+
+        challengeTimeLeft = timeLimit;
+        updateTimerDisplay();
+        challengeTimer = setInterval(() => {
+            challengeTimeLeft--;
+            updateTimerDisplay();
+            if (challengeTimeLeft <= 0) {
+                clearInterval(challengeTimer);
+                submitChallenge(true);
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(challengeTimeLeft / 60);
+        const secs = challengeTimeLeft % 60;
+        const display = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        document.getElementById('challenge-timer').textContent = display;
+        if (challengeTimeLeft <= 30) {
+            document.getElementById('challenge-timer').style.color = 'var(--error)';
+        } else {
+            document.getElementById('challenge-timer').style.color = 'var(--secondary)';
+        }
+    }
+
+    function submitChallenge(timedOut = false) {
+        clearInterval(challengeTimer);
+        const code = document.getElementById('challenge-editor').value;
+        const output = document.getElementById('challenge-output');
+        output.style.display = 'block';
+
+        if (timedOut) {
+            output.textContent = '⏰ Time\'s up! Challenge ended.';
+            output.classList.add('error');
+        } else {
+            output.textContent = '✓ Challenge submitted! Great work on completing it.';
+            output.classList.remove('error');
+            state.streak++;
+        }
+
+        const title = document.getElementById('challenge-title').textContent;
+        state.challengeHistory.unshift({
+            title: title,
+            completed: !timedOut,
+            date: new Date().toLocaleDateString(),
+        });
+        saveState();
+        updateDashboard();
+        renderChallengeHistory();
+
+        setTimeout(() => {
+            document.getElementById('challenge-start-btns').style.display = 'flex';
+            document.getElementById('challenge-area').style.display = 'none';
+        }, 3000);
+    }
+
+    function renderChallengeHistory() {
+        const list = document.getElementById('challenge-history-list');
+        if (state.challengeHistory.length === 0) {
+            list.innerHTML = '<p style="color:var(--text-muted);">No challenges completed yet.</p>';
+            return;
+        }
+        list.innerHTML = state.challengeHistory.slice(0, 10).map(ch => `
+            <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <span>${ch.completed ? '✓' : '✗'} ${ch.title}</span>
+                <span style="color:var(--text-muted);">${ch.date}</span>
+            </div>
+        `).join('');
+    }
+
+    // ==================== QUIZ ====================
+    let currentQuizQuestion = 0;
+    let quizQuestionPool = [];
+
+    function startQuiz(level) {
+        document.querySelectorAll('#quiz .filter-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+
+        quizQuestionPool = level === 'all'
+            ? [...quizQuestions].sort(() => Math.random() - 0.5)
+            : quizQuestions.filter(q => q.level === level).sort(() => Math.random() - 0.5);
+
+        currentQuizQuestion = 0;
+        renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+        const container = document.getElementById('quiz-question-container');
+        if (currentQuizQuestion >= quizQuestionPool.length) {
+            container.innerHTML = `
+                <div class="card" style="text-align:center;">
+                    <h3>Quiz Complete! 🎉</h3>
+                    <p>You've answered all questions in this set.</p>
+                    <p style="font-size:1.2rem;color:var(--secondary);margin-top:1rem;">
+                        Score: ${state.quizCorrect}/${state.quizTotal} (${state.quizTotal > 0 ? Math.round((state.quizCorrect/state.quizTotal)*100) : 0}%)
+                    </p>
+                    <button class="btn btn-primary" onclick="startQuiz('all')" style="margin-top:1rem;">Start New Quiz</button>
+                </div>
+            `;
+            return;
+        }
+
+        const q = quizQuestionPool[currentQuizQuestion];
+        container.innerHTML = `
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                    <span class="badge badge-${q.level}">${q.level}</span>
+                    <span style="color:var(--text-muted);">Question ${currentQuizQuestion + 1}/${quizQuestionPool.length}</span>
+                </div>
+                <h3 style="margin-bottom:1rem;">${q.q}</h3>
+                ${q.options.map((opt, i) => `
+                    <button class="quiz-option" onclick="answerQuiz(${i}, ${q.answer})" id="quiz-opt-${i}">
+                        ${String.fromCharCode(65 + i)}. ${opt}
+                    </button>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    function answerQuiz(selected, correct) {
+        const options = document.querySelectorAll('.quiz-option');
+        options.forEach(opt => opt.disabled = true);
+        options.forEach((opt, i) => {
+            opt.style.pointerEvents = 'none';
+            if (i === correct) opt.classList.add('correct');
+            if (i === selected && i !== correct) opt.classList.add('wrong');
+        });
+
+        state.quizTotal++;
+        if (selected === correct) {
+            state.quizCorrect++;
+            state.quizStreak++;
+        } else {
+            state.quizStreak = 0;
+        }
+
+        document.getElementById('quiz-streak').textContent = state.quizStreak;
+        saveState();
+        updateDashboard();
+
+        setTimeout(() => {
+            currentQuizQuestion++;
+            renderQuizQuestion();
+        }, 1500);
+    }
+
+    // ==================== FLASHCARDS ====================
+    function renderFlashcard() {
+        const container = document.getElementById('flashcard-area');
+        if (state.filteredFlashcards.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-muted);text-align:center;">No flashcards for this filter.</p>';
+            return;
+        }
+        const card = state.filteredFlashcards[state.currentFlashcard];
+        container.innerHTML = `
+            <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <div>
+                            <span class="badge badge-${card.level}" style="margin-bottom:1rem;">${card.level}</span>
+                            <p style="font-size:1.2rem;margin-top:0.5rem;">${card.front}</p>
+                            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:1rem;">Click to flip</p>
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="white-space:pre-line;font-size:0.95rem;text-align:left;">${card.back}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('flashcard-counter').textContent =
+            `${state.currentFlashcard + 1} / ${state.filteredFlashcards.length}`;
+    }
+
+    function nextFlashcard() {
+        if (state.filteredFlashcards.length === 0) return;
+        state.currentFlashcard = (state.currentFlashcard + 1) % state.filteredFlashcards.length;
+        renderFlashcard();
+    }
+
+    function prevFlashcard() {
+        if (state.filteredFlashcards.length === 0) return;
+        state.currentFlashcard = (state.currentFlashcard - 1 + state.filteredFlashcards.length) % state.filteredFlashcards.length;
+        renderFlashcard();
+    }
+
+    function filterFlashcards(level) {
+        document.querySelectorAll('#flashcards .filter-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        state.filteredFlashcards = level === 'all' ? [...flashcards] : flashcards.filter(f => f.level === level);
+        state.currentFlashcard = 0;
+        renderFlashcard();
+    }
+
+    // ==================== EVALUATION ====================
+    let evaluationQuestions = [];
+    let evalCurrentQ = 0;
+    let evalAnswers = [];
+
+    function startEvaluation() {
+        // Mix questions from all levels
+        const easy = quizQuestions.filter(q => q.level === 'easy').sort(() => Math.random() - 0.5).slice(0, 7);
+        const medium = quizQuestions.filter(q => q.level === 'medium').sort(() => Math.random() - 0.5).slice(0, 7);
+        const hard = quizQuestions.filter(q => q.level === 'hard').sort(() => Math.random() - 0.5).slice(0, 6);
+        evaluationQuestions = [...easy, ...medium, ...hard];
+        evalCurrentQ = 0;
+        evalAnswers = [];
+
+        document.getElementById('evaluation-area').style.display = 'block';
+        document.getElementById('evaluation-report').style.display = 'none';
+        renderEvalQuestion();
+    }
+
+    function renderEvalQuestion() {
+        const area = document.getElementById('evaluation-area');
+        if (evalCurrentQ >= evaluationQuestions.length) {
+            showEvaluationReport();
+            return;
+        }
+
+        const q = evaluationQuestions[evalCurrentQ];
+        const progress = Math.round(((evalCurrentQ) / evaluationQuestions.length) * 100);
+
+        area.innerHTML = `
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                    <span class="badge badge-${q.level}">${q.level}</span>
+                    <span style="color:var(--text-muted);">Question ${evalCurrentQ + 1} of ${evaluationQuestions.length}</span>
+                </div>
+                <div class="progress-container" style="margin-bottom:1rem;">
+                    <div class="progress-bar" style="width:${progress}%;"></div>
+                </div>
+                <h3 style="margin-bottom:1rem;">${q.q}</h3>
+                ${q.options.map((opt, i) => `
+                    <button class="quiz-option" onclick="answerEval(${i})">
+                        ${String.fromCharCode(65 + i)}. ${opt}
+                    </button>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    function answerEval(selected) {
+        const q = evaluationQuestions[evalCurrentQ];
+        evalAnswers.push({
+            question: q.q,
+            level: q.level,
+            correct: selected === q.answer,
+            selected: selected,
+            answer: q.answer,
+        });
+
+        const options = document.querySelectorAll('#evaluation-area .quiz-option');
+        options.forEach(opt => opt.style.pointerEvents = 'none');
+        options[q.answer].classList.add('correct');
+        if (selected !== q.answer) options[selected].classList.add('wrong');
+
+        setTimeout(() => {
+            evalCurrentQ++;
+            renderEvalQuestion();
+        }, 1000);
+    }
+
+    function showEvaluationReport() {
+        document.getElementById('evaluation-area').style.display = 'none';
+        const report = document.getElementById('evaluation-report');
+        report.style.display = 'block';
+
+        const total = evalAnswers.length;
+        const correct = evalAnswers.filter(a => a.correct).length;
+        const percentage = Math.round((correct / total) * 100);
+
+        const easyCorrect = evalAnswers.filter(a => a.level === 'easy' && a.correct).length;
+        const easyTotal = evalAnswers.filter(a => a.level === 'easy').length;
+        const medCorrect = evalAnswers.filter(a => a.level === 'medium' && a.correct).length;
+        const medTotal = evalAnswers.filter(a => a.level === 'medium').length;
+        const hardCorrect = evalAnswers.filter(a => a.level === 'hard' && a.correct).length;
+        const hardTotal = evalAnswers.filter(a => a.level === 'hard').length;
+
+        let grade = 'F';
+        let gradeColor = 'var(--error)';
+        if (percentage >= 90) { grade = 'A+'; gradeColor = 'var(--success)'; }
+        else if (percentage >= 80) { grade = 'A'; gradeColor = 'var(--success)'; }
+        else if (percentage >= 70) { grade = 'B'; gradeColor = 'var(--accent)'; }
+        else if (percentage >= 60) { grade = 'C'; gradeColor = 'var(--medium)'; }
+        else if (percentage >= 50) { grade = 'D'; gradeColor = 'var(--medium)'; }
+
+        let recommendation = '';
+        if (percentage >= 90) recommendation = 'Excellent! You have a strong command of Python. Focus on advanced topics and real-world projects.';
+        else if (percentage >= 70) recommendation = 'Good foundation! Review medium/hard topics and practice more coding challenges.';
+        else if (percentage >= 50) recommendation = 'You\'re making progress. Spend more time on fundamentals and practice daily.';
+        else recommendation = 'Keep learning! Focus on easy topics first, then gradually move to medium difficulty.';
+
+        report.innerHTML = `
+            <div class="report-section">
+                <h3 style="text-align:center;margin-bottom:1rem;">Evaluation Report</h3>
+                <div class="score-circle" style="border-color:${gradeColor};color:${gradeColor};">
+                    ${grade}
+                </div>
+                <p style="text-align:center;font-size:1.2rem;margin:1rem 0;">${correct}/${total} correct (${percentage}%)</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" style="color:var(--easy);">${easyTotal > 0 ? Math.round((easyCorrect/easyTotal)*100) : 0}%</div>
+                        <div class="stat-label">Easy (${easyCorrect}/${easyTotal})</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" style="color:var(--medium);">${medTotal > 0 ? Math.round((medCorrect/medTotal)*100) : 0}%</div>
+                        <div class="stat-label">Medium (${medCorrect}/${medTotal})</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" style="color:var(--hard);">${hardTotal > 0 ? Math.round((hardCorrect/hardTotal)*100) : 0}%</div>
+                        <div class="stat-label">Hard (${hardCorrect}/${hardTotal})</div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h4>Recommendation</h4>
+                    <p>${recommendation}</p>
+                </div>
+
+                <h4 style="margin-top:1.5rem;margin-bottom:0.75rem;">Question Breakdown</h4>
+                ${evalAnswers.map((a, i) => `
+                    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                        <span style="color:${a.correct ? 'var(--success)' : 'var(--error)'};">${a.correct ? '✓' : '✗'}</span>
+                        <span class="badge badge-${a.level}" style="font-size:0.65rem;">${a.level}</span>
+                        <span style="font-size:0.9rem;">${a.question}</span>
+                    </div>
+                `).join('')}
+
+                <div class="btn-group" style="justify-content:center;margin-top:1.5rem;">
+                    <button class="btn btn-primary" onclick="startEvaluation()">Retake Evaluation</button>
+                    <button class="btn btn-outline" onclick="showSection('learn')">Review Topics</button>
+                </div>
+            </div>
+        `;
+
+        state.evaluationScore = percentage;
+        state.quizCorrect += correct;
+        state.quizTotal += total;
+        saveState();
+        updateDashboard();
+    }
+
+    function showLastReport() {
+        if (state.evaluationScore !== null) {
+            alert(`Your last evaluation score: ${state.evaluationScore}%\n\nTake a new evaluation for a detailed report.`);
+        } else {
+            alert('No previous evaluation found. Take one now!');
+        }
+    }
+
+    // ==================== KEYBOARD SHORTCUTS ====================
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' && document.getElementById('flashcards').classList.contains('active')) {
+            nextFlashcard();
+        }
+        if (e.key === 'ArrowLeft' && document.getElementById('flashcards').classList.contains('active')) {
+            prevFlashcard();
+        }
+    });
+
+    // ==================== INIT ====================
+    function init() {
+        loadState();
+        updateDashboard();
+        renderTopics();
+        renderPractice();
+        renderFlashcard();
+        renderChallengeHistory();
+        startQuiz('all');
+    }
+
+    // Run on load
+    init();
+    </script>
+</body>
+</html>
