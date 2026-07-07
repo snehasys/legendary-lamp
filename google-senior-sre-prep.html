@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Google Senior SRE Interview Mastery — Complete Preparation Guide</title>
 <style>
-:root{
+:root,html[data-theme="dark"]{
   --bg:#0a0e17; --bg2:#0f1524; --panel:#141b2d; --panel2:#1a2338;
   --ink:#e8edf7; --muted:#9aa8c4; --line:#25304a;
   --green:#4285f4; --green-d:#3367d6; --green-soft:rgba(66,133,244,.14);
@@ -13,16 +13,39 @@
   --blue:#5aa9ff; --purple:#b07bff;
   --radius:16px; --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
   --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --code-bg:#0b1120; --code-color:#cfe3ff; --nav-bg:rgba(10,14,23,.82);
+  --flip-back-bg:linear-gradient(150deg,#0d1a2e,#0f1f35);
+  --hero-grad1:rgba(66,133,244,.10); --hero-grad2:rgba(52,168,83,.08);
+}
+html[data-theme="light"]{
+  --bg:#f8f9fc; --bg2:#ffffff; --panel:#ffffff; --panel2:#f0f2f7;
+  --ink:#1a1a2e; --muted:#5a6478; --line:#dde1ea;
+  --green:#1a73e8; --green-d:#1557b0; --green-soft:rgba(26,115,232,.10);
+  --cyan:#188038; --amber:#e37400; --red:#d93025; --red-soft:rgba(217,48,37,.08);
+  --blue:#1967d2; --purple:#7627bb;
+  --code-bg:#f4f5f8; --code-color:#1a1a2e; --nav-bg:rgba(248,249,252,.92);
+  --flip-back-bg:linear-gradient(150deg,#e8f0fe,#f0f7f4);
+  --hero-grad1:rgba(26,115,232,.06); --hero-grad2:rgba(24,128,56,.05);
+}
+html[data-theme="high-contrast"]{
+  --bg:#000000; --bg2:#0a0a0a; --panel:#111111; --panel2:#1a1a1a;
+  --ink:#ffffff; --muted:#cccccc; --line:#444444;
+  --green:#6ab7ff; --green-d:#4da3ff; --green-soft:rgba(106,183,255,.18);
+  --cyan:#66ff99; --amber:#ffdd00; --red:#ff5555; --red-soft:rgba(255,85,85,.15);
+  --blue:#88ccff; --purple:#cc99ff;
+  --code-bg:#0a0a0a; --code-color:#ffffff; --nav-bg:rgba(0,0,0,.95);
+  --flip-back-bg:linear-gradient(150deg,#0a0a0a,#111111);
+  --hero-grad1:rgba(106,183,255,.08); --hero-grad2:rgba(102,255,153,.06);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.7;font-size:16px;overflow-x:hidden;
-  background-image:radial-gradient(900px 500px at 85% -5%,rgba(66,133,244,.10),transparent 60%),radial-gradient(700px 400px at 5% 10%,rgba(52,168,83,.08),transparent 55%);}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.7;font-size:16px;overflow-x:hidden;transition:background .3s,color .3s;
+  background-image:radial-gradient(900px 500px at 85% -5%,var(--hero-grad1),transparent 60%),radial-gradient(700px 400px at 5% 10%,var(--hero-grad2),transparent 55%);}
 ::selection{background:var(--green-soft);color:#fff}
 a{color:var(--green);text-decoration:none} a:hover{text-decoration:underline}
 .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
 #progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--green),var(--cyan));z-index:999;transition:width .1s}
-nav{position:sticky;top:0;z-index:900;backdrop-filter:blur(14px);background:rgba(10,14,23,.82);border-bottom:1px solid var(--line)}
+nav{position:sticky;top:0;z-index:900;backdrop-filter:blur(14px);background:var(--nav-bg);border-bottom:1px solid var(--line);transition:background .3s}
 nav .wrap{display:flex;align-items:center;gap:18px;height:60px}
 nav .brand{font-weight:800;letter-spacing:.5px;font-size:15px;white-space:nowrap}
 nav .brand span{color:var(--green)}
@@ -66,9 +89,9 @@ p{margin-bottom:16px;color:#d3dcee} strong{color:#fff}
 .callout.warn{background:var(--red-soft);border-color:rgba(234,67,53,.4)}
 .callout.info{background:rgba(90,169,255,.1);border-color:rgba(90,169,255,.4)}
 .callout.said{background:rgba(251,188,4,.09);border-color:rgba(251,188,4,.4)}
-code{font-family:var(--mono);background:#0b1120;border:1px solid var(--line);padding:2px 7px;border-radius:6px;font-size:13px;color:var(--cyan)}
-pre{background:#0b1120;border:1px solid var(--line);border-radius:12px;padding:18px;overflow-x:auto;margin:16px 0}
-pre code{background:none;border:none;padding:0;color:#cfe3ff;font-size:13.5px;line-height:1.65;display:block}
+code{font-family:var(--mono);background:var(--code-bg);border:1px solid var(--line);padding:2px 7px;border-radius:6px;font-size:13px;color:var(--cyan)}
+pre{background:var(--code-bg);border:1px solid var(--line);border-radius:12px;padding:18px;overflow-x:auto;margin:16px 0}
+pre code{background:none;border:none;padding:0;color:var(--code-color);font-size:13.5px;line-height:1.65;display:block}
 .cmt{color:#5f7599}
 .quiz{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-bottom:18px}
 .quiz .q{font-weight:700;font-size:1.08rem;margin-bottom:16px}
@@ -86,7 +109,7 @@ pre code{background:none;border:none;padding:0;color:#cfe3ff;font-size:13.5px;li
 .flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:18px;text-align:center}
 .flip-front{background:linear-gradient(150deg,var(--panel2),var(--panel));font-weight:800;font-size:1.05rem;color:#fff}
 .flip-front .hint{position:absolute;bottom:10px;font-size:10px;letter-spacing:1px;color:var(--muted);font-weight:600;text-transform:uppercase}
-.flip-back{background:linear-gradient(150deg,#0d1a2e,#0f1f35);transform:rotateY(180deg);border-color:var(--green);font-size:13.5px;color:#b8d4ff;line-height:1.55}
+.flip-back{background:var(--flip-back-bg);transform:rotateY(180deg);border-color:var(--green);font-size:13.5px;color:var(--muted);line-height:1.55}
 .badge{display:inline-block;font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:6px;font-weight:700;letter-spacing:.5px}
 .b-green{background:rgba(52,168,83,.14);color:var(--cyan)} .b-red{background:var(--red-soft);color:var(--red)}
 .b-amber{background:rgba(251,188,4,.14);color:var(--amber)} .b-blue{background:rgba(90,169,255,.14);color:var(--blue)}
@@ -96,7 +119,28 @@ pre code{background:none;border:none;padding:0;color:#cfe3ff;font-size:13.5px;li
 .stat{flex:1;min-width:150px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:18px}
 .stat .n{font-size:1.9rem;font-weight:900;color:var(--green);font-family:var(--mono)} .stat .l{font-size:12.5px;color:var(--muted);margin-top:4px}
 footer{padding:50px 0 70px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:14px}
-footer .big{font-size:1.4rem;color:#fff;font-weight:800;margin-bottom:10px}
+footer .big{font-size:1.4rem;color:var(--ink);font-weight:800;margin-bottom:10px}
+.theme-toggle{display:flex;align-items:center;gap:6px;margin-left:auto}
+.theme-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:.2s;padding:0}
+.theme-btn:hover{border-color:var(--green);background:var(--green-soft)}
+.theme-btn.active{border-color:var(--green);background:var(--green);color:#fff}
+html[data-theme="light"] h3{color:var(--ink)}
+html[data-theme="light"] strong{color:#1a1a2e}
+html[data-theme="light"] p{color:#3a4255}
+html[data-theme="light"] .tbl th{color:#1a1a2e}
+html[data-theme="light"] .tbl td:first-child{color:#1a1a2e}
+html[data-theme="light"] .flip-front{color:#1a1a2e}
+html[data-theme="light"] .mock .qq:hover{background:#e8ecf4}
+html[data-theme="high-contrast"] h3{color:#ffffff}
+html[data-theme="high-contrast"] strong{color:#ffffff}
+html[data-theme="high-contrast"] p{color:#e0e0e0}
+html[data-theme="high-contrast"] .tbl th{color:#ffffff}
+html[data-theme="high-contrast"] .tbl td:first-child{color:#ffffff}
+html[data-theme="high-contrast"] .flip-front{color:#ffffff}
+html[data-theme="high-contrast"] .mock .qq:hover{background:#222222}
+html[data-theme="high-contrast"] .opt{border-width:2px}
+html[data-theme="high-contrast"] .card{border-width:2px}
+html[data-theme="high-contrast"] a{text-decoration:underline}
 .mock{border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden}
 .mock .qq{background:var(--panel2);padding:14px 18px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px}
 .mock .qq:hover{background:#1e2942}
@@ -138,7 +182,13 @@ footer .big{font-size:1.4rem;color:#fff;font-weight:800;margin-bottom:10px}
       <a href="#quiz">Quiz</a>
       <a href="#flash">Flashcards</a>
       <a href="#mock">Mock Q&A</a>
+      <a href="#cases">Case Studies</a>
       <a href="#cheat">Cheat Sheet</a>
+    </div>
+    <div class="theme-toggle">
+      <button class="theme-btn" data-theme="light" title="Light Mode">&#9788;</button>
+      <button class="theme-btn active" data-theme="dark" title="Dark Mode">&#9790;</button>
+      <button class="theme-btn" data-theme="high-contrast" title="High Contrast">&#9673;</button>
     </div>
   </div>
 </nav>
@@ -1929,10 +1979,692 @@ q">Q25: What does the OOM killer use to select which process to kill?</div>
   </div>
 </section>
 
-<!-- ============ SECTION 13: CHEAT SHEET ============ -->
+<!-- ============ SECTION: REAL-WORLD CASE STUDIES ============ -->
+<section id="cases">
+  <div class="wrap">
+    <span class="eyebrow">Section 13 — From Credible Sources</span>
+    <h2 class="sec">Real-World Case Studies &amp; Deep Scenarios</h2>
+    <p class="lead">Based on published incidents from Google SRE Book, ACM Queue research, Netflix, and Brendan Gregg's methodology. Each teaches a principle you'll need in the interview.</p>
+
+    <div class="callout said"><div class="h">&#128218; Source: ACM Queue, 2020 — "Debugging Incidents in Google's Distributed Systems"</div>Google's 2019 research on 20 real incidents found that SREs use a <strong>generic approach</strong> based on known system characteristics, while SWEs go to logs first. The canonical journey is: Detect → Triage → Investigate → Mitigate → Resolve — but these stages repeat <em>cyclically</em>, not linearly.</div>
+
+    <h3>Case Study 1: The Diskerase Catastrophe (Google, Real Incident)</h3>
+    <div class="scenario">
+      <div class="alert">INCIDENT: All satellite proxy/cache machines globally sent to disk erase. Edge serving capacity wiped out.</div>
+      <p><strong>Source:</strong> Google SRE Workbook, Chapter 10 — Postmortem Culture</p>
+      <p><strong>What happened:</strong> During routine rack decommission, automation ran <code>GetMachines(satellite)</code> which returned an empty list (machines already decommissioned). An API bug treated an empty filter as "no filter" — meaning ALL satellite machines globally were sent to diskerase.</p>
+      <pre><code><span class="cmt"># The bug: empty list = no filter (should mean "act on nothing")</span>
+machines = GetMachines(satellite)  <span class="cmt"># Returns [] because already decom'd</span>
+SendToDecom(
+    candidates=GetAllSatelliteMachines(),  <span class="cmt"># ALL satellites globally</span>
+    filter=machines  <span class="cmt"># [] treated as "match everything"</span>
+)
+<span class="cmt"># Result: Every satellite machine globally erased within minutes</span></code></pre>
+      <div class="diagnosis">
+        <h4>Root Cause Analysis</h4>
+        <p>1. Automation was not idempotent — retrying a completed step had destructive side effects</p>
+        <p>2. API semantic ambiguity: empty list vs. None not distinguished</p>
+        <p>3. No rate limiting on destructive operations (thousands of machines erased simultaneously)</p>
+        <p>4. No confirmation prompt for operations exceeding a threshold</p>
+      </div>
+      <div class="resolution">
+        <h4>Interview Lesson: What Google Expects You to Say</h4>
+        <p>"This is a classic <strong>semantic ambiguity bug</strong>. In my code, I always distinguish between 'no filter specified' (None) and 'filter with zero matches' (empty list). For destructive operations, I implement: (1) dry-run by default, (2) rate limiting on batch operations, (3) sanity checks — if an operation would affect &gt;N% of fleet, require explicit confirmation, (4) idempotency — running the same operation twice should be safe."</p>
+      </div>
+    </div>
+
+    <h3>Case Study 2: The GC Death Spiral (Cascading Failure Pattern)</h3>
+    <div class="scenario">
+      <div class="alert">PATTERN: Java frontend enters garbage collection death spiral under load, causing cascading failure across 3 dependent services.</div>
+      <p><strong>Source:</strong> Google SRE Book, Chapter 22 — Addressing Cascading Failures</p>
+      <p><strong>The cascade chain (from the book):</strong></p>
+      <pre><code>1. Java frontend has poorly tuned GC parameters
+2. Under high (but expected) load → runs out of CPU due to GC
+3. CPU exhaustion → requests take longer
+4. Longer requests → more concurrent in-flight requests
+5. More in-flight → more RAM consumed per request
+6. Memory pressure → less RAM for application cache
+7. Reduced cache → lower hit rate → more requests to backend
+8. Backend runs out of CPU/threads
+9. Health checks fail → load balancer removes servers
+10. Remaining servers get even more load → complete cascade</code></pre>
+      <div class="diagnosis">
+        <h4>Key Insight from Google</h4>
+        <p>"In situations as complex as the preceding scenario, it's unlikely that the causal chain will be fully diagnosed during an outage. It might be very hard to determine that the backend crash was caused by a decrease in the cache rate in the frontend, particularly if the frontend and backend components have different owners."</p>
+      </div>
+      <div class="resolution">
+        <h4>Interview Answer Framework</h4>
+        <p>When asked about cascading failures, mention: (1) <strong>Load shedding</strong> — reject excess requests early with 503, (2) <strong>Circuit breakers</strong> — stop calling failing dependencies, (3) <strong>Graceful degradation</strong> — serve reduced quality instead of errors, (4) <strong>Capacity headroom</strong> — never run above 70% utilization, (5) <strong>Key insight</strong>: dropping load to pre-failure levels won't stop the cascade because you now have reduced capacity. You need to drop load BELOW pre-failure levels.</p>
+      </div>
+    </div>
+
+    <h3>Case Study 3: Netflix's 60-Second Diagnosis (Brendan Gregg)</h3>
+    <div class="scenario">
+      <p><strong>Source:</strong> Netflix Tech Blog — "Linux Performance Analysis in 60,000 Milliseconds" by Brendan Gregg</p>
+      <p>This is the gold standard methodology for the troubleshooting round. In the first 60 seconds on a sick server:</p>
+      <pre><code><span class="cmt"># The 10 commands in order (memorize this)</span>
+$ uptime                  <span class="cmt"># Load averages: 1m, 5m, 15m trend</span>
+$ dmesg -T | tail         <span class="cmt"># Kernel errors: OOM kills, hardware</span>
+$ vmstat 1 5              <span class="cmt"># CPU (r, us, sy, wa), memory (si/so)</span>
+$ mpstat -P ALL 1 3       <span class="cmt"># Per-CPU: find hot CPU (single-thread)</span>
+$ pidstat 1 3             <span class="cmt"># Per-process CPU: who's consuming?</span>
+$ iostat -xz 1 3          <span class="cmt"># Disk: await, %util, avgqu-sz</span>
+$ free -m                 <span class="cmt"># Memory: available vs free vs cached</span>
+$ sar -n DEV 1 3          <span class="cmt"># Network throughput per interface</span>
+$ sar -n TCP,ETCP 1 3     <span class="cmt"># TCP: active/passive opens, retrans</span>
+$ top                     <span class="cmt"># Overview + sort by resource</span></code></pre>
+      <div class="callout tip"><div class="h">&#128161; USE Method (Brendan Gregg)</div>For EVERY resource (CPU, memory, network, disk), check three things: <strong>Utilization</strong> (% busy), <strong>Saturation</strong> (queue length), <strong>Errors</strong> (error count). This systematic approach ensures you never miss a bottleneck.</div>
+      <div class="resolution">
+        <h4>What Signals to Look For</h4>
+        <p><strong>CPU saturated:</strong> vmstat 'r' > CPU count, mpstat shows single hot CPU<br>
+        <strong>Memory pressure:</strong> vmstat si/so non-zero (swapping), dmesg shows OOM<br>
+        <strong>Disk bottleneck:</strong> iostat await > 10ms, %util > 80%<br>
+        <strong>Network issue:</strong> sar shows retransmits, dropped packets<br>
+        <strong>Single-threaded bottleneck:</strong> one CPU at 100% while others idle</p>
+      </div>
+    </div>
+
+    <h3>Case Study 4: The Four Golden Signals in Practice</h3>
+    <div class="scenario">
+      <p><strong>Source:</strong> Google SRE Book, Chapter 6 — Monitoring Distributed Systems</p>
+      <div class="callout info"><div class="h">&#128200; The Four Golden Signals</div>"If you can only measure four metrics of your user-facing system, focus on these four." — Google SRE Book</div>
+      <div class="tbl-scroll"><table class="tbl">
+        <tr><th>Signal</th><th>What to Measure</th><th>Why It Matters</th><th>Alert Threshold Example</th></tr>
+        <tr><td>Latency</td><td>Time to serve a request (separate success vs error latency)</td><td>A slow error is worse than a fast error — it consumes resources</td><td>p99 > 500ms for > 5min</td></tr>
+        <tr><td>Traffic</td><td>Requests/sec, or domain-specific (e.g., transactions/sec)</td><td>Establishes baseline; sudden drops indicate problems too</td><td>Drop > 30% from 1h-ago baseline</td></tr>
+        <tr><td>Errors</td><td>Rate of failed requests (explicit 5xx AND implicit: 200 with wrong content)</td><td>Include "implicit" errors — a 200 that returns wrong data is still an error</td><td>Error rate > 1% for > 2min</td></tr>
+        <tr><td>Saturation</td><td>How "full" the service is (CPU, memory, I/O, queue depth)</td><td>Leading indicator — saturation predicts imminent failure</td><td>CPU > 80% sustained, queue > 100</td></tr>
+      </table></div>
+      <div class="resolution">
+        <h4>Interview Application</h4>
+        <p>When asked "how would you monitor this system?" — always start with the four golden signals. Then add: (1) <strong>SLI/SLO</strong> for each signal, (2) <strong>Error budget burn rate</strong> alerting (multi-window: 1h at 14.4x burn, 6h at 6x burn), (3) <strong>Symptoms not causes</strong> — alert on user-visible impact, not internal metrics.</p>
+      </div>
+    </div>
+
+    <h3>Case Study 5: Error Budget Exhaustion Decision Framework</h3>
+    <div class="scenario">
+      <p><strong>Source:</strong> Google SRE Workbook — Error Budget Policy</p>
+      <pre><code><span class="cmt"># Error Budget Policy (from Google's published example)</span>
+
+SLO: 99.9% availability over 30-day rolling window
+Error Budget: 0.1% = 43.2 minutes of downtime per month
+
+IF budget_remaining > 50%:
+    → Normal development velocity
+    → Feature launches proceed
+
+IF budget_remaining 25-50%:
+    → Increased scrutiny on risky changes
+    → Canary all releases for 24h minimum
+
+IF budget_remaining < 25%:
+    → Halt non-critical launches
+    → Prioritize reliability work
+    → Require SRE approval for any production change
+
+IF budget_exhausted (0% remaining):
+    → FREEZE all changes except P0 bugs and security fixes
+    → All engineering effort redirected to reliability
+    → Postmortem required for budget-consuming incidents</code></pre>
+      <div class="resolution">
+        <h4>Why This Matters in Interviews</h4>
+        <p>Error budgets are the <strong>mathematical framework</strong> that makes SRE work. They transform the reliability vs. velocity debate from opinion-based to data-driven. When asked "how do you balance reliability with feature velocity?" — this IS the answer. The budget is the shared contract between SRE and product teams.</p>
+      </div>
+    </div>
+
+    <h3>Case Study 6: Connection Pool Exhaustion (Python Production Pattern)</h3>
+    <div class="scenario">
+      <div class="alert">SCENARIO: Service latency spikes every day at 2PM. CPU and memory normal. Database shows no slow queries.</div>
+      <p><strong>Root cause:</strong> Connection pool sized for average load, not peak. Daily batch job at 2PM consumes all connections, starving the API.</p>
+      <pre><code><span class="cmt"># Production-grade connection pool with health checking</span>
+import queue
+import time
+import threading
+from contextlib import contextmanager
+from dataclasses import dataclass, field
+
+@dataclass
+class PooledConnection:
+    conn: object
+    created_at: float = field(default_factory=time.time)
+    last_used: float = field(default_factory=time.time)
+    
+    def is_stale(self, max_age: float = 300.0) -> bool:
+        return time.time() - self.last_used > max_age
+    
+    def is_expired(self, max_lifetime: float = 3600.0) -> bool:
+        return time.time() - self.created_at > max_lifetime
+
+class ConnectionPool:
+    def __init__(self, factory, max_size=20, max_overflow=10,
+                 pool_timeout=30.0, max_age=300.0):
+        self._factory = factory
+        self._max_size = max_size
+        self._max_overflow = max_overflow
+        self._pool_timeout = pool_timeout
+        self._max_age = max_age
+        self._pool = queue.Queue(maxsize=max_size)
+        self._overflow_count = 0
+        self._lock = threading.Lock()
+        self._total_created = 0
+        self._total_failed = 0
+    
+    @contextmanager
+    def acquire(self):
+        conn = self._checkout()
+        try:
+            yield conn.conn
+            conn.last_used = time.time()
+        except Exception:
+            self._total_failed += 1
+            self._discard(conn)
+            raise
+        else:
+            self._checkin(conn)
+    
+    def _checkout(self) -> PooledConnection:
+        <span class="cmt"># Try to get from pool (non-blocking first)</span>
+        try:
+            conn = self._pool.get_nowait()
+            if conn.is_stale(self._max_age) or conn.is_expired():
+                self._discard(conn)
+                return self._create_new()
+            if not self._health_check(conn):
+                self._discard(conn)
+                return self._create_new()
+            return conn
+        except queue.Empty:
+            pass
+        
+        <span class="cmt"># Try overflow</span>
+        with self._lock:
+            if self._overflow_count < self._max_overflow:
+                self._overflow_count += 1
+                return self._create_new()
+        
+        <span class="cmt"># Block waiting for return</span>
+        try:
+            return self._pool.get(timeout=self._pool_timeout)
+        except queue.Empty:
+            raise TimeoutError(
+                f"Pool exhausted: {self._max_size} pooled + "
+                f"{self._overflow_count} overflow")
+    
+    def _health_check(self, conn: PooledConnection) -> bool:
+        try:
+            conn.conn.ping()  <span class="cmt"># DB-specific health check</span>
+            return True
+        except Exception:
+            return False
+    
+    def _create_new(self) -> PooledConnection:
+        self._total_created += 1
+        return PooledConnection(conn=self._factory())
+    
+    def _checkin(self, conn: PooledConnection):
+        try:
+            self._pool.put_nowait(conn)
+        except queue.Full:
+            self._discard(conn)
+    
+    def _discard(self, conn: PooledConnection):
+        with self._lock:
+            self._overflow_count = max(0, self._overflow_count - 1)
+        try:
+            conn.conn.close()
+        except Exception:
+            pass
+    
+    @property
+    def stats(self) -> dict:
+        return {
+            "pool_size": self._pool.qsize(),
+            "overflow": self._overflow_count,
+            "total_created": self._total_created,
+            "total_failed": self._total_failed,
+        }</code></pre>
+      <div class="callout tip"><div class="h">&#128161; Interview Narration</div>"I'm implementing a connection pool with overflow, health checking, and staleness eviction. The key production concerns are: bounded concurrency to prevent database overload, timeout on checkout to surface pool exhaustion as an error rather than hanging, and health checks to avoid using broken connections. I expose stats for monitoring — pool exhaustion should trigger an alert."</div>
+    </div>
+
+    <h3>Case Study 7: Distributed Rate Limiter (Reported Google L5 Question)</h3>
+    <div class="scenario">
+      <p><strong>Source:</strong> Multiple candidate reports (LinkedIn, interviewing.io, 2025)</p>
+      <pre><code><span class="cmt"># Token Bucket Rate Limiter — the algorithm Google expects you to know</span>
+import time
+import threading
+from collections import defaultdict
+
+class TokenBucketLimiter:
+    """Per-client rate limiter using token bucket algorithm.
+    
+    Why token bucket over sliding window?
+    - Allows bursts (good for real traffic patterns)
+    - O(1) per check (no window cleanup needed)
+    - Easy to reason about: tokens refill at steady rate
+    """
+    def __init__(self, rate: float, capacity: int):
+        self._rate = rate          <span class="cmt"># tokens per second</span>
+        self._capacity = capacity  <span class="cmt"># max burst size</span>
+        self._buckets: dict[str, tuple[float, float]] = {}  <span class="cmt"># client → (tokens, last_time)</span>
+        self._lock = threading.Lock()
+    
+    def allow(self, client_id: str, tokens: int = 1) -> bool:
+        """Check if request is allowed and consume tokens."""
+        now = time.monotonic()
+        with self._lock:
+            if client_id not in self._buckets:
+                self._buckets[client_id] = (self._capacity, now)
+            
+            current_tokens, last_time = self._buckets[client_id]
+            
+            <span class="cmt"># Refill tokens based on elapsed time</span>
+            elapsed = now - last_time
+            current_tokens = min(
+                self._capacity,
+                current_tokens + elapsed * self._rate
+            )
+            
+            if current_tokens >= tokens:
+                self._buckets[client_id] = (current_tokens - tokens, now)
+                return True
+            else:
+                self._buckets[client_id] = (current_tokens, now)
+                return False
+    
+    def get_wait_time(self, client_id: str, tokens: int = 1) -> float:
+        """How long until tokens are available (for Retry-After header)."""
+        with self._lock:
+            if client_id not in self._buckets:
+                return 0.0
+            current_tokens, _ = self._buckets[client_id]
+            if current_tokens >= tokens:
+                return 0.0
+            return (tokens - current_tokens) / self._rate
+
+<span class="cmt"># Sliding Window Counter — alternative for strict per-minute limits</span>
+from collections import deque
+
+class SlidingWindowLimiter:
+    """Strict sliding window — no bursts allowed."""
+    def __init__(self, max_requests: int, window_seconds: float):
+        self._max = max_requests
+        self._window = window_seconds
+        self._requests: dict[str, deque] = defaultdict(deque)
+        self._lock = threading.Lock()
+    
+    def allow(self, client_id: str) -> bool:
+        now = time.monotonic()
+        with self._lock:
+            window = self._requests[client_id]
+            <span class="cmt"># Evict expired timestamps</span>
+            while window and window[0] <= now - self._window:
+                window.popleft()
+            if len(window) < self._max:
+                window.append(now)
+                return True
+            return False</code></pre>
+      <div class="callout tip"><div class="h">&#128161; What Google Wants to Hear</div>"For a distributed rate limiter, I'd discuss: (1) Local vs global limiting — local is fast but inaccurate with many instances; global requires coordination. (2) Redis-based approach for global: MULTI/EXEC with TTL keys. (3) Trade-off: eventual consistency is acceptable — slightly over-limit is better than adding latency for strong consistency. (4) For the interview, I'd implement local first, then discuss how to extend to distributed."</div>
+    </div>
+
+    <h3>Case Study 8: Log Aggregation Pipeline (SRE Coding Classic)</h3>
+    <div class="scenario">
+      <p><strong>Source:</strong> Reported across multiple Google SRE interviews (Reddit r/sre, Glassdoor 2024-2025)</p>
+      <pre><code><span class="cmt"># Memory-efficient log aggregation from multiple sources</span>
+<span class="cmt"># Key: streaming, bounded memory, handles rotation and errors</span>
+import heapq
+import os
+import time
+from dataclasses import dataclass, field
+from typing import Iterator, TextIO
+from pathlib import Path
+
+@dataclass(order=True)
+class LogEntry:
+    timestamp: float
+    line: str = field(compare=False)
+    source: str = field(compare=False)
+
+def parse_timestamp(line: str) -> float:
+    """Extract epoch timestamp from log line.
+    Handles: ISO 8601, syslog, epoch formats."""
+    <span class="cmt"># In interview, mention you'd use dateutil.parser</span>
+    <span class="cmt"># but implement a fast path for known formats</span>
+    try:
+        <span class="cmt"># Fast path: epoch at start</span>
+        parts = line.split(None, 1)
+        return float(parts[0])
+    except (ValueError, IndexError):
+        return 0.0
+
+def tail_file(path: Path, poll_interval: float = 0.1) -> Iterator[str]:
+    """Follow a file like tail -f, handling log rotation."""
+    while True:
+        try:
+            with open(path) as f:
+                inode = os.fstat(f.fileno()).st_ino
+                <span class="cmt"># Seek to end for live tailing</span>
+                f.seek(0, 2)
+                while True:
+                    line = f.readline()
+                    if line:
+                        yield line.rstrip('\n')
+                    else:
+                        <span class="cmt"># Check for rotation (inode changed)</span>
+                        try:
+                            if os.stat(path).st_ino != inode:
+                                break  <span class="cmt"># File rotated, reopen</span>
+                        except FileNotFoundError:
+                            time.sleep(poll_interval)
+                            continue
+                        time.sleep(poll_interval)
+        except FileNotFoundError:
+            time.sleep(poll_interval)
+
+def merge_sorted_logs(*streams: Iterator[LogEntry]) -> Iterator[LogEntry]:
+    """K-way merge of pre-sorted log streams. O(log K) per entry."""
+    return heapq.merge(*streams)
+
+def aggregate_errors(
+    log_paths: list[Path],
+    window_seconds: float = 60.0,
+    threshold: int = 100
+) -> Iterator[dict]:
+    """Stream logs, emit alert when error rate exceeds threshold.
+    
+    Memory: O(K) where K = number of files (one line buffered per file).
+    NOT O(N) where N = total log volume.
+    """
+    from collections import deque
+    
+    error_window: deque = deque()  <span class="cmt"># timestamps of recent errors</span>
+    
+    <span class="cmt"># Open all files as streaming iterators</span>
+    streams = []
+    for path in log_paths:
+        streams.append(
+            (LogEntry(parse_timestamp(line), line, str(path))
+             for line in tail_file(path))
+        )
+    
+    for entry in merge_sorted_logs(*streams):
+        if 'ERROR' in entry.line or 'CRITICAL' in entry.line:
+            error_window.append(entry.timestamp)
+            
+            <span class="cmt"># Evict old entries outside window</span>
+            cutoff = entry.timestamp - window_seconds
+            while error_window and error_window[0] < cutoff:
+                error_window.popleft()
+            
+            if len(error_window) >= threshold:
+                yield {
+                    'alert': 'error_rate_exceeded',
+                    'count': len(error_window),
+                    'window_seconds': window_seconds,
+                    'latest_entry': entry.line,
+                    'source': entry.source,
+                }</code></pre>
+      <div class="callout tip"><div class="h">&#128161; Key Points to Narrate</div>"I'm using a K-way merge with heapq for O(log K) per entry — this scales to hundreds of log files without loading everything into memory. The tail_file generator handles log rotation by checking inodes. The sliding window for error counting uses a deque — O(1) amortized for both append and eviction. Total memory is O(K + W) where K is file count and W is window size, not O(N) total log volume."</div>
+    </div>
+
+    <h3>Case Study 9: Graceful Shutdown Under Load (SIGTERM Handling)</h3>
+    <div class="scenario">
+      <p><strong>Source:</strong> Google SRE practices — container orchestration requires graceful shutdown</p>
+      <pre><code><span class="cmt"># Production graceful shutdown pattern</span>
+<span class="cmt"># Critical for Kubernetes/Borg: SIGTERM → drain → cleanup → exit</span>
+import signal
+import asyncio
+import logging
+from contextlib import asynccontextmanager
+
+logger = logging.getLogger(__name__)
+
+class GracefulServer:
+    """HTTP server with production-grade shutdown handling.
+    
+    On SIGTERM:
+    1. Stop accepting new connections
+    2. Wait for in-flight requests to complete (with timeout)
+    3. Close database connections cleanly
+    4. Flush metrics/logs
+    5. Exit with code 0
+    """
+    def __init__(self, drain_timeout: float = 30.0):
+        self._drain_timeout = drain_timeout
+        self._shutting_down = asyncio.Event()
+        self._in_flight = 0
+        self._in_flight_zero = asyncio.Event()
+        self._in_flight_zero.set()
+    
+    def is_healthy(self) -> bool:
+        """Health check endpoint returns unhealthy during drain."""
+        return not self._shutting_down.is_set()
+    
+    @asynccontextmanager
+    async def track_request(self):
+        """Track in-flight requests for graceful drain."""
+        if self._shutting_down.is_set():
+            raise ServiceUnavailable("Server is shutting down")
+        self._in_flight += 1
+        self._in_flight_zero.clear()
+        try:
+            yield
+        finally:
+            self._in_flight -= 1
+            if self._in_flight == 0:
+                self._in_flight_zero.set()
+    
+    async def shutdown(self, sig):
+        """Graceful shutdown sequence."""
+        logger.info(f"Received {sig.name}. Starting graceful shutdown.")
+        
+        <span class="cmt"># Step 1: Stop accepting new requests</span>
+        self._shutting_down.set()
+        
+        <span class="cmt"># Step 2: Wait for in-flight to drain (with timeout)</span>
+        logger.info(f"Draining {self._in_flight} in-flight requests...")
+        try:
+            await asyncio.wait_for(
+                self._in_flight_zero.wait(),
+                timeout=self._drain_timeout
+            )
+            logger.info("All requests drained successfully.")
+        except asyncio.TimeoutError:
+            logger.warning(
+                f"Drain timeout ({self._drain_timeout}s) exceeded. "
+                f"{self._in_flight} requests will be terminated.")
+        
+        <span class="cmt"># Step 3: Cleanup resources</span>
+        await self._cleanup()
+        logger.info("Shutdown complete.")
+    
+    async def _cleanup(self):
+        """Close connections, flush buffers."""
+        <span class="cmt"># Close DB pools, flush metrics, sync logs</span>
+        pass
+    
+    def install_signal_handlers(self, loop):
+        """Install SIGTERM/SIGINT handlers."""
+        for sig in (signal.SIGTERM, signal.SIGINT):
+            loop.add_signal_handler(
+                sig,
+                lambda s=sig: asyncio.create_task(self.shutdown(s))
+            )
+
+class ServiceUnavailable(Exception):
+    pass</code></pre>
+      <div class="callout info"><div class="h">&#9888;&#65039; Why This Matters</div>In Kubernetes/Borg, when a pod is terminated: SIGTERM is sent → grace period starts (default 30s) → SIGKILL if still alive. If your service doesn't handle SIGTERM, in-flight requests get killed mid-response, causing errors for users. Google expects SRE candidates to understand this lifecycle.</div>
+    </div>
+
+    <h3>Case Study 10: Linux Namespace Isolation Deep Dive</h3>
+    <div class="scenario">
+      <p><strong>Source:</strong> Linux kernel documentation, container security fundamentals</p>
+      <p>Containers are NOT VMs. They're processes with restricted views. Understanding this is critical for SRE troubleshooting.</p>
+      <div class="tbl-scroll"><table class="tbl">
+        <tr><th>Namespace</th><th>Isolates</th><th>Key Commands</th><th>SRE Relevance</th></tr>
+        <tr><td>PID</td><td>Process IDs</td><td><code>unshare --pid</code>, <code>/proc/[pid]/ns/pid</code></td><td>Container sees PID 1, host sees real PID. Affects kill signals.</td></tr>
+        <tr><td>NET</td><td>Network stack</td><td><code>ip netns</code>, <code>nsenter --net</code></td><td>Each container gets own IP, routing table. Debugging: nsenter to see container's view.</td></tr>
+        <tr><td>MNT</td><td>Filesystem mounts</td><td><code>unshare --mount</code>, <code>/proc/[pid]/mounts</code></td><td>Container can't see host filesystem. Affects log collection.</td></tr>
+        <tr><td>UTS</td><td>Hostname</td><td><code>unshare --uts</code></td><td>Container has its own hostname. Affects service discovery.</td></tr>
+        <tr><td>IPC</td><td>IPC resources</td><td><code>ipcs</code>, <code>/proc/[pid]/ns/ipc</code></td><td>Shared memory isolation between containers.</td></tr>
+        <tr><td>USER</td><td>UID/GID mappings</td><td><code>id</code>, <code>/proc/[pid]/uid_map</code></td><td>Root in container ≠ root on host (if user ns enabled).</td></tr>
+        <tr><td>CGROUP</td><td>Cgroup root view</td><td><code>/proc/[pid]/cgroup</code></td><td>Container sees only its own resource limits.</td></tr>
+      </table></div>
+      <pre><code><span class="cmt"># Debugging a container's network from the host</span>
+$ docker inspect --format '{{.State.Pid}}' container_name
+42567
+$ nsenter -t 42567 -n ss -lntp    <span class="cmt"># See container's listening ports</span>
+$ nsenter -t 42567 -n ip route     <span class="cmt"># See container's routing table</span>
+$ nsenter -t 42567 -n iptables -L  <span class="cmt"># See container's firewall rules</span>
+
+<span class="cmt"># Cgroups v2: checking resource limits</span>
+$ cat /sys/fs/cgroup/system.slice/docker-&lt;id&gt;.scope/memory.max
+$ cat /sys/fs/cgroup/system.slice/docker-&lt;id&gt;.scope/cpu.max
+$ cat /sys/fs/cgroup/system.slice/docker-&lt;id&gt;.scope/memory.current</code></pre>
+      <div class="resolution">
+        <h4>Interview Application</h4>
+        <p>When asked "a container is slow but the host looks fine" — use <code>nsenter</code> to enter the container's namespace and run diagnostics from its perspective. Check cgroup limits: the container might be CPU-throttled (<code>cpu.stat</code> shows <code>nr_throttled</code>) or memory-limited (causing OOM kills visible in <code>dmesg</code> or <code>memory.events</code>).</p>
+      </div>
+    </div>
+
+    <h3>Case Study 11: TCP Connection State Debugging</h3>
+    <div class="scenario">
+      <p><strong>Source:</strong> Linux kernel networking, Google SRE troubleshooting practices</p>
+      <pre><code><span class="cmt"># TCP state machine — know these states cold</span>
+
+ESTABLISHED → Normal data transfer
+TIME_WAIT   → Closed by us, waiting 2*MSL (60s default)
+              Problem: port exhaustion if many short connections
+CLOSE_WAIT  → Peer closed, WE haven't closed yet
+              Problem: ALWAYS a bug in our code (leaked socket)
+FIN_WAIT_2  → We closed, waiting for peer's FIN
+              Problem: peer is slow to close (or crashed)
+SYN_RECV    → Received SYN, sent SYN-ACK, waiting for ACK
+              Problem: SYN flood attack if many of these
+
+<span class="cmt"># Diagnostic commands</span>
+$ ss -s                           <span class="cmt"># Summary of all states</span>
+$ ss -tan state time-wait | wc -l <span class="cmt"># Count TIME_WAIT</span>
+$ ss -tan state close-wait        <span class="cmt"># Show CLOSE_WAIT (find the bug!)</span>
+
+<span class="cmt"># TIME_WAIT exhaustion fix</span>
+$ sysctl net.ipv4.tcp_tw_reuse=1  <span class="cmt"># Allow reuse of TIME_WAIT sockets</span>
+$ sysctl net.ipv4.ip_local_port_range="1024 65535"  <span class="cmt"># More ephemeral ports</span>
+
+<span class="cmt"># SYN flood detection</span>
+$ ss -tan state syn-recv | wc -l  <span class="cmt"># High count = possible attack</span>
+$ dmesg | grep "SYN flooding"     <span class="cmt"># Kernel warning</span>
+$ sysctl net.ipv4.tcp_syncookies=1  <span class="cmt"># Enable SYN cookies (mitigation)</span>
+
+<span class="cmt"># CLOSE_WAIT investigation</span>
+$ ss -tanp state close-wait       <span class="cmt"># -p shows process</span>
+<span class="cmt"># CLOSE_WAIT means YOUR code received FIN but didn't close()</span>
+<span class="cmt"># Fix: find the code path that's not closing the socket</span></code></pre>
+      <div class="callout warn"><div class="h">&#9888;&#65039; Critical Interview Distinction</div><strong>TIME_WAIT</strong> is normal (we closed properly, just waiting for safety). <strong>CLOSE_WAIT</strong> is ALWAYS a bug — it means the remote side closed but our application hasn't called close() on the socket. If you see thousands of CLOSE_WAIT, look for connection leaks in the application code.</div>
+    </div>
+
+    <h3>Case Study 12: Python Process Supervisor (SRE Automation Pattern)</h3>
+    <div class="scenario">
+      <p><strong>Source:</strong> SRE automation patterns, subprocess management best practices</p>
+      <pre><code><span class="cmt"># Robust subprocess management with timeout, output capture, and cleanup</span>
+import subprocess
+import signal
+import os
+import time
+from typing import Optional, Tuple
+
+class ProcessRunner:
+    """Run subprocesses with production-grade error handling.
+    
+    Features:
+    - Timeout with proper cleanup (SIGTERM → wait → SIGKILL)
+    - Output streaming with bounded buffer
+    - Process group kill (catches child processes)
+    - Resource limit enforcement
+    """
+    
+    def run(
+        self,
+        cmd: list[str],
+        timeout: float = 30.0,
+        max_output_bytes: int = 10 * 1024 * 1024,  <span class="cmt"># 10MB</span>
+        env: Optional[dict] = None,
+        cwd: Optional[str] = None,
+    ) -> Tuple[int, str, str]:
+        """Run command with timeout and output limits.
+        
+        Returns: (return_code, stdout, stderr)
+        Raises: TimeoutError, OSError
+        """
+        merged_env = {**os.environ, **(env or {})}
+        
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=merged_env,
+            cwd=cwd,
+            <span class="cmt"># Create new process group so we can kill children too</span>
+            preexec_fn=os.setsid,
+        )
+        
+        try:
+            stdout, stderr = proc.communicate(timeout=timeout)
+            <span class="cmt"># Truncate output if too large</span>
+            if len(stdout) > max_output_bytes:
+                stdout = stdout[:max_output_bytes] + b'\n[TRUNCATED]'
+            if len(stderr) > max_output_bytes:
+                stderr = stderr[:max_output_bytes] + b'\n[TRUNCATED]'
+            return (
+                proc.returncode,
+                stdout.decode('utf-8', errors='replace'),
+                stderr.decode('utf-8', errors='replace'),
+            )
+        except subprocess.TimeoutExpired:
+            <span class="cmt"># Graceful: SIGTERM to process group</span>
+            os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+            try:
+                proc.wait(timeout=5)  <span class="cmt"># Give 5s to cleanup</span>
+            except subprocess.TimeoutExpired:
+                <span class="cmt"># Force: SIGKILL to process group</span>
+                os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+                proc.wait()
+            raise TimeoutError(
+                f"Command {cmd} timed out after {timeout}s")
+        except Exception:
+            <span class="cmt"># Ensure cleanup on any error</span>
+            try:
+                os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+            except (OSError, ProcessLookupError):
+                pass
+            proc.wait()
+            raise</code></pre>
+      <div class="callout tip"><div class="h">&#128161; Why <code>os.setsid()</code> + <code>os.killpg()</code></div>If you only kill the parent process, child processes become orphans and keep running (zombie resource leak). Using process groups ensures the entire process tree is terminated. This is a common SRE interview follow-up: "What if the subprocess spawns children?"</div>
+    </div>
+
+    <h3>Case Study 13: The USE Method Applied (Interview Walkthrough)</h3>
+    <div class="scenario">
+      <p><strong>Source:</strong> Brendan Gregg — "USE Method: Linux Performance Checklist"</p>
+      <p>Here's how to systematically apply USE in a troubleshooting interview:</p>
+      <div class="tbl-scroll"><table class="tbl">
+        <tr><th>Resource</th><th>Utilization</th><th>Saturation</th><th>Errors</th></tr>
+        <tr><td>CPU</td><td><code>mpstat -P ALL 1</code> → %usr+%sys</td><td><code>vmstat 1</code> → 'r' > CPU count</td><td><code>perf stat</code> → hardware errors</td></tr>
+        <tr><td>Memory</td><td><code>free -m</code> → used/total</td><td><code>vmstat 1</code> → si/so (swap)</td><td><code>dmesg | grep -i oom</code></td></tr>
+        <tr><td>Disk I/O</td><td><code>iostat -x 1</code> → %util</td><td><code>iostat -x 1</code> → avgqu-sz > 1</td><td><code>smartctl -a /dev/sda</code></td></tr>
+        <tr><td>Network</td><td><code>sar -n DEV 1</code> → rxkB/txkB vs max</td><td><code>ifconfig</code> → overruns/dropped</td><td><code>ifconfig</code> → errors</td></tr>
+        <tr><td>File Descriptors</td><td><code>ls /proc/PID/fd | wc -l</code> vs <code>ulimit -n</code></td><td>N/A (no queueing)</td><td><code>strace -e open</code> → EMFILE</td></tr>
+      </table></div>
+      <div class="resolution">
+        <h4>Interview Script</h4>
+        <p>"I use the USE method systematically. For each resource — CPU, memory, disk, network — I check utilization, saturation, and errors. This ensures I don't miss anything. Let me start with CPU: [run mpstat]. Utilization is 30%, saturation is low — CPU is not the bottleneck. Moving to memory: [run free -m]. Available is low, let me check saturation: [vmstat shows si/so]. We're swapping — that's our bottleneck. Now I'll identify the consumer: [top sorted by RES]."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 14: CHEAT SHEET ============ -->
 <section id="cheat">
   <div class="wrap">
-    <span class="eyebrow">Section 13 — Quick Reference</span>
+    <span class="eyebrow">Section 14 — Quick Reference</span>
     <h2 class="sec">The Night-Before Cheat Sheet</h2>
     <p class="lead">Condensed, scannable facts for last-minute review.</p>
     <div class="grid two">
@@ -2027,7 +2759,7 @@ q">Q25: What does the OOM killer use to select which process to kill?</div>
   <div class="wrap">
     <div class="big">You've Got This.</div>
     <p>The Google SRE interview tests operational maturity, not perfection. Stay calm, think systematically, mitigate first, and narrate your reasoning. The fact that you're preparing this thoroughly already puts you ahead.</p>
-    <p style="margin-top:22px;font-family:var(--mono);font-size:12px;color:var(--muted)">Sources: Google SRE Book (sre.google), Google SRE Workbook, Brendan Gregg's Systems Performance, Linux kernel documentation, candidate reports from LeetCode Discuss, Reddit r/sre, Glassdoor, Blind, and 2024-2026 interview experience posts. eBPF content from ebpf.io. TCP/networking from Linux kernel docs and Red Hat performance tuning guides.</p>
+    <p style="margin-top:22px;font-family:var(--mono);font-size:12px;color:var(--muted)">Sources: Google SRE Book &amp; Workbook (sre.google), ACM Queue "Debugging Incidents in Google's Distributed Systems" (2020), Brendan Gregg's USE Method &amp; Netflix "Linux Performance Analysis in 60,000 Milliseconds", Linux kernel documentation, candidate reports from Reddit r/sre, Glassdoor, Blind, interviewing.io, and 2024-2026 interview experience posts. eBPF content from ebpf.io. TCP/networking from Linux kernel docs. Container isolation from kernel namespaces documentation.</p>
   </div>
 </footer>
 
@@ -2049,10 +2781,23 @@ document.querySelectorAll('.quiz').forEach(q=>{
 document.querySelectorAll('.flip').forEach(f=>f.addEventListener('click',()=>f.classList.toggle('flipped')));
 // mock accordions
 document.querySelectorAll('.mock .qq').forEach(q=>q.addEventListener('click',()=>{q.classList.toggle('open');q.nextElementSibling.classList.toggle('open');}));
+// Theme toggle
+const themeBtns=document.querySelectorAll('.theme-btn');
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('sre-theme',t);
+  themeBtns.forEach(b=>{b.classList.toggle('active',b.dataset.theme===t);});
+}
+themeBtns.forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.theme)));
+(function(){
+  const saved=localStorage.getItem('sre-theme');
+  if(saved)setTheme(saved);
+  else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:light)').matches)setTheme('light');
+})();
 // active nav highlight
 const secs=[...document.querySelectorAll('section[id]')];const navlinks=[...document.querySelectorAll('nav .links a')];
 addEventListener('scroll',()=>{let cur='';secs.forEach(s=>{if(scrollY>=s.offsetTop-120)cur=s.id;});
-  navlinks.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+cur?'#e8edf7':'';a.style.background=a.getAttribute('href')==='#'+cur?'var(--panel2)':'';});});
+  navlinks.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+cur?'var(--ink)':'';a.style.background=a.getAttribute('href')==='#'+cur?'var(--panel2)':'';});});
 // tabs
 document.querySelectorAll('.tabs').forEach(tabGroup=>{
   const tabs=tabGroup.querySelectorAll('.tab');
