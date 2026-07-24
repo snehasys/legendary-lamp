@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClusterOnDemand — Architecture &amp; Design Dossier</title>
+<style>
+:root, [data-theme="light"] {
+  --bg: #f7f8fa;
+  --bg-alt: #ffffff;
+  --bg-inset: #eef1f5;
+  --text: #1c2333;
+  --text-muted: #5a6478;
+  --text-faint: #8b94a8;
+  --border: #dde2ea;
+  --border-strong: #c3cad6;
+  --accent: #2563eb;
+  --accent-soft: #dbeafe;
+  --accent-2: #7c3aed;
+  --accent-2-soft: #ede9fe;
+  --good: #059669;
+  --good-soft: #d1fae5;
+  --warn: #d97706;
+  --warn-soft: #fef3c7;
+  --bad: #dc2626;
+  --bad-soft: #fee2e2;
+  --gpu: #16a34a;
+  --gpu-soft: #dcfce7;
+  --code-bg: #f1f3f8;
+  --shadow: 0 1px 3px rgba(16,24,40,.08), 0 4px 16px rgba(16,24,40,.06);
+  --diag-node: #ffffff;
+  --diag-node-border: #94a3b8;
+  --diag-lane: #f1f5f9;
+  --diag-text: #1c2333;
+  --diag-line: #64748b;
+  --diag-hub: #dbeafe;
+  --diag-agent: #ede9fe;
+  --diag-tenant: #dcfce7;
+  --diag-hw: #fef3c7;
+}
+[data-theme="dark"] {
+  --bg: #0d1117;
+  --bg-alt: #161b26;
+  --bg-inset: #1c2333;
+  --text: #e6e9f0;
+  --text-muted: #9aa4bb;
+  --text-faint: #6b7590;
+  --border: #262e40;
+  --border-strong: #38425c;
+  --accent: #60a5fa;
+  --accent-soft: #1e2f52;
+  --accent-2: #a78bfa;
+  --accent-2-soft: #2a2350;
+  --good: #34d399;
+  --good-soft: #123b2d;
+  --warn: #fbbf24;
+  --warn-soft: #3d2f0d;
+  --bad: #f87171;
+  --bad-soft: #431a1a;
+  --gpu: #4ade80;
+  --gpu-soft: #10331d;
+  --code-bg: #10151f;
+  --shadow: 0 1px 3px rgba(0,0,0,.4), 0 6px 24px rgba(0,0,0,.35);
+  --diag-node: #1c2333;
+  --diag-node-border: #4a5674;
+  --diag-lane: #131826;
+  --diag-text: #e6e9f0;
+  --diag-line: #8b94a8;
+  --diag-hub: #1e2f52;
+  --diag-agent: #2a2350;
+  --diag-tenant: #10331d;
+  --diag-hw: #3d2f0d;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; scroll-padding-top:76px; }
+body {
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.65; font-size: 16px;
+  transition: background .25s ease, color .25s ease;
+}
+code, pre, .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+
+/* ---------- top bar ---------- */
+.topbar {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; gap:14px;
+  padding: 10px 22px;
+  background: color-mix(in srgb, var(--bg-alt) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.topbar .logo { font-weight:800; font-size:15px; letter-spacing:.4px; white-space:nowrap; }
+.topbar .logo span { color: var(--accent); }
+.topnav { display:flex; gap:2px; overflow-x:auto; flex:1; scrollbar-width:none; }
+.topnav::-webkit-scrollbar { display:none; }
+.topnav a {
+  color: var(--text-muted); text-decoration:none; font-size:12.5px; font-weight:600;
+  padding: 6px 10px; border-radius:8px; white-space:nowrap;
+}
+.topnav a:hover { color: var(--accent); background: var(--accent-soft); }
+.theme-toggle {
+  border:1px solid var(--border-strong); background:var(--bg-inset); color:var(--text);
+  border-radius:20px; padding:6px 14px; cursor:pointer; font-size:13px; font-weight:600;
+  display:flex; align-items:center; gap:7px; white-space:nowrap;
+}
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* ---------- layout ---------- */
+.wrap { max-width: 1120px; margin: 0 auto; padding: 96px 28px 80px; }
+section { margin-bottom: 72px; }
+h1 { font-size: 42px; line-height:1.15; letter-spacing:-.5px; margin-bottom:16px; }
+h2 { font-size: 28px; letter-spacing:-.3px; margin: 0 0 6px; }
+h3 { font-size: 20px; margin: 30px 0 10px; }
+h4 { font-size: 16px; margin: 22px 0 8px; }
+p { margin: 0 0 14px; }
+p, li { color: var(--text); }
+.muted { color: var(--text-muted); }
+.small { font-size: 13.5px; }
+a { color: var(--accent); }
+strong { font-weight:700; }
+.section-kicker {
+  display:inline-block; font-size:12px; font-weight:800; letter-spacing:1.6px;
+  text-transform:uppercase; color:var(--accent); margin-bottom:8px;
+}
+.section-lead { font-size:17.5px; color:var(--text-muted); margin-bottom:22px; max-width:62rem; }
+.card {
+  background: var(--bg-alt); border:1px solid var(--border);
+  border-radius:14px; padding:24px 26px; box-shadow: var(--shadow); margin-bottom:20px;
+}
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media (max-width: 880px){ .grid2,.grid3 { grid-template-columns:1fr; } h1{font-size:32px;} }
+
+/* ---------- hero ---------- */
+.hero {
+  padding: 46px 0 8px;
+}
+.hero .tagline { font-size:19px; color:var(--text-muted); max-width:60rem; margin-bottom:26px; }
+.badges { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:26px; }
+.badge {
+  font-size:12.5px; font-weight:700; padding:5px 12px; border-radius:999px;
+  background: var(--accent-soft); color: var(--accent); border:1px solid transparent;
+}
+.badge.alt { background:var(--accent-2-soft); color:var(--accent-2); }
+.badge.gpu { background:var(--gpu-soft); color:var(--gpu); }
+.badge.warn { background:var(--warn-soft); color:var(--warn); }
+.statgrid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:10px 0 8px; }
+@media (max-width:880px){ .statgrid{ grid-template-columns:repeat(2,1fr);} }
+.stat {
+  background:var(--bg-alt); border:1px solid var(--border); border-radius:12px;
+  padding:16px 18px; box-shadow:var(--shadow);
+}
+.stat .v { font-size:26px; font-weight:800; color:var(--accent); line-height:1.2; }
+.stat .l { font-size:12.5px; color:var(--text-muted); font-weight:600; margin-top:3px; }
+
+/* ---------- tables ---------- */
+table { width:100%; border-collapse:collapse; margin:14px 0 20px; font-size:14px; background:var(--bg-alt); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); }
+th { text-align:left; background:var(--bg-inset); padding:11px 13px; font-size:12.5px; text-transform:uppercase; letter-spacing:.6px; color:var(--text-muted); border-bottom:2px solid var(--border-strong); }
+td { padding:11px 13px; border-bottom:1px solid var(--border); vertical-align:top; }
+tr:last-child td { border-bottom:none; }
+td.good { color:var(--good); font-weight:600; }
+td.warn { color:var(--warn); font-weight:600; }
+td.bad { color:var(--bad); font-weight:600; }
+.tbl-scroll { overflow-x:auto; }
+.tbl-scroll table { min-width:720px; }
+
+/* ---------- code ---------- */
+pre {
+  background:var(--code-bg); border:1px solid var(--border); border-radius:10px;
+  padding:16px 18px; overflow-x:auto; font-size:13px; line-height:1.55; margin:12px 0 18px;
+}
+code { background:var(--code-bg); border:1px solid var(--border); border-radius:5px; padding:1px 6px; font-size:13px; }
+pre code { background:none; border:none; padding:0; }
+.cmt { color:var(--text-faint); }
+.kw { color:var(--accent); font-weight:600; }
+.str { color:var(--good); }
+.flag { color:var(--accent-2); }
+
+/* ---------- callouts ---------- */
+.callout {
+  border-left:4px solid var(--accent); background:var(--accent-soft);
+  border-radius:0 10px 10px 0; padding:14px 18px; margin:16px 0;
+}
+.callout.verdict { border-color:var(--good); background:var(--good-soft); }
+.callout.warn { border-color:var(--warn); background:var(--warn-soft); }
+.callout .t { font-weight:800; font-size:13px; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+.callout.verdict .t { color:var(--good); }
+.callout.warn .t { color:var(--warn); }
+.callout .t { color:var(--accent); }
+.callout p:last-child { margin-bottom:0; }
+
+/* ---------- debate blocks ---------- */
+.debate { margin: 18px 0 26px; }
+.debate-head {
+  display:flex; align-items:center; gap:12px; margin-bottom:12px;
+}
+.debate-num {
+  min-width:38px; height:38px; border-radius:10px; background:var(--accent); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px;
+}
+.provscon { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:12px; }
+@media (max-width:880px){ .provscon{grid-template-columns:1fr;} }
+.pc {
+  border-radius:12px; padding:16px 18px; border:1px solid var(--border); background:var(--bg-alt);
+}
+.pc .h { font-weight:800; font-size:13px; letter-spacing:.8px; text-transform:uppercase; margin-bottom:8px; }
+.pc.pro .h { color:var(--good); }
+.pc.con .h { color:var(--bad); }
+.pc ul { margin-left:18px; }
+.pc li { margin-bottom:7px; font-size:14.2px; }
+
+/* ---------- diagrams ---------- */
+.diagram {
+  background:var(--bg-alt); border:1px solid var(--border); border-radius:14px;
+  padding:18px; margin:18px 0 8px; box-shadow:var(--shadow); overflow-x:auto;
+}
+.diagram svg { display:block; margin:0 auto; max-width:100%; height:auto; }
+.figcap { font-size:13px; color:var(--text-muted); text-align:center; margin:8px 0 24px; }
+.figcap b { color:var(--text); }
+svg text { font-family:"Segoe UI",-apple-system,Roboto,Arial,sans-serif; fill:var(--diag-text); }
+svg .mono-t { font-family:Consolas,Menlo,monospace; }
+svg .node { fill:var(--diag-node); stroke:var(--diag-node-border); stroke-width:1.3; }
+svg .lane { fill:var(--diag-lane); stroke:var(--border); stroke-width:1; }
+svg .hub { fill:var(--diag-hub); stroke:var(--accent); stroke-width:1.4; }
+svg .agent { fill:var(--diag-agent); stroke:var(--accent-2); stroke-width:1.4; }
+svg .tenant { fill:var(--diag-tenant); stroke:var(--gpu); stroke-width:1.4; }
+svg .hw { fill:var(--diag-hw); stroke:var(--warn); stroke-width:1.4; }
+svg .bad-n { fill:var(--bad-soft); stroke:var(--bad); stroke-width:1.4; }
+svg .edge { stroke:var(--diag-line); stroke-width:1.5; fill:none; }
+svg .edge.dash { stroke-dasharray:5 4; }
+svg .edge.thick { stroke-width:2.4; stroke:var(--accent); }
+svg .lbl { font-size:12px; }
+svg .lbl-s { font-size:10.5px; fill:var(--text-muted); }
+svg .lbl-b { font-size:13px; font-weight:700; }
+svg .lbl-t { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; fill:var(--text-muted); }
+
+/* ---------- misc ---------- */
+.tierpill { display:inline-block; font-size:11.5px; font-weight:800; padding:3px 10px; border-radius:999px; margin-right:6px; }
+.t1 { background:var(--gpu-soft); color:var(--gpu); }
+.t2 { background:var(--accent-2-soft); color:var(--accent-2); }
+.t3 { background:var(--warn-soft); color:var(--warn); }
+ol.refs { margin-left:22px; font-size:13.5px; }
+ol.refs li { margin-bottom:6px; color:var(--text-muted); }
+.footer { border-top:1px solid var(--border); padding-top:24px; color:var(--text-faint); font-size:13px; }
+.toc-card ol { margin-left:20px; columns:2; column-gap:40px; }
+@media (max-width:880px){ .toc-card ol{ columns:1; } }
+.toc-card li { margin-bottom:6px; font-size:14.5px; }
+.toc-card a { text-decoration:none; font-weight:600; }
+.toc-card a:hover { text-decoration:underline; }
+blockquote {
+  border-left:3px solid var(--border-strong); padding:6px 18px; margin:14px 0;
+  color:var(--text-muted); font-style:italic;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">Cluster<span>OnDemand</span> · Design Dossier</div>
+  <nav class="topnav">
+    <a href="#overview">Overview</a>
+    <a href="#requirements">Requirements</a>
+    <a href="#tenancy">Tenancy Debate</a>
+    <a href="#gpu">GPU Model</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#api">API Design</a>
+    <a href="#cli">CLI Design</a>
+    <a href="#flows">Flows</a>
+    <a href="#security">Isolation</a>
+    <a href="#alternatives">Alternatives</a>
+    <a href="#blueprint">Blueprint</a>
+    <a href="#references">References</a>
+  </nav>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle color theme">
+    <span id="themeIcon">🌙</span><span id="themeLabel">Dark</span>
+  </button>
+</div>
+
+<div class="wrap">
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="overview">
+  <span class="section-kicker">Architecture &amp; Design Dossier · v1.0</span>
+  <h1>ClusterOnDemand</h1>
+  <p class="tagline">A global management-plane controller that lets researchers <strong>discover datacenter hardware</strong> and <strong>self-serve isolated Kubernetes environments</strong> — namespace-based by default, virtual-cluster on demand — through a CLI-first interface with an optional REST API.</p>
+  <div class="badges">
+    <span class="badge">CLI-first · REST optional</span>
+    <span class="badge alt">Namespace-as-a-Service default</span>
+    <span class="badge alt">vCluster escalation tier</span>
+    <span class="badge gpu">A100 · H100 · H200 · MIG</span>
+    <span class="badge gpu">Intel Xeon · PB-scale ION SSD</span>
+    <span class="badge warn">Kubernetes out-of-the-box in every DC</span>
+  </div>
+  <div class="statgrid">
+    <div class="stat"><div class="v">7×</div><div class="l">Hardware-isolated MIG slices per A100/H100/H200 GPU</div></div>
+    <div class="stat"><div class="v">~40%</div><div class="l">Typical GPU utilization in naively shared clusters — the enemy</div></div>
+    <div class="stat"><div class="v">70%</div><div class="l">Fewer physical clusters reported when adopting tenant-level multi-tenancy</div></div>
+    <div class="stat"><div class="v">1000s</div><div class="l">Managed clusters a pull-based hub-spoke plane can scale to</div></div>
+  </div>
+  <div class="card toc-card">
+    <h3 style="margin-top:0">Contents</h3>
+    <ol>
+      <li><a href="#requirements">Problem statement, requirements &amp; use cases</a></li>
+      <li><a href="#tenancy">The tenancy spectrum — the central design debate</a></li>
+      <li><a href="#gpu">GPU, CPU &amp; storage resource model</a></li>
+      <li><a href="#architecture">Global management-plane architecture</a></li>
+      <li><a href="#api">API design: imperative vs declarative</a></li>
+      <li><a href="#cli">CLI design &amp; command grammar</a></li>
+      <li><a href="#flows">End-to-end lifecycle flows</a></li>
+      <li><a href="#security">The layered isolation &amp; governance stack</a></li>
+      <li><a href="#alternatives">Modern alternatives &amp; build-vs-adopt debate</a></li>
+      <li><a href="#blueprint">Recommended blueprint &amp; phased roadmap</a></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= REQUIREMENTS ================= -->
+<section id="requirements">
+  <span class="section-kicker">01 · Problem Statement</span>
+  <h2>Requirements &amp; Use Cases</h2>
+  <p class="section-lead">A research datacenter fleet — A100/H100/H200 GPU nodes, Intel Xeon CPU nodes, and petabytes of ION SSD storage — already runs Kubernetes out of the box. The missing piece is a <strong>self-service layer</strong>: researchers should never file a ticket to get compute, and operators should never hand-carve namespaces or clusters by hand.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">Functional requirements</h3>
+      <table>
+        <tr><th>ID</th><th>Requirement</th></tr>
+        <tr><td class="mono">F1</td><td><strong>Discover</strong> — list datacenters, node pools, GPU SKUs, MIG availability, storage classes, and live free capacity.</td></tr>
+        <tr><td class="mono">F2</td><td><strong>Create</strong> — provision an isolated environment in a chosen DC, in <em>namespace</em> mode (default) or <em>virtual-cluster</em> mode, with a resource envelope (GPUs, CPU, RAM, storage).</td></tr>
+        <tr><td class="mono">F3</td><td><strong>View</strong> — list &amp; inspect <em>own</em> environments: status, quota, live usage, endpoints, kubeconfig.</td></tr>
+        <tr><td class="mono">F4</td><td><strong>Upscale / downscale</strong> — grow or shrink the resource envelope; subject to quota &amp; capacity checks; asynchronous with observable progress.</td></tr>
+        <tr><td class="mono">F5</td><td><strong>Delete</strong> — tear down an environment and reclaim every resource, with confirmation and grace period.</td></tr>
+        <tr><td class="mono">F6</td><td><strong>Access</strong> — hand back working credentials (kubeconfig) scoped strictly to the tenant's environment after successful creation.</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Non-functional requirements</h3>
+      <table>
+        <tr><th>ID</th><th>Requirement</th></tr>
+        <tr><td class="mono">N1</td><td><strong>Utilization first</strong> — bin-packing many tenants onto shared silicon is the raison d'être; hence the namespace-first preference.</td></tr>
+        <tr><td class="mono">N2</td><td><strong>Isolation</strong> — tenants must not see, starve, or attack each other (API, network, data, GPU memory).</td></tr>
+        <tr><td class="mono">N3</td><td><strong>Global scale</strong> — one management plane spanning multiple datacenters; a DC outage must not take the plane down, and vice versa.</td></tr>
+        <tr><td class="mono">N4</td><td><strong>Auditability &amp; metering</strong> — every mutation attributed to a user; GPU-hours accounted per tenant for showback/chargeback.</td></tr>
+        <tr><td class="mono">N5</td><td><strong>Idempotency</strong> — creates/scales/deletes are retry-safe; long operations are asynchronous and observable.</td></tr>
+        <tr><td class="mono">N6</td><td><strong>Familiar UX</strong> — researchers keep plain <code>kubectl</code> after provisioning; the tool follows established CLI conventions.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h3>Actors and their journeys</h3>
+  <p>Three personas interact with the system. The <strong>researcher</strong> discovers hardware, requests an environment, receives a kubeconfig, and runs training or inference jobs. The <strong>platform operator</strong> registers datacenters, defines hardware pools and quota policies, and watches fleet utilization. The <strong>automation client</strong> (a CI pipeline or an ML workflow engine) uses the REST API to create ephemeral environments programmatically — which is exactly why the API must exist even in a CLI-first product.</p>
+
+  <div class="callout">
+    <div class="t">Terminology used throughout</div>
+    <p>We call the provisioned unit an <strong>environment</strong> with a <code>mode</code> of either <code>namespace</code> (a policy-wrapped set of namespaces on a shared cluster) or <code>vcluster</code> (a virtual control plane whose pods still land on shared nodes). Kubernetes itself has no first-class “tenant” concept — the platform must construct one from namespaces, RBAC, quotas and policies <a href="#ref-1">[1]</a>.</p>
+  </div>
+</section>
+
+<!-- ================= TENANCY DEBATE ================= -->
+<section id="tenancy">
+  <span class="section-kicker">02 · The Central Debate</span>
+  <h2>The Tenancy Spectrum: Namespace vs Virtual Cluster vs Dedicated Cluster</h2>
+  <p class="section-lead">Isolation in Kubernetes is not a binary of “hard” and “soft” but a <strong>spectrum</strong> <a href="#ref-1">[1]</a>. Every step up the ladder buys isolation and autonomy at the cost of utilization, cost, and operational complexity. Choosing where ClusterOnDemand sits on this ladder — and whether it offers one rung or several — is the single most consequential design decision.</p>
+
+  <div class="diagram">
+    <svg viewBox="0 0 980 400" role="img" aria-label="Tenancy spectrum ladder">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--diag-line)"/></marker>
+        <marker id="arrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+      </defs>
+      <!-- axes -->
+      <line x1="70" y1="330" x2="940" y2="330" class="edge" marker-end="url(#arr)"/>
+      <line x1="70" y1="330" x2="70" y2="40" class="edge" marker-end="url(#arr)"/>
+      <text x="500" y="362" text-anchor="middle" class="lbl-t">isolation · tenant autonomy · cost →</text>
+      <text x="28" y="185" text-anchor="middle" class="lbl-t" transform="rotate(-90 28 185)">resource utilization →</text>
+      <!-- utilization curve -->
+      <path d="M 130 80 C 350 100, 520 170, 700 240 S 880 295, 905 300" class="edge dash"/>
+      <!-- rungs -->
+      <g>
+        <rect x="95" y="55" width="170" height="78" rx="10" class="tenant"/>
+        <text x="180" y="80" text-anchor="middle" class="lbl-b">Shared namespace</text>
+        <text x="180" y="98" text-anchor="middle" class="lbl-s">RBAC + quota + netpol</text>
+        <text x="180" y="113" text-anchor="middle" class="lbl-s">Capsule / HNC tenants</text>
+        <text x="180" y="150" text-anchor="middle" class="lbl-t" fill="var(--gpu)">Tier 1 · default</text>
+      </g>
+      <g>
+        <rect x="330" y="110" width="170" height="78" rx="10" class="agent"/>
+        <text x="415" y="135" text-anchor="middle" class="lbl-b">Virtual cluster</text>
+        <text x="415" y="153" text-anchor="middle" class="lbl-s">own API server + etcd</text>
+        <text x="415" y="168" text-anchor="middle" class="lbl-s">pods on shared nodes</text>
+        <text x="415" y="205" text-anchor="middle" class="lbl-t" fill="var(--accent-2)">Tier 2 · on request</text>
+      </g>
+      <g>
+        <rect x="565" y="170" width="170" height="78" rx="10" class="hw"/>
+        <text x="650" y="195" text-anchor="middle" class="lbl-b">Hosted control plane</text>
+        <text x="650" y="213" text-anchor="middle" class="lbl-s">CP as pods (Kamaji)</text>
+        <text x="650" y="228" text-anchor="middle" class="lbl-s">+ dedicated node pool</text>
+        <text x="650" y="265" text-anchor="middle" class="lbl-t" fill="var(--warn)">Tier 3 · reserved</text>
+      </g>
+      <g>
+        <rect x="790" y="228" width="160" height="78" rx="10" class="bad-n"/>
+        <text x="870" y="253" text-anchor="middle" class="lbl-b">Dedicated cluster</text>
+        <text x="870" y="271" text-anchor="middle" class="lbl-s">own CP nodes + workers</text>
+        <text x="870" y="286" text-anchor="middle" class="lbl-s">cluster sprawl risk</text>
+      </g>
+      <text x="500" y="32" text-anchor="middle" class="lbl-s">dashed curve: achievable fleet utilization drops as isolation hardens</text>
+    </svg>
+  </div>
+  <p class="figcap"><b>D1.</b> The tenancy ladder. ClusterOnDemand exposes Tiers 1–2 as self-service modes and reserves Tier 3 for exceptional cases; fully dedicated clusters are deliberately out of self-service scope.</p>
+
+  <h3>What each rung actually is</h3>
+  <p><strong>Namespace-based tenancy</strong> groups a tenant's workloads into one or more namespaces on a shared cluster, enforcing isolation with RBAC, <code>ResourceQuota</code>, <code>LimitRange</code>, and default-deny <code>NetworkPolicy</code> <a href="#ref-1">[1]</a>. Plain namespaces alone are insufficient — quotas and policies attach to namespaces, not tenants, so a tenant with three projects triplicates every policy. Operators like <strong>Capsule</strong> fix this with a <code>Tenant</code> CRD that aggregates quota across a tenant's namespaces and lets tenant users self-create namespaces with plain <code>kubectl</code> <a href="#ref-6">[6]</a>, while the <strong>Hierarchical Namespace Controller</strong> propagates policies down namespace trees <a href="#ref-4">[4]</a>.</p>
+  <p><strong>Virtual clusters</strong> (vCluster and the CAPI-nested VirtualCluster) give each tenant a real API server, controller-manager, and datastore running <em>as pods</em> inside a host-cluster namespace; a syncer copies pod specs down to the host, so workloads still schedule onto the shared node fleet <a href="#ref-4">[4]</a> <a href="#ref-5">[5]</a>. Tenants get cluster-admin, their own CRDs and operators, and even their own Kubernetes version — without new hardware.</p>
+  <p><strong>Hosted control planes</strong> (Kamaji, HyperShift, Gardener) also run control planes as pods in a management cluster, but attach <em>dedicated worker nodes</em> that join remotely — the model hyperscalers use internally for EKS/GKE/AKS <a href="#ref-7">[7]</a>. <strong>Dedicated clusters</strong> per tenant maximize isolation and are sometimes forced by regulation, but multiply control-plane hardware, upgrades, and monitoring stacks — the classic cluster-sprawl failure mode <a href="#ref-3">[3]</a> <a href="#ref-4">[4]</a>.</p>
+
+  <div class="tbl-scroll">
+  <table>
+    <tr><th>Dimension</th><th>Namespace (Tier 1)</th><th>Virtual cluster (Tier 2)</th><th>Hosted CP + dedicated nodes (Tier 3)</th><th>Dedicated cluster</th></tr>
+    <tr><td>Control plane</td><td>Shared</td><td>Isolated (pod-hosted)</td><td>Isolated (pod-hosted)</td><td>Isolated (own nodes)</td></tr>
+    <tr><td>Worker nodes</td><td>Shared</td><td>Shared</td><td>Dedicated</td><td>Dedicated</td></tr>
+    <tr><td>Resource efficiency</td><td class="good">Highest</td><td class="good">High (CP overhead only)</td><td class="warn">Moderate</td><td class="bad">Lowest</td></tr>
+    <tr><td>Tenant installs CRDs / operators</td><td class="bad">No (cluster-scoped conflicts)</td><td class="good">Yes</td><td class="good">Yes</td><td class="good">Yes</td></tr>
+    <tr><td>K8s version per tenant</td><td class="bad">No</td><td class="good">Yes</td><td class="good">Yes</td><td class="good">Yes</td></tr>
+    <tr><td>Blast radius of tenant mistake</td><td class="warn">Namespace + shared CP</td><td class="good">Own vcluster</td><td class="good">Own cluster</td><td class="good">Own cluster</td></tr>
+    <tr><td>Provisioning time</td><td class="good">Seconds</td><td class="good">~1 minute</td><td class="warn">Minutes</td><td class="bad">Hours–days (hardware)</td></tr>
+    <tr><td>Ops burden per tenant</td><td class="good">Minimal</td><td class="warn">CP lifecycle, upgrades</td><td class="warn">CP + node pools</td><td class="bad">Full cluster ops</td></tr>
+    <tr><td>Onboarding speed</td><td class="good">Fast</td><td class="warn">Moderate</td><td class="warn">Moderate</td><td class="bad">Slow</td></tr>
+  </table>
+  </div>
+  <p class="figcap">Synthesis of comparisons from the Kubernetes multi-tenancy docs, Stakater, vCluster, and Spectro Cloud analyses <a href="#ref-1">[1]</a> <a href="#ref-2">[2]</a> <a href="#ref-3">[3]</a> <a href="#ref-4">[4]</a>.</p>
+
+  <div class="debate">
+    <div class="debate-head"><div class="debate-num">D1</div><h3 style="margin:0">Debate: Should namespace mode really be the preferred default?</h3></div>
+    <div class="provscon">
+      <div class="pc pro"><div class="h">✓ The case for namespace-first</div>
+        <ul>
+          <li><strong>Utilization is the mission.</strong> Every tenant shares one scheduler and one node fleet, so idle GPU capacity from tenant A is instantly available to tenant B — no stranded capacity behind per-tenant fences. This is your stated goal, and the data agrees: naive sharing schemes leave GPUs at ~40% utilization and tenant-level pooling is the fix <a href="#ref-5">[5]</a>.</li>
+          <li><strong>Seconds-fast onboarding</strong> — creating a namespace + policy bundle is a handful of API calls; no control plane to boot.</li>
+          <li><strong>One observability &amp; security stack</strong> — a single Prometheus/DCGM, one policy engine, one upgrade train <a href="#ref-2">[2]</a>.</li>
+          <li><strong>Researchers are semi-trusted colleagues</strong>, the canonical “multiple teams” case where namespace tenancy is designed to work <a href="#ref-1">[1]</a>.</li>
+        </ul>
+      </div>
+      <div class="pc con"><div class="h">✗ The case against (and mitigations)</div>
+        <ul>
+          <li><strong>Shared control plane blast radius</strong> — an abusive client can flood the API server or CoreDNS. <em>Mitigate:</em> API Priority &amp; Fairness, per-tenant rate limits <a href="#ref-1">[1]</a>.</li>
+          <li><strong>CRDs and webhooks are cluster-scoped</strong> — tenants cannot bring their own operators (Kubeflow, Ray, custom CRD versions) without colliding <a href="#ref-4">[4]</a>. <em>Mitigate:</em> platform-curated shared operators + Tier 2 escalation for the rest.</li>
+          <li><strong>Kernel-level co-tenancy</strong> — containers share the node kernel; a breakout reaches neighbors. <em>Mitigate:</em> Pod Security Standards, seccomp, no-privileged admission policies, and MIG's silicon-level GPU partitioning <a href="#ref-1">[1]</a> <a href="#ref-5">[5]</a>.</li>
+          <li><strong>Noisy neighbors on network/IO</strong> — quotas don't cover bandwidth. <em>Mitigate:</em> CNI bandwidth annotations, storage QoS classes <a href="#ref-1">[1]</a>.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout verdict">
+      <div class="t">Verdict</div>
+      <p>Namespace mode as the default is the <strong>right call</strong> for a research fleet whose tenants are accountable, identifiable colleagues — but only if it ships as a <em>hardened bundle</em> (tenant CRD + RBAC + default-deny netpol + aggregated quota + admission policies), never as bare namespaces. Offer <strong>vCluster as a first-class second tier</strong> for the meaningful minority who need their own CRDs, operators, or API-server autonomy: it preserves the shared-node utilization story while removing the shared-control-plane objections <a href="#ref-2">[2]</a> <a href="#ref-5">[5]</a>. This tiered design converts the namespace-vs-vcluster argument from an either/or into a product feature (<code>--mode</code> flag).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GPU MODEL ================= -->
+<section id="gpu">
+  <span class="section-kicker">03 · Resource Model</span>
+  <h2>GPU, CPU &amp; Storage Resource Model</h2>
+  <p class="section-lead">The hardware catalogue — A100/H100/H200 GPUs, Xeon CPU pools, and ION SSD tiers — must be surfaced to researchers as <strong>schedulable, quota-able, meterable resources</strong>. GPUs dominate this design because they are the scarcest, most expensive, and least naturally shareable asset in the fleet.</p>
+
+  <h3>How a GPU becomes multi-tenant</h3>
+  <p>By default Kubernetes treats a GPU as an opaque integer: a pod requests <code>nvidia.com/gpu: 1</code> and monopolizes the whole device, even if it uses 15% of it <a href="#ref-8">[8]</a>. Three NVIDIA sharing mechanisms change that, and they differ profoundly in isolation guarantees:</p>
+
+  <div class="diagram">
+    <svg viewBox="0 0 980 340" role="img" aria-label="GPU sharing mechanisms">
+      <!-- MIG column -->
+      <g>
+        <text x="170" y="28" text-anchor="middle" class="lbl-b">MIG partitioning</text>
+        <text x="170" y="46" text-anchor="middle" class="lbl-s">hardware isolation · A100/H100/H200</text>
+        <rect x="55" y="58" width="230" height="180" rx="12" class="hw"/>
+        <text x="170" y="78" text-anchor="middle" class="lbl-s">one physical H100 80GB</text>
+        <rect x="70" y="90" width="200" height="38" rx="6" class="tenant"/>
+        <text x="170" y="114" text-anchor="middle" class="lbl mono-t">3g.40gb · tenant A (training)</text>
+        <rect x="70" y="134" width="96" height="38" rx="6" class="agent"/>
+        <text x="118" y="152" text-anchor="middle" class="lbl-s mono-t">2g.20gb</text>
+        <text x="118" y="166" text-anchor="middle" class="lbl-s">tenant B</text>
+        <rect x="174" y="134" width="96" height="38" rx="6" class="agent"/>
+        <text x="222" y="152" text-anchor="middle" class="lbl-s mono-t">1g.10gb</text>
+        <text x="222" y="166" text-anchor="middle" class="lbl-s">tenant C</text>
+        <rect x="70" y="178" width="96" height="38" rx="6" class="node"/>
+        <text x="118" y="196" text-anchor="middle" class="lbl-s mono-t">1g.10gb</text>
+        <text x="118" y="210" text-anchor="middle" class="lbl-s">tenant D</text>
+        <rect x="174" y="178" width="96" height="38" rx="6" class="node"/>
+        <text x="222" y="196" text-anchor="middle" class="lbl-s mono-t">free</text>
+        <text x="170" y="262" text-anchor="middle" class="lbl-s">dedicated memory, L2, SMs;</text>
+        <text x="170" y="277" text-anchor="middle" class="lbl-s">fault isolation at silicon level</text>
+        <text x="170" y="300" text-anchor="middle" class="lbl-t" fill="var(--good)">production tenants</text>
+      </g>
+      <!-- time slicing -->
+      <g>
+        <text x="490" y="28" text-anchor="middle" class="lbl-b">Time-slicing</text>
+        <text x="490" y="46" text-anchor="middle" class="lbl-s">no memory / fault isolation</text>
+        <rect x="375" y="58" width="230" height="180" rx="12" class="hw"/>
+        <text x="490" y="78" text-anchor="middle" class="lbl-s">one physical GPU, N replicas</text>
+        <rect x="390" y="90" width="200" height="30" rx="6" class="tenant"/>
+        <text x="490" y="110" text-anchor="middle" class="lbl-s">ctx switch → notebook A</text>
+        <rect x="390" y="126" width="200" height="30" rx="6" class="agent"/>
+        <text x="490" y="146" text-anchor="middle" class="lbl-s">ctx switch → notebook B</text>
+        <rect x="390" y="162" width="200" height="30" rx="6" class="node"/>
+        <text x="490" y="182" text-anchor="middle" class="lbl-s">ctx switch → demo C</text>
+        <text x="490" y="216" text-anchor="middle" class="lbl-s">shared memory space — one OOM</text>
+        <text x="490" y="230" text-anchor="middle" class="lbl-s">can cascade to all pods</text>
+        <text x="490" y="262" text-anchor="middle" class="lbl-s">configurable oversubscription</text>
+        <text x="490" y="277" text-anchor="middle" class="lbl-s">via device-plugin replicas</text>
+        <text x="490" y="300" text-anchor="middle" class="lbl-t" fill="var(--warn)">dev / notebooks only</text>
+      </g>
+      <!-- DRA -->
+      <g>
+        <text x="810" y="28" text-anchor="middle" class="lbl-b">DRA (the future)</text>
+        <text x="810" y="46" text-anchor="middle" class="lbl-s">GA in Kubernetes 1.34</text>
+        <rect x="695" y="58" width="230" height="180" rx="12" class="lane"/>
+        <rect x="710" y="74" width="200" height="32" rx="6" class="hub"/>
+        <text x="810" y="95" text-anchor="middle" class="lbl mono-t">DeviceClass</text>
+        <rect x="710" y="114" width="200" height="32" rx="6" class="hub"/>
+        <text x="810" y="135" text-anchor="middle" class="lbl mono-t">ResourceClaim(Template)</text>
+        <rect x="710" y="154" width="200" height="32" rx="6" class="hub"/>
+        <text x="810" y="175" text-anchor="middle" class="lbl mono-t">ResourceSlice</text>
+        <text x="810" y="216" text-anchor="middle" class="lbl-s">structured device requests replace</text>
+        <text x="810" y="230" text-anchor="middle" class="lbl-s">opaque integer resources</text>
+        <text x="810" y="262" text-anchor="middle" class="lbl-s">NVIDIA DRA driver donated to CNCF;</text>
+        <text x="810" y="277" text-anchor="middle" class="lbl-s">design CoD API to map onto it</text>
+        <text x="810" y="300" text-anchor="middle" class="lbl-t" fill="var(--accent)">adopt for new pools</text>
+      </g>
+    </svg>
+  </div>
+  <p class="figcap"><b>D2.</b> GPU sharing mechanisms. MPS (not shown) offers software concurrency for co-operative CUDA clients within one trust boundary, but a single fatal client fault can poison the whole GPU — unsuitable for cross-tenant sharing <a href="#ref-8">[8]</a>.</p>
+
+  <div class="tbl-scroll">
+  <table>
+    <tr><th>Mechanism</th><th>Memory isolation</th><th>Fault isolation</th><th>Hardware</th><th>Max sharers</th><th>ClusterOnDemand policy</th></tr>
+    <tr><td><strong>Full GPU</strong></td><td class="good">Total</td><td class="good">Total</td><td>Any</td><td>1</td><td>Distributed training, NVLink-coupled jobs</td></tr>
+    <tr><td><strong>MIG</strong></td><td class="good">Yes (silicon)</td><td class="good">Yes</td><td>A100/A30/H100/H200/B200</td><td>7 (A30: 4)</td><td>Default cross-tenant sharing for inference &amp; small training <a href="#ref-8">[8]</a></td></tr>
+    <tr><td><strong>Time-slicing</strong></td><td class="bad">None</td><td class="bad">None</td><td>Any NVIDIA</td><td>Configurable</td><td>Dev/notebook tier only, strict quota <a href="#ref-8">[8]</a></td></tr>
+    <tr><td><strong>MPS</strong></td><td class="warn">Soft limits</td><td class="bad">Shared fate</td><td>Any CUDA</td><td>Configurable</td><td>Not offered cross-tenant</td></tr>
+    <tr><td><strong>DRA</strong></td><td colspan="2">Inherits the above</td><td>K8s ≥ 1.34</td><td>—</td><td>Adopt as the internal allocation API for new node pools <a href="#ref-8">[8]</a></td></tr>
+  </table>
+  </div>
+
+  <h3>Node pools, flavors, and the capacity catalogue</h3>
+  <p>Each datacenter cluster is carved into <strong>labeled node pools</strong>: <code>pool=h100-sxm</code> (NVLink-coupled training), <code>pool=h200</code> (large-memory inference), <code>pool=a100-mig</code> (MIG-partitioned shared pool), <code>pool=a100-ts</code> (time-sliced dev pool), and <code>pool=xeon-highmem</code> (CPU/data-prep). ClusterOnDemand abstracts these into <strong>flavors</strong> — the unit researchers actually request:</p>
+<pre><code>flavor: gpu.h100.full      → 1 × H100 SXM 80GB, 24 vCPU, 192Gi RAM   <span class="cmt"># whole device</span>
+flavor: gpu.h100.mig-3g    → 3g.40gb MIG slice, 12 vCPU, 96Gi RAM     <span class="cmt"># hard-isolated slice</span>
+flavor: gpu.a100.mig-1g    → 1g.10gb MIG slice, 4 vCPU, 32Gi RAM      <span class="cmt"># smallest sellable GPU unit</span>
+flavor: gpu.dev.shared     → time-sliced GPU slot (no SLO)            <span class="cmt"># notebooks, tutorials</span>
+flavor: cpu.xeon.large     → 32 vCPU Xeon, 256Gi RAM                  <span class="cmt"># data prep, CPU jobs</span>
+storage: ion-nvme-fast | ion-nvme-std | object-archive                <span class="cmt"># StorageClasses w/ QoS tiers</span></code></pre>
+  <p>Separating training, inference, and dev workload classes onto different pools is an operational best practice: long-running training saturates memory for days, while inference is bursty — co-locating them on the same shared device degrades both <a href="#ref-5">[5]</a>. Storage follows the same pattern: <code>StorageClass</code> tiers with distinct QoS and reclaim policy <code>Delete</code> so PersistentVolumes are never reused across tenants <a href="#ref-1">[1]</a>.</p>
+
+  <div class="debate">
+    <div class="debate-head"><div class="debate-num">D2</div><h3 style="margin:0">Debate: Which scheduler arbitrates GPU contention?</h3></div>
+    <p>The vanilla Kubernetes scheduler has no notion of gang scheduling, queueing, or GPU topology — a 64-GPU distributed job can deadlock half-scheduled while small pods fragment the fleet <a href="#ref-9">[9]</a>. Four credible options exist:</p>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>Option</th><th>Strengths</th><th>Weaknesses</th><th>Fit for CoD</th></tr>
+      <tr><td><strong>Kueue</strong> (K8s SIG)</td><td>Native job queueing, ClusterQueue quota &amp; borrowing, fair sharing, integrates with plain Jobs/Kubeflow</td><td>Not a scheduler replacement; no fractional GPU</td><td class="good">Baseline — quota-aware admission per tenant</td></tr>
+      <tr><td><strong>Volcano</strong> (CNCF)</td><td>Mature gang scheduling, queues, fair-share for batch/AI</td><td>Manual PodGroup CRDs; heavier operational surface <a href="#ref-9">[9]</a></td><td class="warn">Alternative if HPC-style batch dominates</td></tr>
+      <tr><td><strong>KAI Scheduler</strong> (NVIDIA, Apache-2.0)</td><td>Run:ai's engine open-sourced: hierarchical queues, DRF fairness, automatic PodGrouper gang scheduling, workload consolidation/defrag <a href="#ref-9">[9]</a></td><td>Fractional GPU via annotations lacks memory enforcement; young CNCF sandbox</td><td class="good">Adopt on GPU pools once Tier-1 usage matures</td></tr>
+      <tr><td><strong>Run:ai platform</strong></td><td>Enforced GPU memory isolation, dynamic MIG, memory swap, topology-aware placement</td><td>~$4,500/GPU/yr; vendor platform overlaps with CoD itself <a href="#ref-9">[9]</a></td><td class="warn">Only if commercial support is mandated</td></tr>
+    </table>
+    </div>
+    <div class="callout verdict">
+      <div class="t">Verdict</div>
+      <p>Start with <strong>Kueue</strong> for tenant-level queueing and quota borrowing (it composes with the default scheduler and with Capsule-style tenants), plus <strong>bin-packing scoring (<code>MostAllocated</code>)</strong> on GPU pools so idle nodes fully drain <a href="#ref-5">[5]</a>. Introduce <strong>KAI Scheduler</strong> selectively where gang scheduling and consolidation earn their complexity. Note that if H100/H200 hardware was purchased with bundled NVIDIA AI Enterprise, Run:ai entitlements may already exist and are worth checking before dismissing it <a href="#ref-9">[9]</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ARCHITECTURE ================= -->
+<section id="architecture">
+  <span class="section-kicker">04 · System Design</span>
+  <h2>Global Management-Plane Architecture</h2>
+  <p class="section-lead">ClusterOnDemand is a <strong>two-plane system</strong>: a Global Management Plane (the “hub”) that owns identity, inventory, quota, placement, and the public API — and a lightweight <strong>agent</strong> (the “spoke”) inside every datacenter's Kubernetes cluster that does the actual provisioning by reconciling declarative desired state.</p>
+
+  <div class="diagram">
+    <svg viewBox="0 0 1000 640" role="img" aria-label="Global architecture">
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--diag-line)"/></marker>
+        <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+      </defs>
+      <!-- clients -->
+      <rect x="30" y="30" width="940" height="92" rx="12" class="lane"/>
+      <text x="58" y="56" class="lbl-t">clients</text>
+      <rect x="120" y="48" width="180" height="56" rx="9" class="node"/>
+      <text x="210" y="72" text-anchor="middle" class="lbl-b mono-t">cod CLI</text>
+      <text x="210" y="90" text-anchor="middle" class="lbl-s">researcher laptop · OIDC</text>
+      <rect x="340" y="48" width="180" height="56" rx="9" class="node"/>
+      <text x="430" y="72" text-anchor="middle" class="lbl-b">REST / SDK clients</text>
+      <text x="430" y="90" text-anchor="middle" class="lbl-s">CI · pipelines · portals</text>
+      <rect x="560" y="48" width="180" height="56" rx="9" class="node"/>
+      <text x="650" y="72" text-anchor="middle" class="lbl-b mono-t">kubectl</text>
+      <text x="650" y="90" text-anchor="middle" class="lbl-s">direct to tenant env after provisioning</text>
+      <rect x="780" y="48" width="160" height="56" rx="9" class="node"/>
+      <text x="860" y="72" text-anchor="middle" class="lbl-b">Operator console</text>
+      <text x="860" y="90" text-anchor="middle" class="lbl-s">fleet dashboards</text>
+      <!-- hub -->
+      <rect x="30" y="160" width="940" height="210" rx="12" class="hub" opacity="0.35"/>
+      <rect x="30" y="160" width="940" height="210" rx="12" fill="none" stroke="var(--accent)" stroke-width="1.6"/>
+      <text x="58" y="186" class="lbl-t" fill="var(--accent)">global management plane (hub · HA, region-redundant)</text>
+      <rect x="60" y="200" width="160" height="64" rx="9" class="node"/>
+      <text x="140" y="224" text-anchor="middle" class="lbl-b">API Gateway</text>
+      <text x="140" y="242" text-anchor="middle" class="lbl-s">REST v1 · authN (OIDC)</text>
+      <text x="140" y="256" text-anchor="middle" class="lbl-s">rate limits · audit</text>
+      <rect x="250" y="200" width="160" height="64" rx="9" class="node"/>
+      <text x="330" y="224" text-anchor="middle" class="lbl-b">Orchestrator</text>
+      <text x="330" y="242" text-anchor="middle" class="lbl-s">quota &amp; policy checks</text>
+      <text x="330" y="256" text-anchor="middle" class="lbl-s">operations (LRO) engine</text>
+      <rect x="440" y="200" width="160" height="64" rx="9" class="node"/>
+      <text x="520" y="224" text-anchor="middle" class="lbl-b">Placement</text>
+      <text x="520" y="242" text-anchor="middle" class="lbl-s">DC selection: capacity,</text>
+      <text x="520" y="256" text-anchor="middle" class="lbl-s">SKU, locality, policy</text>
+      <rect x="630" y="200" width="160" height="64" rx="9" class="node"/>
+      <text x="710" y="224" text-anchor="middle" class="lbl-b">Inventory &amp; Usage</text>
+      <text x="710" y="242" text-anchor="middle" class="lbl-s">hardware catalogue,</text>
+      <text x="710" y="256" text-anchor="middle" class="lbl-s">GPU-hour metering</text>
+      <rect x="820" y="200" width="130" height="64" rx="9" class="node"/>
+      <text x="885" y="224" text-anchor="middle" class="lbl-b">IAM / RBAC</text>
+      <text x="885" y="242" text-anchor="middle" class="lbl-s">projects, roles,</text>
+      <text x="885" y="256" text-anchor="middle" class="lbl-s">SSO groups</text>
+      <rect x="60" y="286" width="350" height="62" rx="9" class="node"/>
+      <text x="235" y="310" text-anchor="middle" class="lbl-b">Desired-state store (hub K8s + CRDs)</text>
+      <text x="235" y="328" text-anchor="middle" class="lbl-s mono-t">Environment · TenantPolicy · DatacenterRegistration</text>
+      <rect x="440" y="286" width="250" height="62" rx="9" class="node"/>
+      <text x="565" y="310" text-anchor="middle" class="lbl-b">Relational store (Postgres)</text>
+      <text x="565" y="328" text-anchor="middle" class="lbl-s">users · audit log · usage records · billing</text>
+      <rect x="720" y="286" width="230" height="62" rx="9" class="node"/>
+      <text x="835" y="310" text-anchor="middle" class="lbl-b">Fleet observability</text>
+      <text x="835" y="328" text-anchor="middle" class="lbl-s">Thanos/Mimir rollup of DC metrics</text>
+      <!-- spokes -->
+      <g>
+        <rect x="30" y="420" width="450" height="200" rx="12" class="lane"/>
+        <text x="58" y="446" class="lbl-t">datacenter 1 · k8s cluster (pre-existing)</text>
+        <rect x="55" y="460" width="185" height="60" rx="9" class="agent"/>
+        <text x="147" y="483" text-anchor="middle" class="lbl-b">CoD Agent</text>
+        <text x="147" y="500" text-anchor="middle" class="lbl-s">pulls desired state, reconciles,</text>
+        <text x="147" y="513" text-anchor="middle" class="lbl-s">reports capacity + status</text>
+        <rect x="260" y="460" width="200" height="60" rx="9" class="node"/>
+        <text x="360" y="480" text-anchor="middle" class="lbl-s">Capsule · vCluster operator</text>
+        <text x="360" y="495" text-anchor="middle" class="lbl-s">Kueue · GPU Operator (MIG)</text>
+        <text x="360" y="510" text-anchor="middle" class="lbl-s">OPA · DCGM exporter</text>
+        <rect x="55" y="534" width="128" height="66" rx="9" class="tenant"/>
+        <text x="119" y="556" text-anchor="middle" class="lbl-s">tenant ns bundle</text>
+        <text x="119" y="571" text-anchor="middle" class="lbl-s mono-t">team-alpha</text>
+        <text x="119" y="588" text-anchor="middle" class="lbl-s">4 × mig-3g</text>
+        <rect x="196" y="534" width="128" height="66" rx="9" class="agent"/>
+        <text x="260" y="556" text-anchor="middle" class="lbl-s">vcluster</text>
+        <text x="260" y="571" text-anchor="middle" class="lbl-s mono-t">team-beta</text>
+        <text x="260" y="588" text-anchor="middle" class="lbl-s">2 × h100 full</text>
+        <rect x="337" y="534" width="128" height="66" rx="9" class="hw"/>
+        <text x="401" y="556" text-anchor="middle" class="lbl-s">GPU node pools</text>
+        <text x="401" y="571" text-anchor="middle" class="lbl-s mono-t">h100-sxm · a100-mig</text>
+        <text x="401" y="588" text-anchor="middle" class="lbl-s mono-t">xeon · ion-nvme</text>
+      </g>
+      <g>
+        <rect x="520" y="420" width="450" height="200" rx="12" class="lane"/>
+        <text x="548" y="446" class="lbl-t">datacenter 2 … N</text>
+        <rect x="545" y="460" width="185" height="60" rx="9" class="agent"/>
+        <text x="637" y="483" text-anchor="middle" class="lbl-b">CoD Agent</text>
+        <text x="637" y="500" text-anchor="middle" class="lbl-s">autonomous if hub is down;</text>
+        <text x="637" y="513" text-anchor="middle" class="lbl-s">outbound-only connection</text>
+        <rect x="750" y="460" width="200" height="60" rx="9" class="node"/>
+        <text x="850" y="480" text-anchor="middle" class="lbl-s">same per-DC stack,</text>
+        <text x="850" y="495" text-anchor="middle" class="lbl-s">different hardware mix</text>
+        <text x="850" y="510" text-anchor="middle" class="lbl-s mono-t">h200 · a100-ts pools</text>
+        <rect x="545" y="534" width="405" height="66" rx="9" class="tenant" opacity="0.75"/>
+        <text x="747" y="562" text-anchor="middle" class="lbl-s">tenant environments · namespaces &amp; vclusters</text>
+        <text x="747" y="580" text-anchor="middle" class="lbl-s">placed here when DC1 lacks requested SKU/capacity</text>
+      </g>
+      <!-- edges -->
+      <line x1="210" y1="104" x2="148" y2="198" class="edge thick" marker-end="url(#arrB)"/>
+      <line x1="430" y1="104" x2="330" y2="198" class="edge thick" marker-end="url(#arrB)"/>
+      <line x1="650" y1="104" x2="650" y2="152" class="edge dash"/>
+      <path d="M 650 152 C 650 400, 300 380, 200 532" class="edge dash" marker-end="url(#arr2)"/>
+      <line x1="147" y1="458" x2="235" y2="372" class="edge" marker-end="url(#arr2)"/>
+      <line x1="637" y1="458" x2="565" y2="372" class="edge" marker-end="url(#arr2)"/>
+      <text x="215" y="415" class="lbl-s">pull: watch desired state ↑ / push status ↑</text>
+      <text x="705" y="300" text-anchor="end" class="lbl-s"></text>
+    </svg>
+  </div>
+  <p class="figcap"><b>D3.</b> Two-plane architecture. Researchers converge on the hub API; after provisioning, their <code>kubectl</code> traffic goes <em>directly</em> to the tenant environment in the datacenter — the hub is never on the workload data path.</p>
+
+  <h3>Hub components</h3>
+  <p>The <strong>API Gateway</strong> terminates OIDC (institutional SSO — researchers already have identities), enforces per-principal rate limits, and writes an immutable audit record for every mutation. The <strong>Orchestrator</strong> validates requests against quota and policy, then persists an <code>Environment</code> desired-state record and exposes a trackable operation. The <strong>Placement service</strong> selects a datacenter and node pool by matching the requested flavor against live capacity, data-locality hints, and reservation policies — mirroring OCM's decoupled placement module <a href="#ref-10">[10]</a>. The <strong>Inventory &amp; Usage</strong> service maintains the hardware catalogue that <code>cod hw list</code> renders, aggregating capacity snapshots the agents report, and meters GPU-hours per tenant for chargeback — the single most effective incentive against resource hoarding <a href="#ref-5">[5]</a>.</p>
+
+  <div class="debate">
+    <div class="debate-head"><div class="debate-num">D3</div><h3 style="margin:0">Debate: Push (central kubeconfigs) vs Pull (in-DC agents)</h3></div>
+    <div class="provscon">
+      <div class="pc pro"><div class="h">✓ Pull — agent in each DC (chosen)</div>
+        <ul>
+          <li>Only <strong>outbound spoke→hub</strong> connectivity needed; works through DC firewalls and NAT without inbound holes <a href="#ref-10">[10]</a>.</li>
+          <li>Hub holds <strong>no cluster-admin credentials</strong> for any DC — a hub compromise cannot directly seize datacenters.</li>
+          <li>Agents keep reconciling autonomously during hub outages; proven to scale to thousands of clusters (the kubelet pattern, re-applied) <a href="#ref-10">[10]</a>.</li>
+          <li>DC admins can audit and sever the agent locally (“white-box” trust model, double opt-in registration) <a href="#ref-10">[10]</a>.</li>
+        </ul>
+      </div>
+      <div class="pc con"><div class="h">✗ Push — hub connects to every DC API server</div>
+        <ul>
+          <li>Simpler to prototype: one service, N kubeconfigs, no agent rollout.</li>
+          <li>But it centralizes god-mode credentials, requires inbound network paths to every DC, floods the hub with watch events at scale — the KubeFed v2 architecture that the community abandoned <a href="#ref-10">[10]</a>.</li>
+          <li>Hub outage = total provisioning outage; no local autonomy.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout verdict"><div class="t">Verdict</div>
+      <p>Pull. The agent doubles as the <strong>installer/upgrader of the per-DC stack</strong> (Capsule, vCluster operator, Kueue, GPU Operator MIG profiles, OPA policies, DCGM), so “adding a datacenter” reduces to: deploy agent → double opt-in registration → agent converges the DC to the platform baseline and starts reporting inventory. For interactive hub→DC needs (log streaming, debugging), a konnectivity-style reverse tunnel can be added later exactly as OCM's cluster-proxy does <a href="#ref-10">[10]</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= API DESIGN ================= -->
+<section id="api">
+  <span class="section-kicker">05 · Interface Contract</span>
+  <h2>API Design: Imperative REST vs Declarative Control Plane</h2>
+  <p class="section-lead">The API is where two philosophies collide. <strong>Imperative REST</strong> (“do this now, give me an operation ID”) is familiar to every integrator. <strong>Declarative reconciliation</strong> (“here is my desired state, converge to it”) is what makes Kubernetes itself robust <a href="#ref-11">[11]</a>. ClusterOnDemand should refuse to pick just one.</p>
+
+  <div class="debate">
+    <div class="debate-head"><div class="debate-num">D4</div><h3 style="margin:0">Debate: What is the source of truth — a REST service with a database, or CRDs on a hub cluster?</h3></div>
+    <div class="provscon">
+      <div class="pc pro"><div class="h">✓ Declarative CRD core (hub K8s)</div>
+        <ul>
+          <li>Reconciliation loops give <strong>self-healing and idempotency for free</strong> — an agent crash mid-provision simply re-converges; imperative sagas must hand-roll this <a href="#ref-11">[11]</a>.</li>
+          <li><code>Environment</code>, <code>TenantPolicy</code>, <code>DatacenterRegistration</code> as CRDs get watch semantics, optimistic concurrency, RBAC, and audit from the K8s API machinery.</li>
+          <li>GitOps-ready: operators can manage fleet policy via Argo CD; Crossplane-style compositions become possible later.</li>
+          <li>Agents already speak Kubernetes — the hub→spoke contract is just CRs + status (the ManifestWork pattern) <a href="#ref-10">[10]</a>.</li>
+        </ul>
+      </div>
+      <div class="pc con"><div class="h">✗ Pure REST + Postgres service</div>
+        <ul>
+          <li>Simpler mental model for non-K8s integrators; no etcd size limits; rich relational queries (usage reports, billing joins) are natural.</li>
+          <li>But you re-implement watches, conditions, retries, and drift detection by hand — precisely the machinery K8s already ships.</li>
+          <li>Researchers' requests (“give me 4 H100s”) <em>are</em> desired state; forcing them through imperative verbs loses that.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout verdict"><div class="t">Verdict — hybrid façade</div>
+      <p>Run a small hub Kubernetes cluster whose CRDs are the <strong>system of record for desired state</strong>, reconciled by agents. Wrap it with a thin <strong>REST façade</strong> that translates <code>POST /v1/environments</code> into an <code>Environment</code> CR and exposes the async-operation pattern (202 + <code>Location</code>) that REST clients expect <a href="#ref-12">[12]</a>. Keep Postgres beside it for what relational stores do best: users, audit trails, and metering records. Each layer does the job it is best at.</p>
+    </div>
+  </div>
+
+  <h3>Resource model &amp; the async operation pattern</h3>
+  <p>Provisioning takes seconds (namespace) to minutes (vcluster) — too long to block an HTTP request. The API therefore follows the long-running-operation convention: mutating calls return <code>202 Accepted</code> with a <code>Location</code> header pointing at an operation resource the client polls (or subscribes to via SSE/webhooks); errors use RFC 7807 problem details; cancels are idempotent <code>DELETE</code>s on the operation <a href="#ref-12">[12]</a>.</p>
+<pre><code><span class="cmt"># Discovery</span>
+GET  /v1/datacenters                          <span class="cmt"># list DCs + health</span>
+GET  /v1/datacenters/{dc}/hardware            <span class="cmt"># pools, SKUs, MIG profiles, free capacity</span>
+GET  /v1/flavors                              <span class="cmt"># requestable units</span>
+
+<span class="cmt"># Environment lifecycle (mode: namespace | vcluster)</span>
+POST   /v1/environments                       <span class="cmt"># → 202 Accepted, Location: /v1/operations/{id}</span>
+GET    /v1/environments?owner=me
+GET    /v1/environments/{env}
+PATCH  /v1/environments/{env}                 <span class="cmt"># scale up/down = update desired resources → 202</span>
+DELETE /v1/environments/{env}                 <span class="cmt"># → 202, grace period, idempotent</span>
+GET    /v1/environments/{env}/kubeconfig      <span class="cmt"># short-lived, OIDC-bound credentials</span>
+GET    /v1/environments/{env}/usage           <span class="cmt"># GPU-hours, storage, live utilization</span>
+
+<span class="cmt"># Operations (LRO)</span>
+GET    /v1/operations/{id}                    <span class="cmt"># pending | provisioning | ready | failed + steps</span>
+
+<span class="cmt"># Example create body</span>
+{
+  "name": "llm-ablation",
+  "mode": "namespace",
+  "datacenter": "auto",                       <span class="cmt"># or pin: "dc-eu-west"</span>
+  "resources": {
+    "flavors": { "gpu.h100.mig-3g": 4, "cpu.xeon.large": 2 },
+    "storage": { "ion-nvme-fast": "20Ti" }
+  },
+  "ttl": "336h"                               <span class="cmt"># auto-reclaim idle research envs</span>
+}</code></pre>
+
+  <div class="diagram">
+    <svg viewBox="0 0 960 240" role="img" aria-label="Environment state machine">
+      <defs><marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--diag-line)"/></marker></defs>
+      <rect x="30" y="90" width="120" height="46" rx="22" class="node"/><text x="90" y="118" text-anchor="middle" class="lbl-b">Pending</text>
+      <rect x="210" y="90" width="140" height="46" rx="22" class="hub"/><text x="280" y="118" text-anchor="middle" class="lbl-b">Provisioning</text>
+      <rect x="410" y="90" width="110" height="46" rx="22" class="tenant"/><text x="465" y="118" text-anchor="middle" class="lbl-b">Ready</text>
+      <rect x="580" y="20" width="110" height="46" rx="22" class="agent"/><text x="635" y="48" text-anchor="middle" class="lbl-b">Scaling</text>
+      <rect x="580" y="160" width="120" height="46" rx="22" class="hw"/><text x="640" y="188" text-anchor="middle" class="lbl-b">Deleting</text>
+      <rect x="770" y="160" width="120" height="46" rx="22" class="node"/><text x="830" y="188" text-anchor="middle" class="lbl-b">Deleted</text>
+      <rect x="210" y="180" width="110" height="46" rx="22" class="bad-n"/><text x="265" y="208" text-anchor="middle" class="lbl-b">Failed</text>
+      <line x1="150" y1="113" x2="208" y2="113" class="edge" marker-end="url(#arr3)"/>
+      <line x1="350" y1="113" x2="408" y2="113" class="edge" marker-end="url(#arr3)"/>
+      <text x="378" y="100" text-anchor="middle" class="lbl-s">converged</text>
+      <path d="M 520 100 C 545 80, 555 60, 578 48" class="edge" marker-end="url(#arr3)"/>
+      <text x="540" y="55" text-anchor="middle" class="lbl-s">PATCH</text>
+      <path d="M 580 60 C 545 85, 535 95, 522 103" class="edge dash" marker-end="url(#arr3)"/>
+      <path d="M 520 128 C 545 145, 555 160, 578 175" class="edge" marker-end="url(#arr3)"/>
+      <text x="535" y="165" text-anchor="middle" class="lbl-s">DELETE</text>
+      <line x1="700" y1="183" x2="768" y2="183" class="edge" marker-end="url(#arr3)"/>
+      <path d="M 280 138 C 275 155, 272 165, 268 178" class="edge dash" marker-end="url(#arr3)"/>
+      <text x="238" y="162" class="lbl-s">error</text>
+      <path d="M 320 200 C 400 235, 520 235, 600 208" class="edge dash" marker-end="url(#arr3)"/>
+      <text x="460" y="225" text-anchor="middle" class="lbl-s">cleanup / retry exhausted</text>
+      <path d="M 265 178 C 268 160, 272 150, 276 140" class="edge dash" marker-end="url(#arr3)"/>
+      <text x="330" y="170" class="lbl-s">retry</text>
+    </svg>
+  </div>
+  <p class="figcap"><b>D4.</b> Environment lifecycle state machine. Every state transition is emitted as an event on the operation resource and as a status condition on the <code>Environment</code> CR — the CLI's <code>--watch</code> and the REST poller read the same truth.</p>
+</section>
+
+<!-- ================= CLI ================= -->
+<section id="cli">
+  <span class="section-kicker">06 · Primary Interface</span>
+  <h2>CLI Design: <code>cod</code></h2>
+  <p class="section-lead">The CLI is the product's face. Following the Command Line Interface Guidelines: human-first output with machine-readable escape hatches, noun-verb consistency, helpful errors, confirmation for destructive acts, and composability with the Unix ecosystem <a href="#ref-13">[13]</a>.</p>
+
+  <div class="debate">
+    <div class="debate-head"><div class="debate-num">D5</div><h3 style="margin:0">Debate: Standalone binary vs kubectl plugin</h3></div>
+    <div class="provscon">
+      <div class="pc pro"><div class="h">✓ Standalone <code>cod</code> binary (chosen)</div>
+        <ul>
+          <li>Talks to the <strong>hub REST API</strong>, not to any one cluster — discovery and placement span datacenters, which kubectl's single-context model handles poorly.</li>
+          <li>Owns the full auth journey (OIDC device flow on headless SSH boxes) and can render rich, task-oriented UX: progress, next-step hints, capacity tables.</li>
+          <li>Single static Go binary (Cobra) — trivial install on researcher laptops and login nodes.</li>
+        </ul>
+      </div>
+      <div class="pc con"><div class="h">✗ kubectl plugin (<code>kubectl cod …</code>)</div>
+        <ul>
+          <li>Zero-install familiarity for K8s-native users and krew distribution.</li>
+          <li>But it inherits kubeconfig-context confusion, cannot cleanly express cross-DC discovery, and makes the REST API a second-class citizen.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout verdict"><div class="t">Verdict</div>
+      <p>Standalone binary — but it must <strong>end every successful provision by writing a kubeconfig</strong> (<code>cod kubeconfig ENV --merge</code>), because after provisioning the researcher's daily driver is plain <code>kubectl</code>/<code>helm</code>/IDE tooling against their environment. The CLI creates worlds; kubectl lives in them.</p>
+    </div>
+  </div>
+
+  <h3>Command grammar</h3>
+<pre><code><span class="kw">cod</span> login                                    <span class="cmt"># OIDC device flow → token cached in keyring</span>
+<span class="kw">cod</span> dc list                                  <span class="cmt"># datacenters + health + headline capacity</span>
+<span class="kw">cod</span> hw list <span class="flag">--dc</span> dc-eu-west <span class="flag">--gpu</span>            <span class="cmt"># F1: browse pools, SKUs, MIG profiles, free units</span>
+
+<span class="kw">cod</span> env create llm-ablation <span class="flag">--mode</span> namespace \
+    <span class="flag">--flavor</span> gpu.h100.mig-3g=4 <span class="flag">--flavor</span> cpu.xeon.large=2 \
+    <span class="flag">--storage</span> ion-nvme-fast=20Ti <span class="flag">--ttl</span> 14d <span class="flag">--watch</span>
+<span class="str">  ↳ Placement: dc-eu-west · pool a100-mig · quota OK (4/16 GPU units used)</span>
+<span class="str">  ↳ Provisioning ████████░░ 80%  [tenant · rbac · netpol · quota · kueue-queue]</span>
+<span class="str">  ✔ Ready in 8s — next: cod kubeconfig llm-ablation --merge</span>
+
+<span class="kw">cod</span> env list <span class="flag">-o</span> json | jq '.[].status'       <span class="cmt"># F3: machine-readable by design</span>
+<span class="kw">cod</span> env scale llm-ablation <span class="flag">--flavor</span> gpu.h100.mig-3g=8   <span class="cmt"># F4: upscale (202 → watchable)</span>
+<span class="kw">cod</span> env scale llm-ablation <span class="flag">--flavor</span> gpu.h100.mig-3g=2   <span class="cmt"># F4: downscale</span>
+<span class="kw">cod</span> env delete llm-ablation                  <span class="cmt"># F5: prompts; --yes for scripts; idempotent</span>
+<span class="kw">cod</span> kubeconfig llm-ablation <span class="flag">--merge</span>          <span class="cmt"># F6: short-lived creds into ~/.kube/config</span>
+<span class="kw">cod</span> quota · <span class="kw">cod</span> usage <span class="flag">--since</span> 30d            <span class="cmt"># N4: my limits · my GPU-hours</span>
+<span class="kw">cod</span> env create … <span class="flag">--dry-run</span>                   <span class="cmt"># show placement + cost, change nothing</span></code></pre>
+
+  <p>Conventions applied from the guidelines <a href="#ref-13">[13]</a>: human-readable tables on stdout by default with <code>-o json|yaml|wide</code> for scripts; diagnostics to stderr; meaningful exit codes (<code>0</code> ok, <code>2</code> quota exceeded, <code>3</code> capacity unavailable, <code>4</code> auth); <code>--help</code> everywhere with examples first; suggestions on typos; confirmation prompts for destructive verbs with <code>--yes</code> override; flags echo env vars (<code>COD_DC</code>, <code>COD_OUTPUT</code>) and a <code>~/.config/cod/config.yaml</code>; shell completion for bash/zsh/fish. Long operations always print <em>what to run next</em> — the “conversation” principle.</p>
+</section>
+
+<!-- ================= FLOWS ================= -->
+<section id="flows">
+  <span class="section-kicker">07 · Lifecycle Flows</span>
+  <h2>End-to-End Flows</h2>
+  <p class="section-lead">The flow below traces the flagship use case — <code>cod env create</code> in namespace mode — across every component. The scale and delete flows reuse the same machinery with a different desired-state diff.</p>
+
+  <div class="diagram">
+    <svg viewBox="0 0 1000 560" role="img" aria-label="Create environment sequence diagram">
+      <defs><marker id="arr4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--diag-line)"/></marker></defs>
+      <!-- lifelines -->
+      <g>
+        <rect x="30" y="20" width="130" height="40" rx="8" class="node"/><text x="95" y="45" text-anchor="middle" class="lbl-b">Researcher</text>
+        <rect x="210" y="20" width="130" height="40" rx="8" class="node"/><text x="275" y="45" text-anchor="middle" class="lbl-b mono-t">cod CLI</text>
+        <rect x="390" y="20" width="150" height="40" rx="8" class="hub"/><text x="465" y="45" text-anchor="middle" class="lbl-b">Hub API + Orch.</text>
+        <rect x="590" y="20" width="140" height="40" rx="8" class="agent"/><text x="660" y="45" text-anchor="middle" class="lbl-b">CoD Agent (DC)</text>
+        <rect x="790" y="20" width="180" height="40" rx="8" class="tenant"/><text x="880" y="45" text-anchor="middle" class="lbl-b">DC K8s (Capsule·Kueue)</text>
+        <line x1="95" y1="60" x2="95" y2="535" class="edge dash" opacity=".5"/>
+        <line x1="275" y1="60" x2="275" y2="535" class="edge dash" opacity=".5"/>
+        <line x1="465" y1="60" x2="465" y2="535" class="edge dash" opacity=".5"/>
+        <line x1="660" y1="60" x2="660" y2="535" class="edge dash" opacity=".5"/>
+        <line x1="880" y1="60" x2="880" y2="535" class="edge dash" opacity=".5"/>
+      </g>
+      <!-- messages -->
+      <line x1="95" y1="90" x2="273" y2="90" class="edge" marker-end="url(#arr4)"/>
+      <text x="184" y="80" text-anchor="middle" class="lbl-s mono-t">cod env create … --watch</text>
+      <line x1="275" y1="120" x2="463" y2="120" class="edge" marker-end="url(#arr4)"/>
+      <text x="370" y="110" text-anchor="middle" class="lbl-s mono-t">POST /v1/environments (OIDC token)</text>
+      <rect x="380" y="138" width="172" height="48" rx="7" class="lane"/>
+      <text x="466" y="158" text-anchor="middle" class="lbl-s">authN · quota check · placement</text>
+      <text x="466" y="174" text-anchor="middle" class="lbl-s">→ write Environment CR + audit</text>
+      <line x1="463" y1="205" x2="277" y2="205" class="edge" marker-end="url(#arr4)"/>
+      <text x="370" y="196" text-anchor="middle" class="lbl-s mono-t">202 Accepted · Location: /operations/8f2c</text>
+      <line x1="660" y1="240" x2="467" y2="240" class="edge" marker-end="url(#arr4)"/>
+      <text x="565" y="231" text-anchor="middle" class="lbl-s">watch (pull): new desired state?</text>
+      <line x1="467" y1="268" x2="658" y2="268" class="edge" marker-end="url(#arr4)"/>
+      <text x="565" y="259" text-anchor="middle" class="lbl-s mono-t">Environment{llm-ablation, ns-mode, 4×mig-3g}</text>
+      <line x1="660" y1="300" x2="878" y2="300" class="edge" marker-end="url(#arr4)"/>
+      <text x="770" y="291" text-anchor="middle" class="lbl-s">reconcile: Tenant CR, RBAC, netpol,</text>
+      <line x1="660" y1="322" x2="878" y2="322" class="edge" marker-end="url(#arr4)"/>
+      <text x="770" y="338" text-anchor="middle" class="lbl-s">ResourceQuota, LimitRange, Kueue queue</text>
+      <rect x="800" y="352" width="162" height="40" rx="7" class="lane"/>
+      <text x="881" y="369" text-anchor="middle" class="lbl-s">controllers converge;</text>
+      <text x="881" y="384" text-anchor="middle" class="lbl-s">status → Ready</text>
+      <line x1="878" y1="410" x2="662" y2="410" class="edge" marker-end="url(#arr4)"/>
+      <text x="770" y="402" text-anchor="middle" class="lbl-s">all conditions True</text>
+      <line x1="658" y1="435" x2="467" y2="435" class="edge" marker-end="url(#arr4)"/>
+      <text x="565" y="426" text-anchor="middle" class="lbl-s">status push: Ready + endpoints + capacity delta</text>
+      <line x1="463" y1="462" x2="277" y2="462" class="edge" marker-end="url(#arr4)"/>
+      <text x="370" y="453" text-anchor="middle" class="lbl-s">poll/SSE: operation → ready</text>
+      <line x1="273" y1="492" x2="97" y2="492" class="edge" marker-end="url(#arr4)"/>
+      <text x="184" y="483" text-anchor="middle" class="lbl-s">✔ Ready · hint: cod kubeconfig --merge</text>
+      <line x1="95" y1="520" x2="878" y2="520" class="edge thick" marker-end="url(#arr4)"/>
+      <text x="485" y="511" text-anchor="middle" class="lbl-s mono-t">kubectl apply … (direct to DC, scoped creds — hub not on data path)</text>
+    </svg>
+  </div>
+  <p class="figcap"><b>D5.</b> Create flow (namespace mode). In vcluster mode the agent instead instantiates a vCluster helm release inside a host namespace and waits for its API server to answer before reporting Ready — roughly one minute instead of seconds.</p>
+
+  <h3>Scale &amp; delete reuse the same loop</h3>
+  <p><strong>Upscale/downscale</strong> is a <code>PATCH</code> that rewrites the resource envelope: the agent widens or narrows the Capsule tenant quota and Kueue <code>ClusterQueue</code> nominal quota. Downscaling below current usage doesn't kill pods immediately — quota blocks <em>new</em> admissions while a grace policy (cordon → preempt lowest-priority jobs after warning) converges actual usage; this mirrors how preemption-based fairness works in GPU schedulers <a href="#ref-5">[5]</a> <a href="#ref-9">[9]</a>. <strong>Delete</strong> flips the CR's deletion timestamp: the agent drains workloads with a grace period, deletes namespaces (cascading PVC deletion under reclaim-<code>Delete</code> storage classes), releases MIG slices, and reports final usage for the metering ledger before the record is tombstoned.</p>
+
+  <div class="callout warn">
+    <div class="t">Failure honesty</div>
+    <p>Two failure classes deserve first-class UX: <strong>capacity misses</strong> (placement finds no pool with 4 free <code>mig-3g</code> slices — return alternatives: another DC, a smaller flavor, or a queue position) and <strong>partial provisions</strong> (netpol applied, quota failed — the reconciler retries idempotently and the operation shows exactly which step is stuck rather than a generic error). Both fall naturally out of the declarative core; both are painful to bolt onto a fire-and-forget imperative design.</p>
+  </div>
+</section>
+
+<!-- ================= ISOLATION ================= -->
+<section id="security">
+  <span class="section-kicker">08 · Governance</span>
+  <h2>The Layered Isolation &amp; Governance Stack</h2>
+  <p class="section-lead">No single mechanism isolates a tenant. Effective GPU multi-tenancy is a <strong>stack</strong>, where each layer catches a different failure class <a href="#ref-5">[5]</a>. ClusterOnDemand's agent installs and enforces every layer as part of the datacenter baseline.</p>
+
+  <div class="diagram">
+    <svg viewBox="0 0 960 330" role="img" aria-label="Layered isolation stack">
+      <g>
+        <rect x="60" y="20" width="840" height="50" rx="9" class="hub"/>
+        <text x="90" y="42" class="lbl-b">L5 · Governance</text>
+        <text x="90" y="59" class="lbl-s">audit log · GPU-hour metering &amp; chargeback · TTL reaper · idle-environment sleep</text>
+        <rect x="60" y="80" width="840" height="50" rx="9" class="agent"/>
+        <text x="90" y="102" class="lbl-b">L4 · Scheduling fairness</text>
+        <text x="90" y="119" class="lbl-s">Kueue quotas &amp; borrowing · PriorityClass + preemption · bin-packing (MostAllocated) · gang scheduling</text>
+        <rect x="60" y="140" width="840" height="50" rx="9" class="tenant"/>
+        <text x="90" y="162" class="lbl-b">L3 · Control plane</text>
+        <text x="90" y="179" class="lbl-s">Capsule Tenant CR (aggregated quota, self-service ns) · vCluster per-tenant API server/etcd/CRDs · API Priority &amp; Fairness</text>
+        <rect x="60" y="200" width="840" height="50" rx="9" class="node"/>
+        <text x="90" y="222" class="lbl-b">L2 · Workload / network / data</text>
+        <text x="90" y="239" class="lbl-s">RBAC least-privilege · default-deny NetworkPolicy (+DNS allow) · Pod Security Standards · OPA/Kyverno admission · per-tenant StorageClass, reclaim Delete</text>
+        <rect x="60" y="260" width="840" height="50" rx="9" class="hw"/>
+        <text x="90" y="282" class="lbl-b">L1 · Hardware</text>
+        <text x="90" y="299" class="lbl-s">MIG silicon partitions (memory/L2/SM + fault isolation) · node-pool taints per workload class · optional dedicated nodes (Tier 3)</text>
+      </g>
+    </svg>
+  </div>
+  <p class="figcap"><b>D6.</b> Five-layer isolation stack, synthesized from the Kubernetes multi-tenancy guidance and GPU tenant-isolation practice <a href="#ref-1">[1]</a> <a href="#ref-5">[5]</a>.</p>
+
+  <h3>Observability, metering, and the economics of fairness</h3>
+  <p>Every DC runs Prometheus with the <strong>NVIDIA DCGM exporter</strong>, giving per-GPU utilization, memory, temperature, power and PCIe bandwidth, scoped to tenant namespaces in Grafana dashboards <a href="#ref-5">[5]</a>. The hub rolls these up (Thanos/Mimir) into the fleet view and into per-tenant <strong>GPU-hour ledgers</strong>. This is not bookkeeping vanity: shared clusters routinely show requests wildly above usage (90% requested vs 30% used is commonly reported), and the documented cure is showing teams the cost of what they hold — chargeback converts hoarding into right-sizing <a href="#ref-5">[5]</a>. Complementary levers: <strong>TTLs with renewal</strong> on research environments, <strong>idle detection</strong> (zero GPU utilization for N days → notify → sleep), and Kueue's <strong>borrowing</strong> so unused quota flows to whoever has queued work — the mechanism that pushes fleet utilization far above the ~40% baseline of naive sharing <a href="#ref-5">[5]</a> <a href="#ref-9">[9]</a>.</p>
+
+  <h3>Identity &amp; credential flow</h3>
+  <p>Researchers authenticate to the hub with institutional OIDC. The kubeconfigs that <code>cod kubeconfig</code> emits carry <strong>short-lived, tenant-scoped credentials</strong> — an OIDC exec plugin rather than long-lived static tokens — pointing at the DC's API endpoint (via <code>capsule-proxy</code>, which additionally filters cluster-scoped listings like namespaces so tenants only see their own) or at the tenant's vCluster endpoint. RBAC bindings are generated from the environment's member list, and regular automated audits of bindings guard against the gradual cross-tenant permission drift that plagues long-lived shared clusters <a href="#ref-5">[5]</a> <a href="#ref-6">[6]</a>.</p>
+</section>
+
+<!-- ================= ALTERNATIVES ================= -->
+<section id="alternatives">
+  <span class="section-kicker">09 · Landscape</span>
+  <h2>Modern Alternatives &amp; the Build-vs-Adopt Debate</h2>
+  <p class="section-lead">ClusterOnDemand does not exist in a vacuum — an entire ecosystem attacks slices of this problem. Knowing what to <strong>reuse</strong>, what to <strong>compete with</strong>, and what to <strong>deliberately not build</strong> is as important as the architecture itself.</p>
+
+  <div class="tbl-scroll">
+  <table>
+    <tr><th>Alternative</th><th>Category</th><th>What it does well</th><th>Why it isn't (alone) ClusterOnDemand</th><th>Relationship</th></tr>
+    <tr><td><strong>Capsule</strong> (Clastix)</td><td>Namespace-as-a-Service operator</td><td>Tenant CRD, aggregated quota across namespaces, self-service ns with plain kubectl <a href="#ref-6">[6]</a></td><td>Single-cluster scope; no global placement, CLI, metering, or hardware catalogue</td><td class="good">Adopt as Tier-1 engine</td></tr>
+    <tr><td><strong>vCluster</strong> (LoftLabs)</td><td>Virtual clusters</td><td>Per-tenant API server/etcd/CRDs as pods; proven at GPU clouds (CoreWeave, Nscale) <a href="#ref-5">[5]</a></td><td>Same: per-cluster tool, not a global mgmt plane; enterprise platform is commercial</td><td class="good">Adopt OSS core as Tier-2 engine</td></tr>
+    <tr><td><strong>vCluster Platform / Rancher / Palette</strong></td><td>Commercial multi-cluster platforms</td><td>UI, SSO, fleet ops, tenant self-service out of the box</td><td>Generic platforms: no research-flavor catalogue, GPU-hour ledgers, or your CLI grammar; license cost &amp; lock-in</td><td class="warn">Benchmark; adopt if buying beats building</td></tr>
+    <tr><td><strong>Open Cluster Management</strong></td><td>Multi-cluster orchestration</td><td>Registration, pull-based ManifestWork, Placement across 1000s of clusters <a href="#ref-10">[10]</a></td><td>Framework, not a product — no researcher-facing API/CLI/metering</td><td class="good">Borrow hub-spoke machinery (or its patterns)</td></tr>
+    <tr><td><strong>Cluster API / Kamaji / HyperShift / Gardener</strong></td><td>Cluster lifecycle / hosted CPs</td><td>Declarative cluster creation; control planes as pods with per-tenant etcd <a href="#ref-7">[7]</a></td><td>Solve “make more clusters”, i.e. the tier you deliberately de-emphasize</td><td class="good">Reserve Kamaji for Tier 3</td></tr>
+    <tr><td><strong>Run:ai / KAI Scheduler</strong></td><td>GPU orchestration &amp; scheduling</td><td>Fractional GPUs, dynamic MIG, gang scheduling, hierarchical fairness <a href="#ref-9">[9]</a></td><td>Scheduling layer, not tenancy provisioning; Run:ai ≈ $4,500/GPU/yr</td><td class="good">KAI/Kueue under CoD; Run:ai if entitled</td></tr>
+    <tr><td><strong>Slurm</strong> (+ Soperator/SUNK)</td><td>HPC workload manager</td><td>Battle-tested batch/gang scheduling, topology-aware allocation; runs &gt;50% of Top500 <a href="#ref-14">[14]</a></td><td>Job scheduler, not environment provisioner: no services/inference, rigid identical-node ops, SSH-era UX</td><td class="warn">Offer Slurm-on-K8s <em>inside</em> tenant envs for HPC folks</td></tr>
+    <tr><td><strong>OpenStack (Ironic/Magnum)</strong></td><td>Private-cloud IaaS</td><td>Full VM/bare-metal cloud with mature quota &amp; billing</td><td>Heavy second platform beneath K8s you already run everywhere; large ops team required</td><td class="bad">Skip — K8s-native path is lighter</td></tr>
+    <tr><td><strong>Crossplane</strong></td><td>Control-plane framework</td><td>Composite resources &amp; GitOps for platform APIs</td><td>A way to build CoD's hub, not an alternative product</td><td class="warn">Optional implementation detail</td></tr>
+    <tr><td><strong>HNC</strong></td><td>Hierarchical namespaces</td><td>Policy propagation down namespace trees <a href="#ref-4">[4]</a></td><td>No overrides; global resources still shared; weaker than Capsule's tenant model</td><td class="bad">Superseded by Capsule here</td></tr>
+  </table>
+  </div>
+
+  <div class="debate">
+    <div class="debate-head"><div class="debate-num">D6</div><h3 style="margin:0">Debate: Kubernetes-native self-service vs a Slurm-style batch queue</h3></div>
+    <p>A serious counter-proposal for a <em>research</em> datacenter is: skip tenancy altogether and run one big Slurm (or Volcano-only) batch queue — researchers submit jobs, not clusters. It maximizes packing for pure training workloads, and academics already know <code>sbatch</code> <a href="#ref-14">[14]</a>. But it fails three of your stated requirements: researchers explicitly want <em>their own cluster/namespace</em> (interactive services, notebooks, inference endpoints, custom stacks — things Slurm handles poorly); all datacenters already run Kubernetes; and a job queue cannot express “upscale my environment.” The synthesis is to treat batch scheduling as a <strong>layer inside</strong> ClusterOnDemand (Kueue/KAI at the platform level, optional Slurm-on-K8s such as Soperator inside a Tier-2 tenant cluster for die-hard HPC groups) rather than as the platform itself <a href="#ref-14">[14]</a>.</p>
+  </div>
+
+  <div class="debate">
+    <div class="debate-head"><div class="debate-num">D7</div><h3 style="margin:0">Debate: Build thin, assemble OSS — or buy a platform?</h3></div>
+    <div class="provscon">
+      <div class="pc pro"><div class="h">✓ Thin CoD layer over OSS blocks (recommended)</div>
+        <ul>
+          <li>~80% of the machinery already exists as proven OSS: Capsule, vCluster, Kueue, GPU Operator, DCGM, OPA, OCM patterns. CoD's unique value is the <strong>glue</strong>: global catalogue, placement, quota policy, metering, and the <code>cod</code> UX.</li>
+          <li>No per-GPU licensing at H100 fleet scale; full control of the researcher experience; each block replaceable as the ecosystem moves (e.g., DRA).</li>
+        </ul>
+      </div>
+      <div class="pc con"><div class="h">✗ Buy (Run:ai, vCluster Platform, Rancher…)</div>
+        <ul>
+          <li>Faster time-to-value, vendor support, hardened UI — real advantages for a small platform team.</li>
+          <li>But you'd still build the research-specific catalogue/CLI on top, now against a vendor API; license costs scale with the GPU count, which is exactly where you're rich.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout verdict"><div class="t">Verdict</div>
+      <p>Build the thin layer; let OSS carry the weight. Re-evaluate commercial platforms only if the team cannot staff the glue — and check existing NVIDIA AI Enterprise entitlements first, since H100/H200 purchases often bundle Run:ai licenses <a href="#ref-9">[9]</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BLUEPRINT ================= -->
+<section id="blueprint">
+  <span class="section-kicker">10 · Synthesis</span>
+  <h2>Recommended Blueprint &amp; Phased Roadmap</h2>
+  <p class="section-lead">Collecting every verdict into one stack: a pull-based hub-spoke management plane, tiered tenancy with namespace mode as the default, MIG-first GPU sharing, Kueue fairness, and a clig.dev-compliant CLI over a hybrid declarative/REST API.</p>
+
+  <div class="grid3">
+    <div class="card"><h4 style="margin-top:0"><span class="tierpill t1">TIER 1</span>Namespace environment</h4>
+      <p class="small">Capsule Tenant + RBAC + default-deny netpol + aggregated quota + Kueue queue + PSS/OPA. Ready in seconds. The default for every researcher and the utilization workhorse.</p></div>
+    <div class="card"><h4 style="margin-top:0"><span class="tierpill t2">TIER 2</span>Virtual cluster</h4>
+      <p class="small">vCluster in a host namespace: own API server, etcd, CRDs, operators, K8s version. Pods still bin-pack on shared GPU pools. For teams needing control-plane autonomy.</p></div>
+    <div class="card"><h4 style="margin-top:0"><span class="tierpill t3">TIER 3</span>Hosted CP + dedicated nodes</h4>
+      <p class="small">Kamaji TenantControlPlane + reserved node pool. Operator-approved only: regulated data, kernel-level tuning, hard SLOs. Not self-service by default.</p></div>
+  </div>
+
+  <h3>Decision summary</h3>
+  <div class="tbl-scroll">
+  <table>
+    <tr><th>#</th><th>Decision</th><th>Choice</th><th>Key rationale</th></tr>
+    <tr><td>D1</td><td>Default tenancy mode</td><td>Namespace bundle (Capsule-style), vCluster on demand</td><td>Utilization goal + trusted-researcher threat model; tiering absorbs the exceptions <a href="#ref-2">[2]</a> <a href="#ref-3">[3]</a></td></tr>
+    <tr><td>D2</td><td>GPU sharing &amp; scheduling</td><td>MIG-first, time-slice dev tier, Kueue + bin-packing, KAI later</td><td>Silicon isolation for cross-tenant sharing; queue-based fairness <a href="#ref-5">[5]</a> <a href="#ref-8">[8]</a> <a href="#ref-9">[9]</a></td></tr>
+    <tr><td>D3</td><td>Hub↔DC control</td><td>Pull-based agent (OCM pattern)</td><td>No central god-credentials; firewall-friendly; DC autonomy; proven scale <a href="#ref-10">[10]</a></td></tr>
+    <tr><td>D4</td><td>Source of truth</td><td>Hub CRDs (declarative) + REST façade + Postgres for audit/metering</td><td>Reconciliation for robustness, REST for integrators, SQL for ledgers <a href="#ref-11">[11]</a> <a href="#ref-12">[12]</a></td></tr>
+    <tr><td>D5</td><td>CLI form</td><td>Standalone <code>cod</code> binary emitting kubeconfigs</td><td>Cross-DC discovery UX; kubectl remains the daily driver <a href="#ref-13">[13]</a></td></tr>
+    <tr><td>D6</td><td>Batch/HPC stance</td><td>K8s-native platform; Slurm-on-K8s as in-tenant option</td><td>Self-service environments ⊃ job queues; DCs already run K8s <a href="#ref-14">[14]</a></td></tr>
+    <tr><td>D7</td><td>Build vs buy</td><td>Thin glue layer over OSS blocks</td><td>Unique value is catalogue+placement+metering+UX, not re-inventing tenancy engines</td></tr>
+  </table>
+  </div>
+
+  <h3>Phased roadmap</h3>
+  <table>
+    <tr><th>Phase</th><th>Scope</th><th>Exit criterion</th></tr>
+    <tr><td><strong>0 · Foundation</strong> (weeks)</td><td>Hub cluster + CRDs; agent skeleton with double opt-in registration; hardware inventory reporting; <code>cod login / dc list / hw list</code></td><td>Researchers can browse live capacity across all DCs</td></tr>
+    <tr><td><strong>1 · Namespace MVP</strong></td><td>Capsule baseline per DC; <code>env create/list/delete</code> (namespace mode); kubeconfig issuance via capsule-proxy; quotas; audit log</td><td>First real tenants self-serve in &lt; 1 minute</td></tr>
+    <tr><td><strong>2 · Fairness &amp; GPU depth</strong></td><td>MIG profiles + flavors; Kueue queues per tenant; DCGM dashboards; GPU-hour metering; <code>env scale</code>; TTL reaper</td><td>Fleet GPU utilization visibly above pre-platform baseline</td></tr>
+    <tr><td><strong>3 · vCluster tier + REST GA</strong></td><td><code>--mode vcluster</code>; public REST + SDK; webhooks/SSE; showback reports</td><td>CI pipelines create ephemeral envs unattended</td></tr>
+    <tr><td><strong>4 · Scale-out</strong></td><td>KAI/gang scheduling on training pools; DRA adoption; Tier-3 Kamaji path; cross-DC placement policies; chargeback</td><td>Multi-DC placement decisions fully automatic</td></tr>
+  </table>
+
+  <h3>Open questions worth settling early</h3>
+  <p>Four items deliberately left open: <strong>(1) quota currency</strong> — count-based (GPU units) is simple, GPU-hour budgets align better with research grants; a hybrid (concurrent cap + monthly hours) is likely. <strong>(2) Data gravity</strong> — petabyte datasets pin placement; the catalogue should eventually model dataset locality, not just silicon. <strong>(3) Interconnect-aware placement</strong> — NVLink/InfiniBand topology matters for multi-node training; start by exposing <code>h100-sxm</code> pools as indivisible topology blocks. <strong>(4) Sovereignty of the hub</strong> — run the hub in one DC with warm standby in another; agents' autonomy already covers short hub outages <a href="#ref-10">[10]</a>.</p>
+
+  <div class="callout">
+    <div class="t">One-paragraph summary</div>
+    <p>ClusterOnDemand = a <strong>thin, opinionated global control plane</strong>: a hub that knows the hardware, the people, and the rules; agents that make each Kubernetes datacenter converge on declared tenant environments; namespace-based tenancy as the utilization-maximizing default with virtual clusters as the escape hatch; MIG and queue-based fairness turning expensive GPUs into a liquid, meterable commodity; and a CLI whose job is to make “give me 4 H100 slices for two weeks” a ten-second conversation.</p>
+  </div>
+</section>
+
+<!-- ================= REFERENCES ================= -->
+<section id="references">
+  <span class="section-kicker">11 · Sources</span>
+  <h2>References</h2>
+  <ol class="refs">
+    <li id="ref-1"><a href="https://kubernetes.io/docs/concepts/security/multi-tenancy/" target="_blank" rel="noopener">Kubernetes Documentation — Multi-tenancy</a> (concepts, control-plane &amp; data-plane isolation, quotas, node isolation, QoS)</li>
+    <li id="ref-2"><a href="https://www.stakater.com/post/namespace-vs-vcluster-which-multi-tenancy-model-is-right-for-you" target="_blank" rel="noopener">Stakater — Namespace vs. vCluster: Which Multi-Tenancy Model is Right for You?</a></li>
+    <li id="ref-3"><a href="https://www.spectrocloud.com/blog/kubernetes-multi-tenancy-three-key-approaches" target="_blank" rel="noopener">Spectro Cloud — Kubernetes multi-tenancy: three key approaches</a></li>
+    <li id="ref-4"><a href="https://www.vcluster.com/blog/comparing-multi-tenancy-options-in-kubernetes" target="_blank" rel="noopener">vCluster — Comparing Multi-tenancy Options in Kubernetes</a> (HNC vs vCluster vs Karmada)</li>
+    <li id="ref-5"><a href="https://www.vcluster.com/blog/gpu-multitenancy-kubernetes-strategies" target="_blank" rel="noopener">vCluster — GPU Tenant Isolation in Kubernetes: Strategies for AI Cloud Operators</a></li>
+    <li id="ref-6"><a href="https://clastix.io/post/multi-tenancy-options-for-kubernetes-tenant-or-namespaces-pick-at-least-one/" target="_blank" rel="noopener">Clastix — Multi-tenancy options for Kubernetes: Tenant, or Namespaces?</a> (Capsule)</li>
+    <li id="ref-7"><a href="https://meltcloud.io/blog/posts/hosted-control-planes/" target="_blank" rel="noopener">meltcloud — Hosted Control Planes: What, Why, and How</a> (Kamaji, HyperShift, Gardener, etcd &amp; konnectivity trade-offs)</li>
+    <li id="ref-8"><a href="https://scaleops.com/blog/kubernetes-gpu-sharing/" target="_blank" rel="noopener">ScaleOps — Kubernetes GPU Sharing: MIG vs. MPS vs. Time-Slicing Explained</a> (incl. DRA GA in K8s 1.34)</li>
+    <li id="ref-9"><a href="https://www.zenml.io/blog/kai-scheduler-vs-runai" target="_blank" rel="noopener">ZenML — KAI Scheduler vs Run:ai</a> (gang scheduling, fractional GPUs, pricing, entitlements)</li>
+    <li id="ref-10"><a href="https://open-cluster-management.io/docs/concepts/architecture/" target="_blank" rel="noopener">Open Cluster Management — Architecture</a> (hub-spoke pull model, double opt-in, ManifestWork, Placement)</li>
+    <li id="ref-11"><a href="https://www.tigera.io/blog/kubernetes-design-and-development-explained/" target="_blank" rel="noopener">Tigera — Kubernetes Design and Development Explained</a> (declarative vs imperative APIs)</li>
+    <li id="ref-12"><a href="https://restfulapi.net/rest-api-design-for-long-running-tasks/" target="_blank" rel="noopener">restfulapi.net — REST API Design for Long-Running Tasks</a> (202/Location pattern, RFC 7807, cancellation)</li>
+    <li id="ref-13"><a href="https://clig.dev/" target="_blank" rel="noopener">Command Line Interface Guidelines (clig.dev)</a></li>
+    <li id="ref-14"><a href="https://nebius.com/blog/posts/model-pre-training/slurm-vs-k8s" target="_blank" rel="noopener">Nebius — Slurm vs Kubernetes: Which to choose for model training</a> (incl. Soperator)</li>
+  </ol>
+  <div class="footer">
+    <p>ClusterOnDemand — Architecture &amp; Design Dossier · Prepared by Manus AI · July 2026. Single-file HTML artefact with light/dark theme support; all diagrams are theme-aware inline SVG. Figures such as GPU utilization baselines and pricing are drawn from the cited sources and should be re-validated against current vendor documentation before procurement decisions.</p>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const icon = document.getElementById('themeIcon');
+  const label = document.getElementById('themeLabel');
+  function apply(t){
+    root.setAttribute('data-theme', t);
+    icon.textContent = t === 'dark' ? '☀️' : '🌙';
+    label.textContent = t === 'dark' ? 'Light' : 'Dark';
+    try { localStorage.setItem('cod-theme', t); } catch(e){}
+  }
+  let saved = null;
+  try { saved = localStorage.getItem('cod-theme'); } catch(e){}
+  if(!saved){ saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+  apply(saved);
+  btn.addEventListener('click', () => apply(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+})();
+</script>
+</body>
+</html>
